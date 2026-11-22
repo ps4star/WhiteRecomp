@@ -16,8 +16,8 @@
 //                             seconds, the default: the game asks that often; src/runtime/ref_dinput.c, hle_dinput.c)
 //   Cutscenes                 Auto-skip: -DXRC_SKIP_MOVIES (every movie skipped)
 //   Pipeline Build Threads    XRC_VK_PIPE_THREADS=N in WhiteRecomp.cfg (no Build needed): the threads that make the
-//                             renderer's pipelines in the background (vk_d3d9.c pj_threads); the default (Best) half
-//                             the CPU threads, at most 8
+//                             renderer's pipelines in the background (vk_d3d9.c pj_threads); Best (0, the default):
+//                             none written, the game's own default (half the CPU threads, 1 to 8)
 //   Graphics                  a preset of the three below (FXAA always): Ultrafast (no shadows, no anti-aliasing), Fast
 //                             (512 shadows, 2x FXAA), Fancy (the default: 1024, 4x FXAA), Ultrafancy (8192, 8x
 //                             FXAA); or Custom, which shows the three (indented) and keeps them as set
@@ -67,11 +67,11 @@ FPS_CHOICES :: [2]int{30, 60}
 // Convert Movies' encoder threads: the CPU's threads less one (nproc - 1), at least 1
 convert_threads :: proc() -> int {return max(1, os.get_processor_core_count() - 1)}
 
-// Pipeline Build Threads: the most (all the CPU threads but one, at most 16), the best (half of them, at most 8:
-// the rest for the game's own threads and the movie conversion), and the one the settings ask for (0: the best)
+// Pipeline Build Threads: the most (all the CPU threads but one, at most 16), and the number the settings ask for: 0 =
+// Best, the default: the game picks (half the CPU threads, 1 to 8; vk_d3d9.c pj_threads). 2026-11-22 it was Off
+// (synchronous) for a few hours, reverted: slow draws on new pipelines
 max_pipe_threads :: proc() -> int {return clamp(os.get_processor_core_count() - 1, 1, 16)}
-best_pipe_threads :: proc() -> int {return clamp(os.get_processor_core_count() / 2, 1, 8)}
-pipe_threads :: proc() -> int {return settings.pipe_threads == 0 ? best_pipe_threads() : clamp(settings.pipe_threads, 1, max_pipe_threads())}
+pipe_threads :: proc() -> int {return settings.pipe_threads <= 0 ? 0 : clamp(settings.pipe_threads, 1, max_pipe_threads())}
 
 // The options a Build uses: the player's, for every target (an Android build too: the Cross-Compile tab's Use Android
 // Preset sets the Options tab to a phone's, apply_android_preset)
@@ -79,7 +79,7 @@ build_settings :: proc(spec: Build_Spec = {}) -> Settings {return settings}
 
 // Use Android Preset (the Cross-Compile tab, Android ARM64): the Options tab set for a phone -- 960x540, 60 fps, the
 // lowest graphics but shadows kept (512 shadows, anti-aliasing off, effects at half resolution), 4 GB of memory, -O1
-// and 2 pipeline build threads (a phone's few big cores go to the game). Sound, cutscenes, tools and the rest stay
+// and 2 pipeline build threads. Sound, cutscenes, tools and the rest stay
 // as they are. They are the Options tab's own settings afterwards (a Build for this computer uses them too), and a
 // built game's .cfg here is rewritten as an Options change would.
 ANDROID_RESOLUTION :: 1 // (960x540: RESOLUTIONS)
@@ -220,9 +220,12 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 
 // Resolution: the game's own -Width= / -Height= (what it renders at: its back buffer and full-screen targets; the
 // window is resizable and the picture scaled to fit it). 1280x720 (RES_DEFAULT) passes neither, as before; 854x480 and
-// 960x540 below it for slow GPUs. 16:9 only: the game's screens are laid out for it.
+// 960x540 below it for slow GPUs. Then the ultrawide ones (21:9, 32:9; RES_ULTRAWIDE on): the runtime draws the 3D across
+// the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: Vert- -- the top and bottom cut).
 Resolution :: struct {w, h: int}
-RESOLUTIONS :: [8]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160}}
+RESOLUTIONS :: [14]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
+	{2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440}}
+RES_ULTRAWIDE :: 8 // (the first ultrawide one)
 RES_DEFAULT :: 2 // (1280x720)
 SHADOW_CHOICES :: [6]int{0, 512, 1024, 2048, 4096, 8192} // (8192: the most the retail launcher offers)
 AA_QUALITIES :: [4]int{1, 2, 4, 8}

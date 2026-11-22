@@ -16,7 +16,8 @@ the converter; it is not linked with the launcher, the converter or the game).
   7. The Linux ARM64 system files the Cross-Compile tab links with (GNU C Library: LGPL 2.1 or later; Linux kernel
      headers: GPL 2 with the syscall note; GCC's libgcc: GPL 3 with the GCC Runtime Library Exception; OpenSSL:
      Apache 2.0; zlib: zlib license; Zstandard: BSD), and FFmpeg's libraries built for Linux ARM64 (as section 4)
-  8. macOS only: SDL2 (zlib license), appended at the end of this file in the macOS release
+  8. SDL2 (zlib license): Windows, tools\SDL2.dll (game controllers; the text is at the end of this file); macOS, also
+     appended at the end of this file in the macOS release
   9. The Android ARM64 system files the Cross-Compile tab links with (the Android NDK's sysroot: BSD, Apache 2.0, the
      Linux kernel headers' GPL 2 with the syscall note; LLVM's compiler-rt builtins: Apache 2.0 with LLVM Exceptions;
      the NativeActivity glue: Apache 2.0)
@@ -1507,3 +1508,26 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 The runtime is a static program that also contains squashfuse (BSD 2-Clause, https://github.com/vasi/squashfuse),
 libfuse 3 (GNU Lesser General Public License 2.1, https://github.com/libfuse/libfuse: its source is available there),
 and the zstd (BSD), zlib (zlib License), xz (public domain) and lz4 (BSD 2-Clause) decompressors.
+
+
+==================================================================================================== SDL2 (Windows)
+SDL2 2.32.8 (tools\SDL2.dll: the official Windows x64 release build, https://github.com/libsdl-org/SDL), zlib license:
+
+Simple DirectMedia Layer
+Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.

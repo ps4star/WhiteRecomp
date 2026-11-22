@@ -376,7 +376,7 @@ game_out_dir :: proc() -> string {
 cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	s := build_settings(spec)
 	fmt.sbprintf(b, "XRC_GAME_ARGS=%s\n", game_args(s))
-	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", s.subs_jp ? "japanese" : "english") // (the text language: Features & Mods > Subtitles)
+	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", subtitle_id(s.subs)) // (the text language: Features & Mods > Subtitles & UI)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
 	if s.shadow_res == 0 {fmt.sbprintf(b, "XRC_NO_SHADOWS=1\n")}
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
@@ -384,11 +384,8 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
 	if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
-	if spec.cross != nil && spec.cross.android {
-		fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", s.pipe_threads)
-		return
-	}
-	fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", pipe_threads())
+	n := spec.cross != nil && spec.cross.android ? s.pipe_threads : pipe_threads()
+	if n > 0 {fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", n)} // (0, Best: none written -- the game's default, half the CPU threads)
 }
 
 write_cfg :: proc(gdir: string) -> bool {
@@ -404,6 +401,8 @@ cfg_text :: proc() -> string {
 	fmt.sbprintf(&b, "XRC_CDRIVE=%s\n", data_path("cdrive"))
 	when ODIN_OS == .Windows {
 		fmt.sbprintf(&b, "XRC_STEAM_HELPER=%s\n", data_path("tools", "steamhelper.exe"))
+		// SDL2 for game controllers (any one shown to the game as an Xbox 360 controller: src/runtime/hle_dinput.c)
+		if sdl := data_path("tools", "SDL2.dll"); file_exists(sdl) {fmt.sbprintf(&b, "XRC_SDL_LIB=%s\n", sdl)}
 	}
 	when ODIN_OS == .Darwin {
 		// the .app's own MoltenVK (Vulkan on Metal) and SDL2 (window, controllers, sound), if it has them: the game

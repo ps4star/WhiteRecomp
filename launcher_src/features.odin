@@ -5,8 +5,9 @@
 //     Voice       English, or Japanese: the game's own -VoiceJPMode argument (XRC_GAME_ARGS), as the retail launcher
 //                 passes it (its setup.xml voice_mode). Both voice sets come with the game (sys/white_*u: English,
 //                 white_*c; the cutscenes zNNN_us.win32.wmp English, zNNN.win32.wmp Japanese: Convert Movies does both).
-//     Subtitles   English or Japanese: the game's text language, the string the runtime gives it (XRC_LANGUAGE=english
-//                 | japanese; src/runtime/hle_system.c steam_language -- else Steam's language for the game)
+//     Subtitles & UI  the game's text language (SUBTITLE_IDS: every one its files hold -- tested: the title menu translated;
+//                 not "tchinese", which this release lacks), the string the runtime gives it (XRC_LANGUAGE;
+//                 src/runtime/hle_system.c steam_language -- else Steam's language for the game)
 package launcher
 
 import "core:sync"
@@ -14,6 +15,10 @@ import "shared:iv_system/ren"
 import ui "shared:iv_ui"
 
 LANGUAGES :: [2]string{"English", "Japanese"}
+// the text languages: names shown, and Steam's names the game takes (hle_system.c steam_language)
+SUBTITLE_NAMES :: [6]string{"English", "Japanese", "French", "German", "Italian", "Spanish"}
+SUBTITLE_IDS :: [6]string{"english", "japanese", "french", "german", "italian", "spanish"}
+subtitle_id :: proc(k: int) -> string {ids := SUBTITLE_IDS; return ids[k] if k >= 0 && k < len(ids) else "english"}
 
 draw_features :: proc(g: ^Gui, r: ui.Rect) {
 	running := sync.atomic_load(&task.running)
@@ -56,8 +61,9 @@ draw_features :: proc(g: ^Gui, r: ui.Rect) {
 		note_text(g, "The spoken language, cutscenes included", note, DIM)
 	}
 	{
-		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Subtitles:")
-		if n, ch := dropdown(g, "subtitles", ctrl, names[:], settings.subs_jp ? 1 : 0, active = active); ch {settings.subs_jp = n == 1; changed = true}
+		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Subtitles & UI:")
+		subs := SUBTITLE_NAMES
+		if n, ch := dropdown(g, "subtitles", ctrl, subs[:], settings.subs, active = active); ch {settings.subs = n; changed = true}
 		note_text(g, "The language of subtitles, menus and all other text", note, DIM)
 	}
 	if changed {

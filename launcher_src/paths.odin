@@ -91,7 +91,7 @@ Settings :: struct {
 	skip_movies:     bool, // Cutscenes: Auto-skip
 	movie_bink:      bool, // Cutscene Files: Bink2 (the game's .wmp files through its translated bink2w32.dll: XRC_MOVIES=bink in the .cfg), else MP4
 	pad_once:        bool, // Gamepad Scanning: Once (-DXRC_PAD_ONCE); else every 2 seconds
-	pipe_threads:    int, // Pipeline Build Threads: the renderer's pipeline builders (XRC_VK_PIPE_THREADS in the .cfg; 0: the best, options.odin)
+	pipe_threads:    int, // Pipeline Build Threads: the renderer's pipeline builders (XRC_VK_PIPE_THREADS in the .cfg; 0: Best, the default; options.odin)
 	resolution:      int, // Resolution: an index into RESOLUTIONS (options.odin) -- the game's -Width= / -Height=
 	graphics:        int, // Graphics: a preset of the three below (GRAPHICS_PRESETS), or GRAPHICS_CUSTOM -- them as set
 	shadow_res:      int, // Shadow Resolution: the game's -Shadow=N (512 .. 8192; 0: Off -- no shadows, XRC_NO_SHADOWS)
@@ -105,7 +105,7 @@ Settings :: struct {
 	fx_full:         bool, // Effects Resolution: Full (XRC_VK_HALF_FX=0 in the .cfg); else Half, the default (vk_d3d9.c)
 	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; Windows, Linux)
 	voice_jp:        bool, // Features & Mods > Voice: Japanese (the game's -VoiceJPMode); else English
-	subs_jp:         bool, // Features & Mods > Subtitles: Japanese (XRC_LANGUAGE=japanese); else English
+	subs:            int,  // Features & Mods > Subtitles & UI: an index of SUBTITLE_IDS (features.odin; XRC_LANGUAGE), 0 = English
 	cross_target:    string, // the Cross-Compile tab's Target (cross.odin: a Cross_Target key; "": the first)
 	cross_cpu:       string, // its CPU (-mcpu=; "": the target's first, generic)
 	appimage:        bool, // Home tab's "As AppImage" (Linux launchers): the game as WhiteRecomp-<arch>.AppImage (appimage.odin)
@@ -180,7 +180,8 @@ load_settings :: proc() {
 		case "voice":
 			settings.voice_jp = v == "japanese"
 		case "subtitles":
-			settings.subs_jp = v == "japanese"
+			settings.subs = 0
+			for id, k in SUBTITLE_IDS {if v == id {settings.subs = k}}
 		case "cross_target":
 			settings.cross_target = strings.clone(v)
 		case "cross_cpu":
@@ -237,7 +238,7 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "fx_full %d\n", settings.fx_full ? 1 : 0)
 	fmt.sbprintf(&b, "steam_off %d\n", settings.steam_off ? 1 : 0)
 	fmt.sbprintf(&b, "voice %s\n", settings.voice_jp ? "japanese" : "english")
-	fmt.sbprintf(&b, "subtitles %s\n", settings.subs_jp ? "japanese" : "english")
+	fmt.sbprintf(&b, "subtitles %s\n", subtitle_id(settings.subs))
 	fmt.sbprintf(&b, "cross_target %s\n", settings.cross_target)
 	fmt.sbprintf(&b, "cross_cpu %s\n", settings.cross_cpu)
 	fmt.sbprintf(&b, "appimage %d\n", settings.appimage ? 1 : 0)

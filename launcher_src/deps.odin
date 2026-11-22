@@ -530,33 +530,64 @@ pacman_cmd :: proc(pm, what: string) -> []string {
 // (Linux, macOS) the wine that runs Windows programs: PATH's, then where WineHQ's packages and the macOS apps put it.
 // Found when `wine --version` runs; whether it runs 32-bit programs (the converter is one) is tried when Convert
 // Movies starts (wine.odin wine_ready), since that sets up its folder first.
+// (macOS) the PATH a Terminal window has: an app started from the Finder gets only the system's
+// (/usr/bin:/bin:/usr/sbin:/sbin), so a wine the player put on PATH in ~/.zshrc (as the macOS Wine builds' instructions
+// say) was not found although `wine` works in Terminal (a player's bug report). The login shell is asked, interactive
+// so its ~/.zshrc counts too, and stopped after 5 s should its profile wait for something. "" if it says nothing.
 @(private = "file")
-wine_candidates :: proc() -> [dynamic]string {
+shell_path :: proc(t: ^Task) -> string {
+	sh := os.get_env("SHELL", context.temp_allocator)
+	if sh == "" || !file_exists(sh) {sh = "/bin/zsh"}
+	MARK :: "@@WHITERECOMP_PATH@@"
+	// (its output through a file: a program its profile leaves running would hold a pipe open; -9: an interactive shell
+	// ignores SIGTERM)
+	script := `f=$(mktemp) || exit 0; "$0" -ilc 'printf "\n` + MARK + `%s` + MARK + `\n" "$PATH"' </dev/null >"$f" 2>/dev/null & p=$!; (sleep 5; kill -9 $p) >/dev/null 2>&1 & k=$!; wait $p 2>/dev/null; kill $k 2>/dev/null; cat "$f"; rm -f "$f"; exit 0`
+	out := strings.builder_make(context.temp_allocator)
+	if _, started := run(t, {"/bin/sh", "-c", script, sh}, mode = .Quiet, capture = &out); !started {return ""}
+	s := strings.to_string(out)
+	a := strings.index(s, MARK)
+	if a < 0 {return ""}
+	r := s[a + len(MARK):]
+	b := strings.index(r, MARK)
+	return b < 0 ? "" : r[:b]
+}
+
+@(private = "file")
+wine_candidates :: proc(t: ^Task) -> [dynamic]string {
 	c := make([dynamic]string, context.temp_allocator)
-	if p := find_program("wine"); p != "" {append(&c, p)}
+	add :: proc(c: ^[dynamic]string, p: string) {
+		if !file_exists(p) {return}
+		for q in c {if q == p {return}}
+		append(c, p)
+	}
+	if p := find_program("wine"); p != "" {add(&c, p)}
 	when ODIN_OS == .Darwin {
-		for app in ([]string{"Wine Stable", "Wine Devel", "Wine Staging"}) {
-			for base in ([]string{"/Applications", pjoin({os.get_env("HOME", context.temp_allocator), "Applications"}, context.temp_allocator)}) {
-				p := pjoin({base, fmt.tprintf("%s.app", app), "Contents", "Resources", "wine", "bin", "wine"}, context.temp_allocator)
-				if file_exists(p) {append(&c, p)}
+		// the Terminal's PATH (shell_path), then every app with a Wine inside (Gcenx's Wine Stable / Devel / Staging,
+		// or a renamed or test build of them), in /Applications and ~/Applications, then Homebrew's
+		for dir in strings.split(shell_path(t), ":", context.temp_allocator) {
+			if dir != "" {add(&c, pjoin({dir, "wine"}, context.temp_allocator))}
+		}
+		for base in ([]string{"/Applications", pjoin({os.get_env("HOME", context.temp_allocator), "Applications"}, context.temp_allocator)}) {
+			list, err := os.read_all_directory_by_path(base, context.temp_allocator)
+			if err != nil {continue}
+			for e in list {
+				if strings.has_suffix(e.name, ".app") {add(&c, pjoin({e.fullpath, "Contents", "Resources", "wine", "bin", "wine"}, context.temp_allocator))}
 			}
 		}
-		for p in ([]string{"/opt/homebrew/bin/wine", "/usr/local/bin/wine"}) {if file_exists(p) {append(&c, p)}}
+		for p in ([]string{"/opt/homebrew/bin/wine", "/usr/local/bin/wine"}) {add(&c, p)}
 	} else {
-		for p in ([]string{"/usr/bin/wine", "/opt/wine-stable/bin/wine", "/opt/wine-staging/bin/wine", "/opt/wine-devel/bin/wine"}) {
-			if file_exists(p) {append(&c, p)}
-		}
-		for p in proton_wines() {append(&c, p)} // (Steam's Protons: a Steam Deck's Wine -- game.odin)
+		for p in ([]string{"/usr/bin/wine", "/opt/wine-stable/bin/wine", "/opt/wine-staging/bin/wine", "/opt/wine-devel/bin/wine"}) {add(&c, p)}
+		for p in proton_wines() {add(&c, p)} // (Steam's Protons: a Steam Deck's Wine -- game.odin)
 	}
 	// (last: a wine64 alone runs no 32-bit program unless it is a WoW64 build; wine_ready tells)
-	if p := find_program("wine64"); p != "" {append(&c, p)}
+	if p := find_program("wine64"); p != "" {add(&c, p)}
 	return c
 }
 
 @(private = "file")
 check_wine :: proc(t: ^Task) -> Dep {
 	d := Dep{name = "Wine", purpose = "runs the movie converter (a Windows program) for Convert Movies"}
-	for p in wine_candidates() {
+	for p in wine_candidates(t) {
 		out := strings.builder_make(context.temp_allocator)
 		code, started := run(t, {p, "--version"}, mode = .Quiet, capture = &out)
 		if !started || code != 0 {continue}

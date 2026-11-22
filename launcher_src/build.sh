@@ -60,10 +60,10 @@ glibc_check() {
 
 for T in $TARGETS; do
 	case $T in
-	windows) FFP=windows_amd64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_build"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools ;;
-	linux) FFP=linux_amd64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_linux"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools/wine ;;
-	linux_arm64) FFP=linux_arm64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_linux_arm64"; FFEXE=""; FFDST=tools ;;
-	macos) FFP=darwin_arm64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_macos"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools/wine ;;
+	windows) FFP=windows_amd64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_build"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools; SDLW=third_party/sdl2/windows_amd64 ;;
+	linux) FFP=linux_amd64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_linux"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools/wine; SDLW="" ;;
+	linux_arm64) FFP=linux_arm64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_linux_arm64"; FFEXE=""; FFDST=tools; SDLW="" ;;
+	macos) FFP=darwin_arm64; STAGE="$(wslpath "$WTEMP")/ff13_launcher_macos"; FFEXE=third_party/ffmpeg_exe/windows_amd64; FFDST=tools/wine; SDLW="" ;;
 	esac
 	# (macOS: one launcher for both kinds of Mac, so both FFmpegs: lib/ Apple silicon's, lib_x86_64/ Intel's)
 	FFX86=""; [ "$T" = macos ] && FFX86="$(M third_party/ffmpeg/lib/darwin_amd64)=ffmpeg/lib_x86_64"
@@ -92,7 +92,8 @@ for T in $TARGETS; do
 			"$(M build/arm64_tools/sysroot_min)=cross/linux_arm64/sysroot" \
 			"$(M third_party/ffmpeg/lib/linux_arm64)=cross/linux_arm64/ffmpeg/lib" \
 			"$(M build/android_sysroot/sysroot)=cross/android_arm64/sysroot" "$(M build/android_sysroot/apk)=cross/android_arm64/apk" \
-			${FFEXE:+"$(M $FFEXE/ffmpeg.exe)=$FFDST/ffmpeg.exe" "$(M $FFEXE/LICENSE)=$FFDST/ffmpeg-LICENSE.txt" "$(M $FFEXE/README.txt)=$FFDST/ffmpeg-README.txt"} || exit 1
+			${FFEXE:+"$(M $FFEXE/ffmpeg.exe)=$FFDST/ffmpeg.exe" "$(M $FFEXE/LICENSE)=$FFDST/ffmpeg-LICENSE.txt" "$(M $FFEXE/README.txt)=$FFDST/ffmpeg-README.txt"} \
+			${SDLW:+"$(M $SDLW/SDL2.dll)=tools/SDL2.dll" "$(M $SDLW/README-SDL.txt)=tools/SDL2-README.txt"} || exit 1
 		# each block compressed by xz (LZMA, its dictionary the whole block), cached by its contents in build/bundle_cache:
 		# the targets share most blocks (the translated code), and a rebuild compresses only the blocks that changed
 		mkdir -p build/bundle_cache

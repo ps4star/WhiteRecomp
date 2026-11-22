@@ -130,7 +130,7 @@ How the game's glowing effects (fire, sparks, magic, most of a battle's spell ef
 
 #### Gamepad Scanning
 
-How the game finds controllers. FINAL FANTASY XIII only reads DirectInput controllers; on Linux, any controller SDL2 knows (Xbox, PlayStation, Switch and most others) is presented to the game as an Xbox 360 controller.
+How the game finds controllers. FINAL FANTASY XIII only reads DirectInput controllers and only has button layouts for a few of them. On every system (Windows too, with the SDL2.dll the launcher brings), any controller SDL2 knows (Xbox, PlayStation 3/4/5, Switch and most others) is presented to the game as an Xbox 360 controller, so the buttons are always where the game expects them: a PlayStation controller's Cross is A, Circle is B, Square is X and Triangle is Y. Rebuild after updating the launcher for this to apply.
 
 - **Every 2 seconds (Default):** a controller plugged in while you play is found within 2 seconds.
 - **Once:** only the controllers connected when the game starts are used. Plug one in later and you need to restart the game.
@@ -162,15 +162,32 @@ Many movie files hold several cutscenes one after another (`z016_us.win32.wmp` h
 Windows and Linux (x86-64 PCs; not ARM64 builds).
 
 - **On** (default): with Steam running and signed in when the game starts, achievements unlock on your Steam account with Steam's pop-up in the game window, the Steam overlay works (**Shift+Tab**; Vulkan graphics driver), and Steam shows you as playing FINAL FANTASY XIII. On Linux the game uses your Steam installation's own `steamclient.so` (regular or Flatpak Steam); the overlay is less certain there than on Windows, but achievements don't depend on it. Without Steam running, the game plays normally without them; start Steam before the game, since a Steam started later isn't noticed.
-- **Off:** none of that. The game doesn't touch Steam at all.
+- **Off:** none of that. The game doesn't touch Steam at all, Steam Cloud included.
 
-Takes effect the next time the game starts, with no Build needed. Steam Cloud saves aren't supported either way; saves stay on your computer.
+Takes effect the next time the game starts, with no Build needed.
+
+#### Steam Cloud saves
+
+With Steam Integration on and Steam Cloud enabled for your account and for FINAL FANTASY XIII (Steam's settings), the game keeps its save files (`ff13-00.dat` is Save Data 01, `ff13-01.dat` Save Data 02, and so on) in step with Steam Cloud:
+
+- When the game starts, a cloud save newer than the one on your computer is copied in. Saves made with the original game, or on another computer, show up under **Load Game**. A save on your computer that is newer than the cloud's is sent to the cloud.
+- Each time you save, the save goes to the cloud.
+- Whichever copy is replaced, the computer's or the cloud's, is kept first in `save_cloud_backup`, next to the game's `save` folder (`cdrive\Users\Player\AppData\Local\SquareEnix\FinalFantasyXIII`).
+
+When the game starts it also looks for saves outside the cloud, and copies in any that are newer than yours:
+
+- Steam's own folders: `Steam\userdata\<account>\<app>\remote`, the `<app>` folder, and the account folder. It checks every account and every app ID, so the Japan/Asia edition is covered whatever its ID. This includes a save file you put there by hand, which Steam itself doesn't list until it syncs it.
+- The original game's save folder: `%LOCALAPPDATA%\SquareEnix\FinalFantasyXIII\save` on Windows, and Proton's copy of it on Linux.
+
+A file counts as a save if it is named like `ff13-00.dat`, or if it is a `.dat` file of a save's exact size (300600 bytes); a renamed one becomes Save Data 01. A copied file counts as new from the moment it was copied, even though copying keeps the old "modified" date. The game's log lists every save it found and where.
+
+If Steam isn't running, or Steam Cloud is off, saves found this way are still copied in, but nothing is sent. Steam uploads the saves when the game ends.
 
 ### Performance
 
 #### Pipeline Build Threads
 
-How many threads prepare the renderer's graphics pipelines in the background. A new effect or area needs new pipelines the first time it appears, and until one is ready the objects using it are skipped for a frame or two. The default, marked **(Best)**, is half your CPU threads (at most 8). The maximum is your CPU threads minus one (at most 16). Takes effect the next time the game starts, with no Build needed.
+How the renderer prepares its graphics pipelines. A new effect or area needs new pipelines the first time it appears. **Best (Default):** half your CPU threads (1 to 8) prepare pipelines in the background. **1** up to your CPU threads minus one (at most 16): that many threads. Until a pipeline is ready the objects using it are skipped for a frame or two (pipelines seen before load from the disk cache and are quick). Takes effect the next time the game starts, with no Build needed.
 
 #### Memory
 
@@ -257,7 +274,7 @@ Options that change what the game plays. They go into the built game's settings,
 ### Language
 
 - **Voice:** **English** (the default) or **Japanese**, cutscenes included. Both voice sets come with the game. Convert Movies converts both cutscene sets, so either plays.
-- **Subtitles:** **English** (the default) or **Japanese**: subtitles, menus and all other text. The PC release only offers Japanese voices, not Japanese text, although the Japanese text is in its files: the port turns it on. Any voice works with any text language.
+- **Subtitles & UI:** **English** (the default), **Japanese**, **French**, **German**, **Italian** or **Spanish**: subtitles, menus and all other text. Every one of them is in the game's files; the PC release only lets you pick some of them (Japanese text is not offered at all), the port lets you pick any. Any voice works with any text language.
 
 These replace the language you chose for the game in Steam.
 

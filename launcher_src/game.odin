@@ -63,6 +63,40 @@ find_game :: proc() -> string {
 		d := pjoin({lib, "steamapps", "common", GAME_FOLDER}, context.temp_allocator)
 		if is_game_dir(d) {return strings.clone(d)}
 	}
+	// (a regional edition installed under another folder name: any folder of a library that holds the game)
+	for lib in steam_libraries() {
+		list, err := os.read_all_directory_by_path(pjoin({lib, "steamapps", "common"}, context.temp_allocator), context.temp_allocator)
+		if err != nil {continue}
+		for e in list {if is_game_dir(e.fullpath) {return strings.clone(e.fullpath)}}
+	}
+	return ""
+}
+
+// Steam's record of an install: steamapps/appmanifest_<app>.acf (two folders above it) whose "installdir" is the
+// install's folder name -- the regional editions are told apart there. The runtime does the same
+// (src/runtime/host_steam.c host_steam_manifest). Its path (temp), or "".
+steam_manifest :: proc(game: string) -> string {
+	name := filepath.base(game)
+	context.allocator = context.temp_allocator // (filepath.dir allocates)
+	steamapps := filepath.dir(filepath.dir(game))
+	installdir :: proc(acf: string) -> string {
+		d, err := os.read_entire_file(acf, context.temp_allocator)
+		if err != nil {return ""}
+		for line in strings.split_lines(string(d), context.temp_allocator) {
+			l := strings.trim_space(line)
+			if !strings.has_prefix(l, "\"installdir\"") {continue}
+			v := strings.trim_space(l[12:])
+			if len(v) >= 2 && v[0] == '"' && v[len(v) - 1] == '"' {return v[1:len(v) - 1]}
+		}
+		return ""
+	}
+	na := pjoin({steamapps, "appmanifest_292120.acf"}, context.temp_allocator)
+	if strings.equal_fold(installdir(na), name) {return na}
+	list, err := os.read_all_directory_by_path(steamapps, context.temp_allocator)
+	if err != nil {return ""}
+	for e in list {
+		if strings.has_prefix(e.name, "appmanifest_") && strings.has_suffix(e.name, ".acf") && strings.equal_fold(installdir(e.fullpath), name) {return e.fullpath}
+	}
 	return ""
 }
 
@@ -123,12 +157,12 @@ check_game_exe :: proc(exe: string) -> (ok: bool, why: string, edition: string) 
 // it was unpacked. With its SHA-256 (for a bug report) and the fix: Steam's own copy back.
 @(private = "file")
 exe_mismatch :: proc(exe: string, d: []u8, pe, nsec, sh: int) -> string {
-	// Steam's record of the install (steamapps/appmanifest_292120.acf, two folders above the game): the depot it has.
+	// Steam's record of the install (steam_manifest: steamapps/appmanifest_<app>.acf, two folders above the game): the depot it has.
 	// The code here is from 292122, "Content NE" (North America / Europe); Steam sells others (the region-locked Asian
 	// one) whose exe is another program -- a fresh install gets that one again, so verifying the files does not help.
 	context.allocator = context.temp_allocator // (filepath.dir allocates)
 	game := filepath.dir(filepath.dir(filepath.dir(filepath.dir(filepath.dir(exe)))))
-	acf := pjoin({filepath.dir(filepath.dir(game)), "appmanifest_292120.acf"})
+	acf := steam_manifest(game)
 	if text, err := os.read_entire_file(acf, context.temp_allocator); err == nil {
 		t := string(text)
 		if at := strings.index(t, "\"InstalledDepots\""); at >= 0 {

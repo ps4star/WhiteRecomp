@@ -544,10 +544,12 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Resolution:")
 		res := RESOLUTIONS
 		names := make([]string, len(res), context.temp_allocator)
-		for r, i in res {names[i] = i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : fmt.tprintf("%d x %d", r.w, r.h)}
+		for r, i in res {
+			names[i] = i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : i >= RES_ULTRAWIDE ? fmt.tprintf("%d x %d (%s)", r.w, r.h, r.w * 9 > r.h * 30 ? "32:9" : "21:9") : fmt.tprintf("%d x %d", r.w, r.h)
+		}
 		sel := clamp(settings.resolution, 0, len(res) - 1)
 		if n, ch := dropdown(g, "resolution", ctrl, names, sel, active = active); ch {settings.resolution = n; changed = true; game_changed = true}
-		note_text(g, sel == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : sel < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
+		note_text(g, sel >= RES_ULTRAWIDE ? "Ultrawide: the 3D fills the width (a little less above and below); no Build needed" : sel == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : sel < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
 	}
 	// Window Scaling: the picture in a window of another shape than 16:9 (XRC_STRETCH in its .cfg: no Build needed)
 	{
@@ -688,11 +690,11 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 	// Pipeline Build Threads (in its .cfg: no Build needed)
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Pipeline Build Threads:")
-		n_max, best := max_pipe_threads(), best_pipe_threads()
-		names := make([]string, n_max, context.temp_allocator)
-		for i in 0 ..< n_max {names[i] = i + 1 == best ? fmt.tprintf("%d (Best)", i + 1) : fmt.tprintf("%d", i + 1)}
-		sel := pipe_threads() - 1
-		if n, ch := dropdown(g, "pipes", ctrl, names, sel, active = active); ch {settings.pipe_threads = n + 1 == best ? 0 : n + 1; changed = true; game_changed = true}
+		n_max := max_pipe_threads()
+		names := make([]string, n_max + 1, context.temp_allocator) // (0: Best, the default; then 1..n_max threads)
+		names[0] = "Best (Default)"
+		for i in 1 ..= n_max {names[i] = fmt.tprintf("%d", i)}
+		if n, ch := dropdown(g, "pipes", ctrl, names, pipe_threads(), active = active); ch {settings.pipe_threads = n; changed = true; game_changed = true}
 		note_text(g, "Threads preparing new graphics effects in the background; no Build needed", note, DIM)
 	}
 	// Memory (in its .cfg: no Build needed)

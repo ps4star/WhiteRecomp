@@ -100,6 +100,7 @@ for T in $TARGETS; do
 		export BLK
 		ls "$BLK"/block_*.raw | xargs -P "${LAUNCHER_XZ_J:-12}" -n 1 sh -c '
 			r=$1; c="build/bundle_cache/$(sha256sum < "$r" | cut -c1-64).lzma"
+			case $c in build/bundle_cache/.lzma) echo "launcher: cannot hash $r"; exit 1;; esac # (sha256sum failed -- out of memory: no shared cache name)
 			if [ ! -f "$c" ]; then
 				m=$(( ($(stat -c %s "$r") + 1048575) / 1048576 )); [ $m -lt 1 ] && m=1
 				xz --format=lzma --lzma1=preset=9e,dict=${m}MiB -c "$r" > "$c.tmp" && mv "$c.tmp" "$c" || exit 1

@@ -316,6 +316,7 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 		ai := pjoin({gdir, appimage_file(appimage_arch())}, context.temp_allocator)
 		if !appimage_pack(t, ai, out_exe, cfg_text(), appimage_arch(), portable = false) {t.failed = true; return}
 		_ = os.make_directory_all(data_path("cdrive"))
+		build_stamp(gdir) // (main.odin: this launcher's build -- Run offers it)
 		logf(t, "Built %s", ai)
 		set_status(t, 1, "Built")
 		return
@@ -326,6 +327,7 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 		return
 	}
 	_ = os.make_directory_all(data_path("cdrive"))
+	build_stamp(gdir) // (main.odin: this launcher's build -- Run offers it)
 	logf(t, "Built %s", out_exe)
 	set_status(t, 1, "Built")
 }

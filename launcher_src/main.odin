@@ -124,9 +124,30 @@ game_running: bool // the game started by Run is running (game_windows.odin / ga
 
 // the built game beside the launcher (build_game.odin), "" if there is none yet
 built_game :: proc() -> string {
+	exe := built_game_file()
+	return exe != "" && !build_stale() ? exe : ""
+}
+// the game's file, built by any launcher (or "")
+built_game_file :: proc() -> string {
 	exe := pjoin({game_out_dir(), GAME_NAME + EXE_SUFFIX}, context.temp_allocator)
 	if appimage_on() {exe = pjoin({game_out_dir(), appimage_file(appimage_arch())}, context.temp_allocator)} // (As AppImage)
 	return file_exists(exe) ? exe : ""
+}
+// the game there was built by another launcher (its .build-id, written by Build, is not this bundle's -- or there is
+// none: built before 2026-11-22): it is built again before it runs. Checked once, and again after each Build
+BUILD_ID_FILE :: GAME_NAME + ".build-id"
+stale_known: int = -1 // (-1: not checked yet; 0 / 1)
+build_stale :: proc() -> bool {
+	if stale_known < 0 {
+		d, err := os.read_entire_file(pjoin({game_out_dir(), BUILD_ID_FILE}, context.temp_allocator), context.temp_allocator)
+		stale_known = err == nil && strings.trim_space(string(d)) == fmt.tprintf("%016x", bundle_identity()) ? 0 : 1
+	}
+	return stale_known == 1
+}
+// after a Build: the game is this bundle's
+build_stamp :: proc(gdir: string) {
+	_ = os.write_entire_file(pjoin({gdir, BUILD_ID_FILE}, context.temp_allocator), transmute([]u8)fmt.tprintf("%016x\n", bundle_identity()))
+	stale_known = -1
 }
 
 main :: proc() {
@@ -309,6 +330,12 @@ draw_home :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 			}
 		}
 		tooltip_zone(g, "run", run_r, playing ? "The game is running." : running ? "Wait for the current task to finish." : fmt.tprintf("Starts %s.", exe))
+	} else if built_game_file() != "" { 	// (built by another launcher: Build again first -- build_stale)
+		run_r: ui.Rect
+		run_r, bottom = ui.cut_right(bottom, px(g, 150), px(g, 8))
+		run_r = ui.Rect{run_r.x, run_r.y, run_r.w, px(g, 44)}
+		_ = button(g, run_r, "Build to Run", false, f = g.bold)
+		tooltip_zone(g, "run", run_r, "The game here was built by another version of this launcher. Press Build: this version's fixes are only in a game it builds.")
 	}
 	build_r, rest := ui.cut_right(bottom, px(g, 150), px(g, 8))
 	build_r = ui.Rect{build_r.x, build_r.y, build_r.w, px(g, 44)}

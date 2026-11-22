@@ -217,3 +217,26 @@ bundle_prune :: proc(t: ^Task, dir: string, prefixes: []string) -> int {
 	for p in prefixes {walk(t, dir, p, &have, &n)}
 	return n
 }
+
+// the bundle's identity: a hash of its bytes, made once (2026-11-22). A game built by another launcher -- an older
+// release, before a fix -- is not offered to Run until it is built again (main.odin built_game): players updated the
+// launcher, pressed Run, and went on playing their old build and its bugs (the 10-minute "too many voices" stop).
+bundle_hash: u64
+bundle_identity :: proc() -> u64 {
+	if bundle_hash != 0 {return bundle_hash}
+	h: u64 = 0xcbf29ce484222325 // (FNV-1a, 4 lanes: ~75 MB in a few tens of ms)
+	l: [4]u64 = {h, h ~ 1, h ~ 2, h ~ 3}
+	b := BUNDLE
+	n := len(b) &~ 3
+	for i := 0; i < n; i += 4 {
+		l[0] = (l[0] ~ u64(b[i])) * 0x100000001b3
+		l[1] = (l[1] ~ u64(b[i + 1])) * 0x100000001b3
+		l[2] = (l[2] ~ u64(b[i + 2])) * 0x100000001b3
+		l[3] = (l[3] ~ u64(b[i + 3])) * 0x100000001b3
+	}
+	for i in n ..< len(b) {l[0] = (l[0] ~ u64(b[i])) * 0x100000001b3}
+	h = l[0] ~ (l[1] << 1 | l[1] >> 63) ~ (l[2] << 2 | l[2] >> 62) ~ (l[3] << 3 | l[3] >> 61) ~ u64(len(b))
+	if h == 0 {h = 1}
+	bundle_hash = h
+	return h
+}

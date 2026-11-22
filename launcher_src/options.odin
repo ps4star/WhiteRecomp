@@ -9,11 +9,10 @@
 //                             a build with -DXRC_DEEP_STACKS (pages and runtime: tools/xrc_build.sh XRC_CFLAGS / XRC_DEFS)
 //                             records each call instead -- exact, but ~35% slower, so not the launcher's
 //   FPS                       -DXRC_FRAME_LIMIT=30|60
-//   Graphics Driver           Vulkan, the default everywhere (the launcher always builds it in: -DXRC_VULKAN);
-//                             D3D9 (Windows only): -DXRC_D3D9_DEFAULT -- the system's Direct3D 9, which is broken
-//                             for now (the cutscene after the first fight never plays)
+//   Graphics Driver           Vulkan, the only one (the launcher always builds it in: -DXRC_VULKAN; Windows' real Direct3D 9
+//                             path was removed 2026-11-22)
 //   Gamepad Scanning          Once: -DXRC_PAD_ONCE -- the game controllers looked for once, at the start (else every 2
-//                             seconds, the default: the game asks that often; src/runtime/ref_dinput.c, hle_dinput.c)
+//                             seconds, the default: the game asks that often; src/runtime/hle_dinput.c)
 //   Cutscenes                 Auto-skip: -DXRC_SKIP_MOVIES (every movie skipped)
 //   Pipeline Build Threads    XRC_VK_PIPE_THREADS=N in WhiteRecomp.cfg (no Build needed): the threads that make the
 //                             renderer's pipelines in the background (vk_d3d9.c pj_threads); Best (0, the default):
@@ -67,11 +66,11 @@ FPS_CHOICES :: [2]int{30, 60}
 // Convert Movies' encoder threads: the CPU's threads less one (nproc - 1), at least 1
 convert_threads :: proc() -> int {return max(1, os.get_processor_core_count() - 1)}
 
-// Pipeline Build Threads: the most (all the CPU threads but one, at most 16), and the number the settings ask for: 0 =
-// Best, the default: the game picks (half the CPU threads, 1 to 8; vk_d3d9.c pj_threads). 2026-11-22 it was Off
-// (synchronous) for a few hours, reverted: slow draws on new pipelines
+// Pipeline Build Threads: the most (all the CPU threads but one, at most 16), the best (half of them, at most 8:
+// the rest for the game's own threads and the movie conversion), and the one the settings ask for (0: the best)
 max_pipe_threads :: proc() -> int {return clamp(os.get_processor_core_count() - 1, 1, 16)}
-pipe_threads :: proc() -> int {return settings.pipe_threads <= 0 ? 0 : clamp(settings.pipe_threads, 1, max_pipe_threads())}
+best_pipe_threads :: proc() -> int {return clamp(os.get_processor_core_count() / 2, 1, 8)}
+pipe_threads :: proc() -> int {return settings.pipe_threads == 0 ? best_pipe_threads() : clamp(settings.pipe_threads, 1, max_pipe_threads())}
 
 // The options a Build uses: the player's, for every target (an Android build too: the Cross-Compile tab's Use Android
 // Preset sets the Options tab to a phone's, apply_android_preset)
@@ -211,7 +210,6 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 	append(&f, fmt.tprintf("-DXRC_FRAME_LIMIT=%d", bs.fps == 30 ? 30 : 60))
 	if !settings.audio {append(&f, "-DXRC_NO_AUDIO")}
 	if !settings.tools {append(&f, "-DXRC_NO_TOOLS")}
-	if !settings.vulkan && ODIN_OS == .Windows && spec.cross == nil {append(&f, "-DXRC_D3D9_DEFAULT")}
 	if movie_skip() {append(&f, "-DXRC_SKIP_MOVIES")} // (also when the game has no cutscene files: main.odin movie_files)
 	if settings.pad_once {append(&f, "-DXRC_PAD_ONCE")}
 	if settings.experimental {append(&f, "-DXRC_EXPERIMENTAL")}

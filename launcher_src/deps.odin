@@ -1,6 +1,6 @@
 // What the launcher needs on the computer, how it finds each, and how it installs what is missing.
 //   C compiler  builds the game from the bundled sources: Clang (on Windows a MinGW one, LLVM-MinGW or MSYS2's clang64:
-//               the runtime needs pthreads and the D3D9 import library; Visual C++ cannot build it yet). On Linux GCC
+//               the runtime needs pthreads and the DXGI header; Visual C++ cannot build it yet). On Linux GCC
 //               too, listed after Clang (the Options tab's choice; Clang stays the default); elsewhere GCC is not taken.
 //               Probed by compiling and running a small program, so a compiler that is there but cannot build this is
 //               not taken.
@@ -101,16 +101,13 @@ PROBE_C :: `#include <pthread.h>
 #endif
 #ifdef _WIN32
 #include <windows.h>
-#include <d3d9.h>
+#include <dxgi.h>
 #endif
 static void *f(void *p) { return p; }
 int main(void) {
 	pthread_t t;
 	pthread_create(&t, 0, f, 0);
 	pthread_join(t, 0);
-#ifdef _WIN32
-	if (!&Direct3DCreate9) return 2;
-#endif
 #if defined(__x86_64__)
 	printf("ok %d\n", (int)_mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(16.0f))));
 #else
@@ -142,7 +139,7 @@ when ODIN_OS == .Windows {
 }
 when ODIN_OS == .Windows {
 	// (--image-base: the exe above guest memory, which is at a fixed address from 0x7fff0000 to 0x17fff0000: src/include/xrc.h)
-	@(rodata) LINK_LIBS := []string{"-static", "-Wl,--image-base,0x200000000", "-pthread", "-ld3d9", "-ldinput8", "-ldxguid", "-lole32", "-loleaut32", "-luuid", "-luser32", "-lgdi32", "-lwinmm", "-lm"}
+	@(rodata) LINK_LIBS := []string{"-static", "-Wl,--image-base,0x200000000", "-pthread", "-ldxguid", "-lole32", "-loleaut32", "-luuid", "-luser32", "-lgdi32", "-lwinmm", "-limm32", "-lshell32", "-lsetupapi", "-lversion", "-lm"} // (imm32 .. version: SDL2, linked in)
 } else {
 	@(rodata) LINK_LIBS := []string{"-pthread", "-lm", "-ldl"} // (-ldl: Vulkan and SDL2 are loaded at run time)
 }

@@ -568,15 +568,8 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 	// Graphics Driver
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Graphics Driver:")
-		when ODIN_OS == .Windows {
-			names := []string{"Vulkan (Recommended)", "D3D9"}
-			sel := settings.vulkan ? 0 : 1
-			if n, ch := dropdown(g, "gfx", ctrl, names, sel, active = active); ch {settings.vulkan = n == 0; changed = true}
-			note_text(g, sel == 0 ? "The port's Vulkan renderer" : "Windows' Direct3D 9: broken for now (stops after the first fight)", note, sel == 0 ? DIM : WARN)
-		} else {
-			_, _ = dropdown(g, "gfx", ctrl, {"Vulkan"}, 0, active = active) // (the only one there)
-			note_text(g, "The port's Vulkan renderer", note, DIM)
-		}
+		_, _ = dropdown(g, "gfx", ctrl, {"Vulkan"}, 0, active = active) // (the only one)
+		note_text(g, "The port's Vulkan renderer", note, DIM)
 	}
 	// ---- Graphics
 	section(g, oi, &row, "Graphics")
@@ -690,11 +683,11 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 	// Pipeline Build Threads (in its .cfg: no Build needed)
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Pipeline Build Threads:")
-		n_max := max_pipe_threads()
-		names := make([]string, n_max + 1, context.temp_allocator) // (0: Best, the default; then 1..n_max threads)
-		names[0] = "Best (Default)"
-		for i in 1 ..= n_max {names[i] = fmt.tprintf("%d", i)}
-		if n, ch := dropdown(g, "pipes", ctrl, names, pipe_threads(), active = active); ch {settings.pipe_threads = n; changed = true; game_changed = true}
+		n_max, best := max_pipe_threads(), best_pipe_threads()
+		names := make([]string, n_max, context.temp_allocator)
+		for i in 0 ..< n_max {names[i] = i + 1 == best ? fmt.tprintf("%d (Best)", i + 1) : fmt.tprintf("%d", i + 1)}
+		sel := pipe_threads() - 1
+		if n, ch := dropdown(g, "pipes", ctrl, names, sel, active = active); ch {settings.pipe_threads = n + 1 == best ? 0 : n + 1; changed = true; game_changed = true}
 		note_text(g, "Threads preparing new graphics effects in the background; no Build needed", note, DIM)
 	}
 	// Memory (in its .cfg: no Build needed)

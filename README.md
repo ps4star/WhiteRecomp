@@ -89,8 +89,7 @@ The frame rate cap: **30** or **60** (default). The game's logic runs in 1/60 s 
 
 #### Graphics Driver
 
-- **Vulkan (Recommended)**, the default and the only choice on Linux: the port's own renderer.
-- **D3D9** (Windows only): Windows' own Direct3D 9. It's currently broken: the game stops at the cutscene after the first fight.
+- **Vulkan**, the only choice: the port's own renderer. (Windows' own Direct3D 9 was removed.)
 
 ### Graphics
 
@@ -130,7 +129,7 @@ How the game's glowing effects (fire, sparks, magic, most of a battle's spell ef
 
 #### Gamepad Scanning
 
-How the game finds controllers. FINAL FANTASY XIII only reads DirectInput controllers and only has button layouts for a few of them. On every system (Windows too, with the SDL2.dll the launcher brings), any controller SDL2 knows (Xbox, PlayStation 3/4/5, Switch and most others) is presented to the game as an Xbox 360 controller, so the buttons are always where the game expects them: a PlayStation controller's Cross is A, Circle is B, Square is X and Triangle is Y. Rebuild after updating the launcher for this to apply.
+How the game finds controllers. FINAL FANTASY XIII only reads DirectInput controllers and only has button layouts for a few of them. On every system (on Windows SDL2 is built into the game, which uses it for its window, keyboard and mouse too), any controller SDL2 knows (Xbox, PlayStation 3/4/5, Switch and most others) is presented to the game as an Xbox 360 controller, so the buttons are always where the game expects them: a PlayStation controller's Cross is A, Circle is B, Square is X and Triangle is Y. Rebuild after updating the launcher for this to apply.
 
 - **Every 2 seconds (Default):** a controller plugged in while you play is found within 2 seconds.
 - **Once:** only the controllers connected when the game starts are used. Plug one in later and you need to restart the game.

@@ -93,7 +93,7 @@ for T in $TARGETS; do
 			"$(M third_party/ffmpeg/lib/linux_arm64)=cross/linux_arm64/ffmpeg/lib" \
 			"$(M build/android_sysroot/sysroot)=cross/android_arm64/sysroot" "$(M build/android_sysroot/apk)=cross/android_arm64/apk" \
 			${FFEXE:+"$(M $FFEXE/ffmpeg.exe)=$FFDST/ffmpeg.exe" "$(M $FFEXE/LICENSE)=$FFDST/ffmpeg-LICENSE.txt" "$(M $FFEXE/README.txt)=$FFDST/ffmpeg-README.txt"} \
-			${SDLW:+"$(M $SDLW/SDL2.dll)=tools/SDL2.dll" "$(M $SDLW/README-SDL.txt)=tools/SDL2-README.txt"} || exit 1
+			${SDLW:+"$(M $SDLW/libSDL2.a)=sdl2/libSDL2.a" "$(M $SDLW/README-SDL.txt)=sdl2/README-SDL.txt"} || exit 1
 		# each block compressed by xz (LZMA, its dictionary the whole block), cached by its contents in build/bundle_cache:
 		# the targets share most blocks (the translated code), and a rebuild compresses only the blocks that changed
 		mkdir -p build/bundle_cache

@@ -16,7 +16,7 @@ the converter; it is not linked with the launcher, the converter or the game).
   7. The Linux ARM64 system files the Cross-Compile tab links with (GNU C Library: LGPL 2.1 or later; Linux kernel
      headers: GPL 2 with the syscall note; GCC's libgcc: GPL 3 with the GCC Runtime Library Exception; OpenSSL:
      Apache 2.0; zlib: zlib license; Zstandard: BSD), and FFmpeg's libraries built for Linux ARM64 (as section 4)
-  8. SDL2 (zlib license): Windows, tools\SDL2.dll (game controllers; the text is at the end of this file); macOS, also
+  8. SDL2 (zlib license): Windows, sdl2\libSDL2.a, linked into the game (game controllers, mouse; the text is at the end of this file); macOS, also
      appended at the end of this file in the macOS release
   9. The Android ARM64 system files the Cross-Compile tab links with (the Android NDK's sysroot: BSD, Apache 2.0, the
      Linux kernel headers' GPL 2 with the syscall note; LLVM's compiler-rt builtins: Apache 2.0 with LLVM Exceptions;
@@ -1511,7 +1511,7 @@ and the zstd (BSD), zlib (zlib License), xz (public domain) and lz4 (BSD 2-Claus
 
 
 ==================================================================================================== SDL2 (Windows)
-SDL2 2.32.8 (tools\SDL2.dll: the official Windows x64 release build, https://github.com/libsdl-org/SDL), zlib license:
+SDL2 2.32.8 (sdl2\libSDL2.a, linked into the Windows game: the official MinGW x64 release build, https://github.com/libsdl-org/SDL), zlib license:
 
 Simple DirectMedia Layer
 Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>

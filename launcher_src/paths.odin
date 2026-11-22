@@ -91,7 +91,7 @@ Settings :: struct {
 	skip_movies:     bool, // Cutscenes: Auto-skip
 	movie_bink:      bool, // Cutscene Files: Bink2 (the game's .wmp files through its translated bink2w32.dll: XRC_MOVIES=bink in the .cfg), else MP4
 	pad_once:        bool, // Gamepad Scanning: Once (-DXRC_PAD_ONCE); else every 2 seconds
-	pipe_threads:    int, // Pipeline Build Threads: the renderer's pipeline builders (XRC_VK_PIPE_THREADS in the .cfg; 0: Best, the default; options.odin)
+	pipe_threads:    int, // Pipeline Build Threads: the renderer's pipeline builders (XRC_VK_PIPE_THREADS in the .cfg; 0: the best, options.odin)
 	resolution:      int, // Resolution: an index into RESOLUTIONS (options.odin) -- the game's -Width= / -Height=
 	graphics:        int, // Graphics: a preset of the three below (GRAPHICS_PRESETS), or GRAPHICS_CUSTOM -- them as set
 	shadow_res:      int, // Shadow Resolution: the game's -Shadow=N (512 .. 8192; 0: Off -- no shadows, XRC_NO_SHADOWS)
@@ -150,7 +150,7 @@ load_settings :: proc() {
 		case "fps":
 			if n_ok && (n == 30 || n == 60) {settings.fps = n}
 		case "vulkan":
-			if version >= 2 {settings.vulkan = v == "1" || ODIN_OS != .Windows}
+			settings.vulkan = true // (the only renderer since 2026-11-22: Windows' D3D9 choice was removed)
 		case "skip_movies":
 			settings.skip_movies = v == "1"
 		case "movie_files":

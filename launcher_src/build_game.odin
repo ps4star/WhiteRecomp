@@ -7,8 +7,9 @@
 //      bundled ones (src/ffmpeg), or the player's own build if the data dir has one in ffmpeg/ -- and writes
 //      WhiteRecomp.cfg beside it: where the player's install, its exe and the saves are (the game reads it at start,
 //      so it starts with a double click)
-// The same steps as tools/xrc_build.sh, with the Options tab's choices (options.odin). Windows builds the reference
-// target (the real Direct3D 9 -- or Vulkan --, input and windows of Windows); Linux the Vulkan one (an SDL2 window).
+// The same steps as tools/xrc_build.sh, with the Options tab's choices (options.odin). Every system builds the same
+// game: Vulkan in an SDL2 window, SDL2's input and sound (Windows links SDL2 in; since 2026-11-22 nothing of Windows'
+// own Direct3D 9, DirectInput, XAudio2 or windows).
 package launcher
 
 import "core:fmt"
@@ -20,7 +21,6 @@ import "core:sync"
 import "core:thread"
 import "core:time"
 
-REFERENCE :: ODIN_OS == .Windows
 
 // What a Build makes: the zero value is the game for this computer (the Home tab); the Cross-Compile tab's
 // (cross.odin) names another target, its Clang and lld, and where its files are
@@ -58,7 +58,6 @@ mtime :: proc(p: string) -> time.Time {
 
 build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	x := spec.cross
-	reference := REFERENCE && x == nil
 	game := settings.game_dir
 	exe := game_exe(game)
 	set_status(t, 0, "Checking the game")
@@ -80,7 +79,7 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	src := data_path("src")
 	// (no clean data folder first: the objects of the last Build are kept, and only what changed is compiled again --
 	// the Home tab's Clear Cache deletes them; sources an older bundle had and this one does not are deleted)
-	src_dirs := []string{"gen/", "runtime/", "include/", "ffmpeg/", "vulkan/", "pgo/"}
+	src_dirs := []string{"gen/", "runtime/", "include/", "ffmpeg/", "vulkan/", "pgo/", "sdl2/"} // (sdl2/: Windows only -- libSDL2.a, linked in)
 	n := bundle_extract(t, src, src_dirs)
 	if n < 0 {t.failed = true; return}
 	if pruned := bundle_prune(t, src, src_dirs); pruned > 0 {logf(t, "Deleted %d old source files", pruned)}
@@ -127,7 +126,6 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	if own := data_path("ffmpeg"); x == nil && ffdir == own {append(&rt_flags, "-I", pjoin({own, "include"}, context.temp_allocator))}
 	append(&rt_flags, "-DXRC_VULKAN", "-I", pjoin({src, "vulkan", "include"}, context.temp_allocator))
 	if x != nil && x.android {append(&rt_flags, "-I", pjoin({spec.sysroot, "glue"}, context.temp_allocator))} // (android_native_app_glue.h)
-	if reference {append(&rt_flags, "-DXRC_REFERENCE")}
 	logf(t, "Options: %v", runtime_option_flags(spec))
 	if settings.lto && !lto_on(spec) {logf(t, "Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.")}
 	if list, err := os.read_all_directory_by_path(pjoin({src, "gen", "src"}, context.temp_allocator), context.temp_allocator); err == nil {
@@ -152,7 +150,6 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	if list, err := os.read_all_directory_by_path(rt, context.temp_allocator); err == nil {
 		for e in list {
 			if !strings.has_suffix(e.name, ".c") {continue}
-			if strings.has_prefix(e.name, "ref_") && !reference {continue}
 			append(&units, Unit{e.fullpath, pjoin({obj, strings.concatenate({"rt_", e.name[:len(e.name) - 2], ".o"}, context.temp_allocator)}, context.temp_allocator), rt_flags[:]})
 		}
 	}
@@ -174,8 +171,8 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	// the compiler and flags of the objects there, per kind (the pages / the runtime): different ones rebuild that
 	// kind (an option such as Audio rebuilds only the runtime; another compiler, everything)
 	pgo_t := pgo_profile != "" ? mtime(pgo_profile) : time.Time{} // (a new profile: everything again)
-	page_stamp := fmt.tprintf("%s|%v|%v|%v", cc, page_flags[:], reference, pgo_t)
-	rt_stamp := fmt.tprintf("%s|%v|%v|%v", cc, rt_flags[:], reference, pgo_t)
+	page_stamp := fmt.tprintf("%s|%v|%v", cc, page_flags[:], pgo_t)
+	rt_stamp := fmt.tprintf("%s|%v|%v", cc, rt_flags[:], pgo_t)
 	page_stamp_file := pjoin({obj, "pages.stamp"}, context.temp_allocator)
 	rt_stamp_file := pjoin({obj, "runtime.stamp"}, context.temp_allocator)
 	old_page, _ := os.read_entire_file(page_stamp_file, context.temp_allocator)
@@ -280,6 +277,8 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 			append(&args, pjoin({ffdir, fflib, l}, context.temp_allocator))
 		}
 	}
+	// SDL2, linked in (Windows: the window, keyboard, mouse and game controllers -- src/runtime/sdl_static.c; the bundle's sdl2/libSDL2.a, unpacked into src/ with the sources)
+	when ODIN_OS == .Windows {if x == nil {append(&args, pjoin({src, "sdl2", "libSDL2.a"}, context.temp_allocator))}}
 	if x != nil && x.android { 	// (Android: Clang's runtime from the bundle, then the system's libraries)
 		append(&args, pjoin({spec.sysroot, "builtins", "libclang_rt.builtins-aarch64-android.a"}, context.temp_allocator))
 		append(&args, ..CROSS_ANDROID_SYS_LIBS)
@@ -384,8 +383,11 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
 	if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
-	n := spec.cross != nil && spec.cross.android ? s.pipe_threads : pipe_threads()
-	if n > 0 {fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", n)} // (0, Best: none written -- the game's default, half the CPU threads)
+	if spec.cross != nil && spec.cross.android {
+		fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", s.pipe_threads)
+		return
+	}
+	fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", pipe_threads())
 }
 
 write_cfg :: proc(gdir: string) -> bool {
@@ -401,8 +403,7 @@ cfg_text :: proc() -> string {
 	fmt.sbprintf(&b, "XRC_CDRIVE=%s\n", data_path("cdrive"))
 	when ODIN_OS == .Windows {
 		fmt.sbprintf(&b, "XRC_STEAM_HELPER=%s\n", data_path("tools", "steamhelper.exe"))
-		// SDL2 for game controllers (any one shown to the game as an Xbox 360 controller: src/runtime/hle_dinput.c)
-		if sdl := data_path("tools", "SDL2.dll"); file_exists(sdl) {fmt.sbprintf(&b, "XRC_SDL_LIB=%s\n", sdl)}
+		// (SDL2 -- the window, keyboard, mouse, controllers -- is linked into the game: sdl2/libSDL2.a, src/runtime/sdl_static.c)
 	}
 	when ODIN_OS == .Darwin {
 		// the .app's own MoltenVK (Vulkan on Metal) and SDL2 (window, controllers, sound), if it has them: the game

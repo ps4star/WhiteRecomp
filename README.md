@@ -6,6 +6,8 @@ WhiteRecomp builds a native port of **FINAL FANTASY XIII** on your own computer.
 
 If you're having issues (rendering, slowdowns) with the recomp, please join the Discord and message me: https://discord.gg/FHpmpnBJC
 
+The core translation component (XRC; x86 -> C translator+re-compiler) is now open source! It lives at https://github.com/ps4star/XRC
+
 > [!IMPORTANT]
 > WhiteRecomp does **not** contain the game or any copyrighted game data or assets. You need a legitimate copy of FINAL FANTASY XIII installed from Steam (the current Steam version).
 

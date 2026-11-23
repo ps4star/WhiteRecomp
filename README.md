@@ -13,7 +13,9 @@ The core translation component (XRC; x86 -> C translator+re-compiler) is now ope
 
 ## I Am Looking For Work
 
-Hi! My Internet name is ps4star and I'm currently making barely above a living wage working as an IRL physical security guard. I have about 8 years of (completely self-taught) total software development experience and 4 years of reverse-engineering experience. I am looking for any full-time or temporary/contract software engineering or reverse-engineering work. You could also hire me to do a recomp or specific port(s) of your favorite game, if you want. I have experience in low-level ecosystems such as C, Odin, and various ISA assembly languages. I specifically love to optimize the ever-loving crap out of software to take full advantage of a user's hardware. Please reach out to me on discord (username is ps4star), or send me an e-mail at star_recomps@proton.me
+Hi! My Internet name is ps4star and I'm currently making barely above a living wage working as an IRL physical security guard. I have about 8 years of (completely self-taught) total software development experience and 4 years of reverse-engineering experience. I am looking for any full-time or temporary/contract software engineering or reverse-engineering work. You could also hire me to do a recomp or specific port(s) of your favorite game, if you want.
+
+I have experience in low-level ecosystems such as C, Odin, and various ISA assembly languages. I specifically love to optimize the ever-loving crap out of software to take full advantage of a user's hardware. Please reach out to me on discord (username is ps4star), or send me an e-mail at star_recomps@proton.me
 
 ## Download
 

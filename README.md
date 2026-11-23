@@ -273,7 +273,7 @@ Options that change what the game plays. They go into the built game's settings,
 ### Language
 
 - **Voice:** **English** (the default) or **Japanese**, cutscenes included. Both voice sets come with the game. Convert Movies converts both cutscene sets, so either plays.
-- **Subtitles & UI:** **English** (the default), **Japanese**, **French**, **German**, **Italian** or **Spanish**: subtitles, menus and all other text. Every one of them is in the game's files; the PC release only lets you pick some of them (Japanese text is not offered at all), the port lets you pick any. Any voice works with any text language.
+- **Subtitles & UI:** **English** (the default), **Japanese**, **French**, **German**, **Italian** or **Spanish**: subtitles, menus and all other text. Every one of them is in the game's files; the PC release only lets you pick some of them (Japanese text is not offered at all), the port lets you pick any. Any voice works with any text language. With the Asian (JP) edition of the game, **Korean** and **Traditional Chinese** are offered too (only that edition has their text).
 
 These replace the language you chose for the game in Steam.
 

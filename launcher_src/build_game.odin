@@ -379,7 +379,7 @@ game_out_dir :: proc() -> string {
 cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	s := build_settings(spec)
 	fmt.sbprintf(b, "XRC_GAME_ARGS=%s\n", game_args(s))
-	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", subtitle_id(s.subs)) // (the text language: Features & Mods > Subtitles & UI)
+	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", subtitle_for_game(s.subs)) // (the text language: Features & Mods > Subtitles & UI)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
 	if s.shadow_res == 0 {fmt.sbprintf(b, "XRC_NO_SHADOWS=1\n")}
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}

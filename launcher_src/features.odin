@@ -6,7 +6,7 @@
 //                 passes it (its setup.xml voice_mode). Both voice sets come with the game (sys/white_*u: English,
 //                 white_*c; the cutscenes zNNN_us.win32.wmp English, zNNN.win32.wmp Japanese: Convert Movies does both).
 //     Subtitles & UI  the game's text language (SUBTITLE_IDS: every one its files hold -- tested: the title menu translated;
-//                 not "tchinese", which this release lacks), the string the runtime gives it (XRC_LANGUAGE;
+//                 the NA/EU data lacks "tchinese" and "koreana": those two only with the Asian edition), the string the runtime gives it (XRC_LANGUAGE;
 //                 src/runtime/hle_system.c steam_language -- else Steam's language for the game)
 package launcher
 
@@ -16,9 +16,16 @@ import ui "shared:iv_ui"
 
 LANGUAGES :: [2]string{"English", "Japanese"}
 // the text languages: names shown, and Steam's names the game takes (hle_system.c steam_language)
-SUBTITLE_NAMES :: [6]string{"English", "Japanese", "French", "German", "Italian", "Spanish"}
-SUBTITLE_IDS :: [6]string{"english", "japanese", "french", "german", "italian", "spanish"}
+// (from SUBTITLE_ASIA on: only the Asian ("JP") edition -- its region keeps the game's codes 8 "kr" and 10 "ch", and
+// only its data has their text and fonts; the runtime presets the game's language global for them, hle_system.c)
+SUBTITLE_NAMES :: [8]string{"English", "Japanese", "French", "German", "Italian", "Spanish", "Korean", "Traditional Chinese"}
+SUBTITLE_IDS :: [8]string{"english", "japanese", "french", "german", "italian", "spanish", "koreana", "tchinese"}
+SUBTITLE_ASIA :: 6
 subtitle_id :: proc(k: int) -> string {ids := SUBTITLE_IDS; return ids[k] if k >= 0 && k < len(ids) else "english"}
+// the choices this game offers (Korean and Traditional Chinese with the Asian edition only)
+subtitle_count :: proc() -> int {return get_game().edition == "JP" ? len(SUBTITLE_IDS) : SUBTITLE_ASIA}
+// the language the game is given (XRC_LANGUAGE): an Asian-only one with another edition: English (its text is not there)
+subtitle_for_game :: proc(k: int) -> string {return subtitle_id(k) if k < subtitle_count() else "english"}
 
 draw_features :: proc(g: ^Gui, r: ui.Rect) {
 	running := sync.atomic_load(&task.running)
@@ -63,7 +70,8 @@ draw_features :: proc(g: ^Gui, r: ui.Rect) {
 	{
 		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Subtitles & UI:")
 		subs := SUBTITLE_NAMES
-		if n, ch := dropdown(g, "subtitles", ctrl, subs[:], settings.subs, active = active); ch {settings.subs = n; changed = true}
+		sel := settings.subs if settings.subs < subtitle_count() else 0 // (Korean / Chinese chosen with the Asian edition, now another: English)
+		if n, ch := dropdown(g, "subtitles", ctrl, subs[:subtitle_count()], sel, active = active); ch {settings.subs = n; changed = true}
 		note_text(g, "The language of subtitles, menus and all other text", note, DIM)
 	}
 	if changed {

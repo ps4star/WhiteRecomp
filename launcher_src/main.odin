@@ -116,6 +116,9 @@ Tab :: enum {
 }
 tab: Tab
 confirm_discard: bool
+// the launcher was updated (another bundle built the game here: build_stale): its fixes need a clean Build -- asked once
+// at start (-1: not decided yet, 1: shown, 0: answered or not needed); the Home tab's "Rebuild" opens it again
+update_dialog: int = -1
 reconvert_dialog: bool // old cutscene MP4s were deleted: asks for a new conversion
 no_compiler_dialog: int // 0 not decided yet, 1 showing, 2 closed
 log_scroll: int // lines up from the end
@@ -250,7 +253,7 @@ main :: proc() {
 	for !app.window.close_requested {
 		frame_start := time.tick_now()
 		win_events := iv.pump(app, &ctx)
-		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || sync.atomic_load(&reconvert_dialog) || browser_is_open() {
+		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || browser_is_open() {
 			last_active = frame_start
 		}
 		mx, my := input.mouse_position(&ctx)
@@ -261,7 +264,7 @@ main :: proc() {
 			no_compiler_dialog = len(compilers_get()) == 0 ? 1 : 2
 		}
 		pick_poll()
-		g.modal = confirm_discard || sync.atomic_load(&reconvert_dialog) || no_compiler_dialog == 1 || browser_is_open()
+		g.modal = confirm_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || no_compiler_dialog == 1 || browser_is_open()
 		_, wy := input.wheel(&ctx)
 		frame_wheel = int(wy * 3)
 		if !g.modal {log_scroll = max(0, log_scroll + frame_wheel)}
@@ -299,6 +302,8 @@ draw_window :: proc(g: ^Gui, w: ^platform.Window) {
 	case .Features:
 		draw_features(g, rest)
 	}
+	if update_dialog < 0 {update_dialog = built_game_file() != "" && build_stale() ? 1 : 0}
+	if update_dialog == 1 && !confirm_discard {draw_update(g)}
 	if confirm_discard {draw_confirm(g, get_game())}
 	if sync.atomic_load(&reconvert_dialog) && !confirm_discard {draw_reconvert(g, get_game())}
 	if no_compiler_dialog == 1 {draw_no_compiler(g, w)}
@@ -334,8 +339,8 @@ draw_home :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		run_r: ui.Rect
 		run_r, bottom = ui.cut_right(bottom, px(g, 150), px(g, 8))
 		run_r = ui.Rect{run_r.x, run_r.y, run_r.w, px(g, 44)}
-		_ = button(g, run_r, "Build to Run", false, f = g.bold)
-		tooltip_zone(g, "run", run_r, "The game here was built by another version of this launcher. Press Build: this version's fixes are only in a game it builds.")
+		if button(g, run_r, "Rebuild to Run", !running && !playing, f = g.bold, green = true) {update_dialog = 1}
+		tooltip_zone(g, "run", run_r, "The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.")
 	}
 	build_r, rest := ui.cut_right(bottom, px(g, 150), px(g, 8))
 	build_r = ui.Rect{build_r.x, build_r.y, build_r.w, px(g, 44)}
@@ -359,7 +364,7 @@ draw_home :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		task_start("Convert Movies", proc(t: ^Task) {convert_task(t); refresh_game(t)})
 	}
 	if button(g, build_r, "Build", can_build, primary = true, f = g.bold) {
-		task_start("Build", proc(t: ^Task) {build_task(t)})
+		if built_game_file() != "" && build_stale() {update_dialog = 1} else {task_start("Build", proc(t: ^Task) {build_task(t)})} // (an older launcher's build: Clear Cache first -- draw_update)
 	}
 	// Clear Cache: the data folder cleared (wipe_data_dir: all but the saves, settings, Android key and the player's
 	// ffmpeg/), so the next Build unpacks and compiles everything again
@@ -854,6 +859,29 @@ draw_confirm :: proc(g: ^Gui, gs: Game_State) {
 	if button(g, no, "Keep them") {confirm_discard = false}
 }
 
+
+// the launcher was updated: Clear Cache and a fresh Build (the old build and its unpacked sources / objects would keep
+// the old code -- players updated, pressed Run and kept their bugs)
+draw_update :: proc(g: ^Gui) {
+	g.in_modal = true
+	defer g.in_modal = false
+	box := dialog_box(g, px(g, 540), px(g, 270))
+	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
+	ren.draw_text(g.dl, g.big, "The launcher was updated", {in_.x, in_.y}, TEXT)
+	y := in_.y + g.big.line_height + px(g, 12)
+	paragraph(g, g.font, "Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves and settings are kept.", {in_.x, y, in_.w, 0}, TEXT, px(g, 2))
+	btns := dialog_buttons(g, box)
+	yes, no := ui.columns(btns, 0, 2, px(g, 8)), ui.columns(btns, 1, 2, px(g, 8))
+	busy := sync.atomic_load(&task.running) || sync.atomic_load(&game_running)
+	if button(g, yes, "Clear Cache and Build", !busy, primary = true) {
+		update_dialog = 0
+		task_start("Clear Cache and Build", proc(t: ^Task) {
+			if !wipe_data_dir(t) {t.failed = true; return}
+			build_task(t)
+		})
+	}
+	if button(g, no, "Later") {update_dialog = 0}
+}
 
 // old cutscene MP4s deleted at start (movies.odin old_movies_cleanup): asks for a new conversion
 draw_reconvert :: proc(g: ^Gui, gs: Game_State) {

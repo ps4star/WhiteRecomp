@@ -572,11 +572,11 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		res := RESOLUTIONS
 		names := make([]string, len(res), context.temp_allocator)
 		for r, i in res {
-			names[i] = i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : i >= RES_ULTRAWIDE ? fmt.tprintf("%d x %d (%s)", r.w, r.h, r.w * 9 > r.h * 30 ? "32:9" : "21:9") : fmt.tprintf("%d x %d", r.w, r.h)
+			names[i] = i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : i >= RES_ULTRAWIDE ? fmt.tprintf("%d x %d (Ultrawide)", r.w, r.h) : fmt.tprintf("%d x %d", r.w, r.h)
 		}
 		sel := clamp(settings.resolution, 0, len(res) - 1)
 		if n, ch := dropdown(g, "resolution", ctrl, names, sel, active = active); ch {settings.resolution = n; changed = true; game_changed = true}
-		note_text(g, sel >= RES_ULTRAWIDE ? "Ultrawide: the 3D fills the width (a little less above and below); no Build needed" : sel == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : sel < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
+		note_text(g, sel >= RES_ULTRAWIDE ? "Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed" : sel == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : sel < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
 	}
 	// Window Scaling: the picture in a window of another shape than 16:9 (XRC_STRETCH in its .cfg: no Build needed)
 	{

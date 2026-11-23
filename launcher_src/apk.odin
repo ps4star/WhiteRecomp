@@ -2,7 +2,7 @@
 // no Android SDK, no Java -- and a README.txt.
 //
 // The APK is a zip of
-//   AndroidManifest.xml, resources.arsc   compiled once with Android's own tool (tools/android_sysroot.sh) and carried
+//   AndroidManifest.xml, resources.arsc, res/   compiled once with Android's own tool (tools/android_sysroot.sh) and carried
 //                                         in the bundle (cross/android_arm64/apk/)
 //   assets/WhiteRecomp.cfg                the Options tab's game options (the app reads it: src/runtime/xrc_android.c)
 //   lib/arm64-v8a/libmain.so              the game
@@ -295,6 +295,18 @@ apk_write :: proc(t: ^Task, path: string, entries: []Zip_Entry) -> bool {
 	return true
 }
 
+// every file under dir, as zip entries named prefix/... (the APK's res/: the files its resource table names)
+@(private = "file")
+apk_add_dir :: proc(list: ^[dynamic]Zip_Entry, dir, prefix: string) {
+	ents, err := os.read_all_directory_by_path(dir, context.temp_allocator)
+	if err != nil {return}
+	for e in ents {
+		name := strings.concatenate({prefix, "/", e.name}, context.temp_allocator)
+		if e.type == .Directory {apk_add_dir(list, e.fullpath, name); continue}
+		if data, rerr := os.read_entire_file(e.fullpath, context.temp_allocator); rerr == nil {append(list, Zip_Entry{name = name, data = data, align = 4})}
+	}
+}
+
 // the Android Build's output: dir/WhiteRecomp.apk (from lib, the linked libmain.so) and dir/README.txt
 android_write_output :: proc(t: ^Task, x: ^Cross_Target, dir, lib: string) -> bool {
 	src := data_path("cross", x.key, "apk")
@@ -308,12 +320,11 @@ android_write_output :: proc(t: ^Task, x: ^Cross_Target, dir, lib: string) -> bo
 	fmt.sbprintf(&cfg, "# WhiteRecomp's settings for %s, written by the launcher's Cross-Compile Build.\n", x.name)
 	fmt.sbprintf(&cfg, "# (An ff13.cfg in the app's own folder on the device, Android/data/com.whiterecomp.ff13/files, overrides it.)\n")
 	cfg_game_lines(&cfg, Build_Spec{cross = x})
-	entries := []Zip_Entry {
-		{name = "AndroidManifest.xml", data = manifest, align = 4},
-		{name = "resources.arsc", data = arsc, align = 4},
-		{name = "assets/WhiteRecomp.cfg", data = cfg.buf[:], align = 4},
-		{name = "lib/arm64-v8a/libmain.so", data = so, align = 16384},
-	}
+	list := make([dynamic]Zip_Entry, context.temp_allocator)
+	append(&list, Zip_Entry{name = "AndroidManifest.xml", data = manifest, align = 4}, Zip_Entry{name = "resources.arsc", data = arsc, align = 4})
+	apk_add_dir(&list, pjoin({src, "res"}, context.temp_allocator), "res") // (the launcher icon: compiled with the table)
+	append(&list, Zip_Entry{name = "assets/WhiteRecomp.cfg", data = cfg.buf[:], align = 4}, Zip_Entry{name = "lib/arm64-v8a/libmain.so", data = so, align = 16384})
+	entries := list[:]
 	set_status(t, 0.96, "Writing the APK")
 	apk := pjoin({dir, cross_out_file(x)}, context.temp_allocator)
 	if !apk_write(t, apk, entries) {return false}

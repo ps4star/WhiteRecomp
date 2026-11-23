@@ -279,6 +279,8 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	}
 	// SDL2, linked in (Windows: the window, keyboard, mouse and game controllers -- src/runtime/sdl_static.c; the bundle's sdl2/libSDL2.a, unpacked into src/ with the sources)
 	when ODIN_OS == .Windows {if x == nil {append(&args, pjoin({src, "sdl2", "libSDL2.a"}, context.temp_allocator))}}
+	// the exe's icon (a resource object: tools/icon_gen.sh)
+	when ODIN_OS == .Windows {if x == nil {append(&args, pjoin({rt, "res", "whiterecomp_icon_x64.o"}, context.temp_allocator))}}
 	if x != nil && x.android { 	// (Android: Clang's runtime from the bundle, then the system's libraries)
 		append(&args, pjoin({spec.sysroot, "builtins", "libclang_rt.builtins-aarch64-android.a"}, context.temp_allocator))
 		append(&args, ..CROSS_ANDROID_SYS_LIBS)

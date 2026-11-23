@@ -219,7 +219,8 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 // Resolution: the game's own -Width= / -Height= (what it renders at: its back buffer and full-screen targets; the
 // window is resizable and the picture scaled to fit it). 1280x720 (RES_DEFAULT) passes neither, as before; 854x480 and
 // 960x540 below it for slow GPUs. Then the ultrawide ones (21:9, 32:9; RES_ULTRAWIDE on): the runtime draws the 3D across
-// the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: Vert- -- the top and bottom cut).
+// the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: the 13UW mod's patches, Hor+, the HUD
+// centred; F5 / F6 / F7 the field of view).
 Resolution :: struct {w, h: int}
 RESOLUTIONS :: [14]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
 	{2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440}}

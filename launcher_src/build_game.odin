@@ -385,6 +385,7 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
 	if s.stretch {fmt.sbprintf(b, "XRC_STRETCH=1\n")}
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
+	if s.aniso {fmt.sbprintf(b, "XRC_VK_ANISO=16\n")} // (Anisotropic Filtering: On -- up to what the GPU has)
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
 	if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
 	if spec.cross != nil && spec.cross.android {

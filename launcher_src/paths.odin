@@ -103,6 +103,7 @@ Settings :: struct {
 	stretch:         bool, // Window Scaling: Stretch -- the picture fills the window, proportions not kept (XRC_STRETCH=1 in the .cfg); else Fit
 	memory_2gb:      bool, // Memory: 2 GB, as the original exe gets (XRC_GUEST_2GB=1 in the .cfg); else 4 GB
 	fx_full:         bool, // Effects Resolution: Full (XRC_VK_HALF_FX=0 in the .cfg); else Half, the default (vk_d3d9.c)
+	aniso:           bool, // Anisotropic Filtering: On, the default (XRC_VK_ANISO=16 in the .cfg); else Off: the game's own (vk_d3d9.c)
 	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; Windows, Linux)
 	voice_jp:        bool, // Features & Mods > Voice: Japanese (the game's -VoiceJPMode); else English
 	subs:            int,  // Features & Mods > Subtitles & UI: an index of SUBTITLE_IDS (features.odin; XRC_LANGUAGE), 0 = English
@@ -122,6 +123,7 @@ settings := Settings {
 	shadow_res      = 1024,
 	aa_fxaa         = true,
 	aa_quality      = 4,
+	aniso           = true,
 }
 
 load_settings :: proc() {
@@ -175,6 +177,8 @@ load_settings :: proc() {
 			settings.stretch = v == "1"
 		case "fx_full":
 			settings.fx_full = v == "1"
+		case "aniso":
+			settings.aniso = v != "0"
 		case "steam_off":
 			settings.steam_off = v == "1"
 		case "voice":
@@ -236,6 +240,7 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "memory_2gb %d\n", settings.memory_2gb ? 1 : 0)
 	fmt.sbprintf(&b, "stretch %d\n", settings.stretch ? 1 : 0)
 	fmt.sbprintf(&b, "fx_full %d\n", settings.fx_full ? 1 : 0)
+	fmt.sbprintf(&b, "aniso %d\n", settings.aniso ? 1 : 0)
 	fmt.sbprintf(&b, "steam_off %d\n", settings.steam_off ? 1 : 0)
 	fmt.sbprintf(&b, "voice %s\n", settings.voice_jp ? "japanese" : "english")
 	fmt.sbprintf(&b, "subtitles %s\n", subtitle_id(settings.subs))

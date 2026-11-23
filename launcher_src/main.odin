@@ -648,6 +648,12 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		if n, ch := dropdown(g, "fx_res", ctrl, {"Half (Default)", "Full"}, settings.fx_full ? 1 : 0, active = active); ch {settings.fx_full = n == 1; changed = true; game_changed = true}
 		note_text(g, settings.fx_full ? "Effects as sharp as the rest; costly in battle on integrated GPUs" : "Battle effects cost a quarter of the GPU time, a little softer; no Build needed", note, DIM)
 	}
+	// Anisotropic Filtering: On -- 16x on every mipmapped texture (XRC_VK_ANISO in its .cfg: no Build needed)
+	{
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Anisotropic Filtering:")
+		if on, ch := toggle(g, ctrl, settings.aniso, active); ch {settings.aniso = on; changed = true; game_changed = true}
+		note_text(g, settings.aniso ? "16x: ground and walls stay sharp at a distance; no Build needed" : "The game's own texture filtering (blurrier at a distance); no Build needed", note, DIM)
+	}
 	// ---- Audio & Controls
 	section(g, oi, &row, "Audio & Controls")
 	// Audio

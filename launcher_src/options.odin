@@ -30,6 +30,10 @@
 //   Effects Resolution        Half (the default) or Full: the blended effects that add light (fire, sparks, magic)
 //                             drawn into a half-size image and added to the 3D image (vk_d3d9.c, Vulkan only); Full:
 //                             XRC_VK_HALF_FX=0 in WhiteRecomp.cfg, no Build needed
+//   Anisotropic Filtering     On (the default) or Off: 16x anisotropic filtering (at most what the GPU has) on every
+//                             filtered mipmapped texture, not only where the game asks for it: XRC_VK_ANISO=16 in
+//                             WhiteRecomp.cfg, no Build needed (vk_d3d9.c sampler_for); Off in the Android preset
+//                             (a phone's memory bandwidth)
 //   Steam Integration         (Windows, Linux) On (the default) or Off: achievements (Windows: through
 //                             tools/steamhelper.exe; Linux x86-64: the player's own steamclient.so) and Steam's overlay,
 //                             while Steam runs (src/runtime/host_steam.c); Off: XRC_NO_STEAM=1 in
@@ -94,6 +98,7 @@ apply_android_preset :: proc() {
 	settings.aa_fxaa = true
 	settings.aa_quality = 1
 	settings.fx_full = false
+	settings.aniso = false
 	settings.memory_2gb = false
 	settings.opt_level = ANDROID_OPT_LEVEL
 	settings.pipe_threads = ANDROID_PIPE_THREADS
@@ -220,10 +225,11 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 // window is resizable and the picture scaled to fit it). 1280x720 (RES_DEFAULT) passes neither, as before; 854x480 and
 // 960x540 below it for slow GPUs. Then the ultrawide ones (21:9, 32:9; RES_ULTRAWIDE on): the runtime draws the 3D across
 // the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: the 13UW mod's patches, Hor+, the HUD
-// centred; F5 / F6 / F7 the field of view).
+// centred; F5 / F6 / F7 the field of view). 1280x540 first: an ultrawide picture with fewer pixels than 720p (691,200), for
+// trying ultrawide on a slow machine.
 Resolution :: struct {w, h: int}
-RESOLUTIONS :: [14]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
-	{2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440}}
+RESOLUTIONS :: [15]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
+	{1280, 540}, {2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440}}
 RES_ULTRAWIDE :: 8 // (the first ultrawide one)
 RES_DEFAULT :: 2 // (1280x720)
 SHADOW_CHOICES :: [6]int{0, 512, 1024, 2048, 4096, 8192} // (8192: the most the retail launcher offers)

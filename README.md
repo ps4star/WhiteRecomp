@@ -292,3 +292,8 @@ These replace the language you chose for the game in Steam.
 ## Building the launcher
 
 The launcher's sources are in [`launcher_src/`](launcher_src/). It's written in [Odin](https://odin-lang.org/) and is built inside the main decompilation project, because the bundle it carries (the translated code, the runtime and the tools) comes from that project's build. See [`launcher_src/README.md`](launcher_src/README.md).
+
+## Thanks
+
+- **[Steamless](https://github.com/atom0s/Steamless)** by atom0s
+- **killer-m** (on Nexus Mods), the creator of the FINAL FANTASY XIII Ultrawide Fix. The ultrawide support (21:9, 32:9 and wider) re-implements that mod's patches.

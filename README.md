@@ -11,6 +11,10 @@ The core translation component (XRC; x86 -> C translator+re-compiler) is now ope
 > [!IMPORTANT]
 > WhiteRecomp does **not** contain the game or any copyrighted game data or assets. You need a legitimate copy of FINAL FANTASY XIII installed from Steam (the current Steam version).
 
+## I Am Looking For Work
+
+Hi! My Internet name is ps4star and I'm currently making barely above a living wage working as an IRL physical security guard. I have about 8 years of (completely self-taught) total software development experience and 4 years of reverse-engineering experience. I am looking for any full-time or temporary/contract software engineering or reverse-engineering work. I have experience in low-level ecosystems such as C, Odin, and various ISA assembly languages. I specifically love to optimize the ever-loving crap out of software to take full advantage of a user's hardware. Please reach out to me on discord (username is ps4star), or send me an e-mail at star_recomps@proton.me
+
 ## Download
 
 Get the launcher for your system from the [Releases page](https://github.com/ps4star/WhiteRecomp/releases):

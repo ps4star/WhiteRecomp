@@ -104,9 +104,11 @@ Settings :: struct {
 	memory_2gb:      bool, // Memory: 2 GB, as the original exe gets (XRC_GUEST_2GB=1 in the .cfg); else 4 GB
 	fx_full:         bool, // Effects Resolution: Full (XRC_VK_HALF_FX=0 in the .cfg); else Half, the default (vk_d3d9.c)
 	aniso:           bool, // Anisotropic Filtering: On, the default (XRC_VK_ANISO=16 in the .cfg); else Off: the game's own (vk_d3d9.c)
-	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; Windows, Linux)
+	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; every desktop system)
 	voice_jp:        bool, // Features & Mods > Voice: Japanese (the game's -VoiceJPMode); else English
 	subs:            int,  // Features & Mods > Subtitles & UI: an index of SUBTITLE_IDS (features.odin; XRC_LANGUAGE), 0 = English
+	save_dirs:       [dynamic]string, // Features & Mods > Save Folders: more folders whose .dat saves the game takes in (XRC_SAVE_DIRS; host_steam.c)
+	hd_on:           bool, // Features & Mods > HD Textures: On (XRC_HD_DIR in the .cfg: hd.odin), once a ZIP has been imported
 	cross_target:    string, // the Cross-Compile tab's Target (cross.odin: a Cross_Target key; "": the first)
 	cross_cpu:       string, // its CPU (-mcpu=; "": the target's first, generic)
 	appimage:        bool, // Home tab's "As AppImage" (Linux launchers): the game as WhiteRecomp-<arch>.AppImage (appimage.odin)
@@ -186,6 +188,10 @@ load_settings :: proc() {
 		case "subtitles":
 			settings.subs = 0
 			for id, k in SUBTITLE_IDS {if v == id {settings.subs = k}}
+		case "hd":
+			settings.hd_on = n_ok && n == 1
+		case "save_dir":
+			if v != "" {append(&settings.save_dirs, strings.clone(v))}
 		case "cross_target":
 			settings.cross_target = strings.clone(v)
 		case "cross_cpu":
@@ -244,6 +250,8 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "steam_off %d\n", settings.steam_off ? 1 : 0)
 	fmt.sbprintf(&b, "voice %s\n", settings.voice_jp ? "japanese" : "english")
 	fmt.sbprintf(&b, "subtitles %s\n", subtitle_id(settings.subs))
+	for d in settings.save_dirs {fmt.sbprintf(&b, "save_dir %s\n", d)}
+	fmt.sbprintf(&b, "hd %d\n", settings.hd_on ? 1 : 0)
 	fmt.sbprintf(&b, "cross_target %s\n", settings.cross_target)
 	fmt.sbprintf(&b, "cross_cpu %s\n", settings.cross_cpu)
 	fmt.sbprintf(&b, "appimage %d\n", settings.appimage ? 1 : 0)

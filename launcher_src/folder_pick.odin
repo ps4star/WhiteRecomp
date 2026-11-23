@@ -6,6 +6,7 @@
 // marked once it is reached.
 package launcher
 
+import "core:fmt"
 import "core:os"
 import "core:path/filepath"
 import "core:slice"
@@ -32,14 +33,55 @@ Browser :: struct {
 	open:    bool,
 	dir:     string,
 	entries: [dynamic]string,
+	nfolders: int, // (entries[:nfolders] folders; then, choosing a ZIP, the .zip files)
 	scroll:  int,
 }
 @(private = "file")
 browser: Browser
 
-browse_for_game :: proc(w: ^platform.Window) {
+// what the picker chooses: the game's folder (Home's Browse…), a folder of saves (Features & Mods > Save Folders) or
+// the FF XIII HD Project's ZIP (Features & Mods > HD Textures: a file, not a folder)
+@(private = "file")
+Pick_Kind :: enum {
+	Game,
+	Saves,
+	Zip,
+}
+@(private = "file")
+pick_kind: Pick_Kind
+@(private = "file")
+pick_saves: bool // (pick_kind == .Saves)
+@(private = "file")
+pick_title :: proc() -> string {
+	switch pick_kind {
+	case .Saves:
+		return "Choose a folder with save files (.dat)"
+	case .Zip:
+		return "Choose the FF XIII HD Project's ZIP file"
+	case .Game:
+	}
+	return "Choose the FINAL FANTASY XIII folder"
+}
+
+browse_for_game :: proc(w: ^platform.Window) {pick_kind = .Game; pick_saves = false; browse(w)}
+browse_for_saves :: proc(w: ^platform.Window) {pick_kind = .Saves; pick_saves = true; browse(w)}
+browse_for_hd_zip :: proc(w: ^platform.Window) {pick_kind = .Zip; pick_saves = false; browse(w)}
+
+// where a ZIP is looked for first: Downloads, else home
+zip_start_dir :: proc() -> string {
+	home := os.get_env(ODIN_OS == .Windows ? "USERPROFILE" : "HOME", context.temp_allocator)
+	if d := pjoin({home, "Downloads"}, context.temp_allocator); dir_exists(d) {return d}
+	return home
+}
+
+@(private = "file")
+browse :: proc(w: ^platform.Window) {
 	when ODIN_OS == .Windows {
-		if p, picked := platform.pick_folder(w, "Choose the FINAL FANTASY XIII folder"); picked {use_game_folder(p)}
+		if pick_kind == .Zip {
+			if p, picked := platform.pick_open_file(w, pick_title(), zip_start_dir(), "ZIP archives", "*.zip"); picked {use_picked(p)}
+			return
+		}
+		if p, picked := platform.pick_folder(w, pick_title()); picked {use_picked(p)}
 	} else {
 		if sync.atomic_load(&pick.running) {return}
 		sync.atomic_store(&pick.running, true)
@@ -55,6 +97,18 @@ browse_for_game :: proc(w: ^platform.Window) {
 }
 
 @(private = "file")
+use_picked :: proc(p: string) {
+	switch pick_kind {
+	case .Saves:
+		add_save_dir(p)
+	case .Zip:
+		hd_import_start(p) // (hd.odin)
+	case .Game:
+		use_game_folder(p)
+	}
+}
+
+@(private = "file")
 use_game_folder :: proc(p: string) {
 	settings.game_dir = strings.clone(p)
 	save_settings()
@@ -64,17 +118,28 @@ use_game_folder :: proc(p: string) {
 // zenity, kdialog or yad: the chosen folder ("" if cancelled); has_tool false if there is none of them
 @(private = "file")
 desktop_folder_dialog :: proc() -> (path: string, has_tool: bool) {
-	start := settings.game_dir != "" ? settings.game_dir : os.get_env("HOME", context.temp_allocator)
-	when ODIN_OS == .Darwin { 	// (macOS: Finder's own folder dialog, through AppleScript)
+	start := settings.game_dir != "" && pick_kind == .Game ? settings.game_dir : os.get_env("HOME", context.temp_allocator)
+	if pick_kind == .Zip {start = zip_start_dir()}
+	title := pick_title()
+	zip := pick_kind == .Zip
+	when ODIN_OS == .Darwin { 	// (macOS: Finder's own folder / file dialog, through AppleScript)
 		q, _ := strings.replace_all(start, `\`, `\\`, context.temp_allocator) // (inside an AppleScript string)
 		q, _ = strings.replace_all(q, `"`, `\"`, context.temp_allocator)
-		script := strings.concatenate({`POSIX path of (choose folder with prompt "Choose the FINAL FANTASY XIII folder" default location POSIX file "`, q, `")`}, context.temp_allocator)
+		what := zip ? `choose file of type {"zip", "public.zip-archive"} with prompt "` : `choose folder with prompt "`
+		script := strings.concatenate({`POSIX path of (`, what, title, `" default location POSIX file "`, q, `")`}, context.temp_allocator)
 		tools := [][]string{{"/usr/bin/osascript", "-e", script}}
 	} else {
 		tools := [][]string {
-		{"zenity", "--file-selection", "--directory", "--title=Choose the FINAL FANTASY XIII folder", strings.concatenate({"--filename=", start, "/"}, context.temp_allocator)},
-		{"kdialog", "--getexistingdirectory", start, "--title", "Choose the FINAL FANTASY XIII folder"},
-		{"yad", "--file", "--directory", "--title=Choose the FINAL FANTASY XIII folder"},
+		{"zenity", "--file-selection", "--directory", strings.concatenate({"--title=", title}, context.temp_allocator), strings.concatenate({"--filename=", start, "/"}, context.temp_allocator)},
+		{"kdialog", "--getexistingdirectory", start, "--title", title},
+		{"yad", "--file", "--directory", strings.concatenate({"--title=", title}, context.temp_allocator)},
+		}
+		if zip {
+			tools = [][]string {
+			{"zenity", "--file-selection", "--file-filter=ZIP archives | *.zip *.ZIP", strings.concatenate({"--title=", title}, context.temp_allocator), strings.concatenate({"--filename=", start, "/"}, context.temp_allocator)},
+			{"kdialog", "--getopenfilename", start, "*.zip *.ZIP|ZIP archives", "--title", title},
+			{"yad", "--file", "--file-filter=ZIP archives | *.zip *.ZIP", strings.concatenate({"--title=", title}, context.temp_allocator)},
+			}
 		}
 	}
 	for t in tools {
@@ -98,8 +163,8 @@ desktop_folder_dialog :: proc() -> (path: string, has_tool: bool) {
 		text := strings.to_string(out)
 		for line in strings.split_lines_iterator(&text) {
 			l := strings.trim_space(line)
-			if len(l) > 1 {l = strings.trim_suffix(l, "/")} // (AppleScript's folder paths end in /)
-			if strings.has_prefix(l, "/") && dir_exists(l) {p = l}
+			if len(l) > 1 && !zip {l = strings.trim_suffix(l, "/")} // (AppleScript's folder paths end in /)
+			if strings.has_prefix(l, "/") && (zip ? file_exists(l) : dir_exists(l)) {p = l}
 		}
 		return code == 0 && p != "" ? strings.clone(p) : "", true
 	}
@@ -111,12 +176,13 @@ pick_poll :: proc() {
 	if !sync.atomic_load(&pick.done) {return}
 	sync.atomic_store(&pick.done, false)
 	if pick.no_tool {
-		start := settings.game_dir != "" ? settings.game_dir : os.get_env("HOME", context.temp_allocator)
+		start := settings.game_dir != "" && pick_kind == .Game ? settings.game_dir : os.get_env("HOME", context.temp_allocator)
+		if pick_kind == .Zip {start = zip_start_dir()}
 		if !dir_exists(start) {start = "/"}
 		browser_go(start)
 		browser.open = true
 	} else if pick.path != "" {
-		use_game_folder(pick.path)
+		use_picked(pick.path)
 	}
 }
 
@@ -136,6 +202,15 @@ browser_go :: proc(dir: string) {
 		}
 	}
 	slice.sort_by(browser.entries[:], proc(a, b: string) -> bool {return strings.to_lower(a, context.temp_allocator) < strings.to_lower(b, context.temp_allocator)})
+	browser.nfolders = len(browser.entries)
+	if pick_kind == .Zip {
+		if list, err := os.read_all_directory_by_path(browser.dir, context.temp_allocator); err == nil {
+			for e in list {
+				if e.type != .Directory && strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), ".zip") {append(&browser.entries, strings.clone(e.name))}
+			}
+		}
+		slice.sort_by(browser.entries[browser.nfolders:], proc(a, b: string) -> bool {return strings.to_lower(a, context.temp_allocator) < strings.to_lower(b, context.temp_allocator)})
+	}
 }
 
 // the launcher's folder browser (a dialog)
@@ -144,7 +219,7 @@ draw_browser :: proc(g: ^Gui, wheel: int) {
 	defer g.in_modal = false
 	box := dialog_box(g, min(px(g, 640), g.screen.w - px(g, 40)), min(px(g, 520), g.screen.h - px(g, 40)))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 20))
-	ren.draw_text(g.dl, g.big, "Choose the FINAL FANTASY XIII folder", {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, pick_title(), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 10)
 
 	// the shortcuts
@@ -172,7 +247,7 @@ draw_browser :: proc(g: ^Gui, wheel: int) {
 	rh := px(g, 30)
 	rows := max(1, (list.h - px(g, 8)) / rh)
 	if inside(list, g.mouse) {browser.scroll = clamp(browser.scroll - wheel, 0, max(0, len(browser.entries) - rows))}
-	go_to := ""
+	go_to, chosen := "", ""
 	{
 		ren.scope_clip(g.dl, list)
 		for i in 0 ..< rows {
@@ -181,21 +256,42 @@ draw_browser :: proc(g: ^Gui, wheel: int) {
 			r := ui.Rect{list.x + px(g, 4), list.y + px(g, 4) + i * rh, list.w - px(g, 8), rh}
 			hot := inside(r, g.mouse)
 			if hot {fill_round(g, r, px(g, 4), ren.Color{0, 0, 0, 12}); g.cursor = .Hand}
-			fill_round(g, {r.x + px(g, 10), r.y + rh / 2 - px(g, 6), px(g, 16), px(g, 12)}, px(g, 2), ren.Color{232, 186, 72, 255}) // (a folder)
+			is_file := k >= browser.nfolders
+			if is_file {
+				fill_round(g, {r.x + px(g, 12), r.y + rh / 2 - px(g, 8), px(g, 12), px(g, 16)}, px(g, 2), ren.Color{120, 132, 150, 255}) // (a file)
+			} else {
+				fill_round(g, {r.x + px(g, 10), r.y + rh / 2 - px(g, 6), px(g, 16), px(g, 12)}, px(g, 2), ren.Color{232, 186, 72, 255}) // (a folder)
+			}
 			label(g, g.font, browser.entries[k], {r.x + px(g, 36), r.y, r.w - px(g, 40), rh}, TEXT)
-			if hot && g.clicked {go_to = pjoin({browser.dir, browser.entries[k]}, context.temp_allocator)}
+			if hot && g.clicked {
+				if is_file {chosen = pjoin({browser.dir, browser.entries[k]}, context.temp_allocator)} else {go_to = pjoin({browser.dir, browser.entries[k]}, context.temp_allocator)}
+			}
 		}
 	}
-	if len(browser.entries) == 0 {label(g, g.small, "(no folders here)", ui.inset(list, px(g, 12)), FAINT, center = true)}
+	if len(browser.entries) == 0 {label(g, g.small, pick_kind == .Zip ? "(no folders or ZIP files here)" : "(no folders here)", ui.inset(list, px(g, 12)), FAINT, center = true)}
+	if chosen != "" {
+		browser.open = false
+		use_picked(chosen)
+		return
+	}
 	if go_to != "" {browser_go(go_to)}
+	if pick_kind == .Zip { 	// (a ZIP is chosen by clicking it)
+		label(g, g.small, "Click the FF XIII HD Project's ZIP file to import it.", {in_.x, btns.y - px(g, 22), in_.w, px(g, 18)}, DIM)
+		if button(g, ui.columns(btns, 1, 2, px(g, 8)), "Cancel") {browser.open = false}
+		return
+	}
 
-	// the game here?
-	here := is_game_dir(browser.dir)
+	// the game here? (choosing saves: how many .dat files are in it)
+	here := pick_saves || is_game_dir(browser.dir)
 	note := here ? "FINAL FANTASY XIII is in this folder." : "Open the folder FINAL FANTASY XIII is installed in (the one with white_data)."
+	if pick_saves {
+		n := count_dat(browser.dir)
+		note = n > 0 ? fmt.tprintf("%d .dat file%s in this folder.", n, n == 1 ? "" : "s") : "No .dat files in this folder (only its own files are looked at, not its subfolders')."
+	}
 	label(g, g.small, note, {in_.x, btns.y - px(g, 22), in_.w, px(g, 18)}, here ? GOOD : DIM)
 	if button(g, ui.columns(btns, 0, 2, px(g, 8)), "Choose this folder", here, primary = true) {
 		browser.open = false
-		use_game_folder(browser.dir)
+		use_picked(browser.dir)
 	}
 	if button(g, ui.columns(btns, 1, 2, px(g, 8)), "Cancel") {browser.open = false}
 }

@@ -34,8 +34,9 @@
 //                             filtered mipmapped texture, not only where the game asks for it: XRC_VK_ANISO=16 in
 //                             WhiteRecomp.cfg, no Build needed (vk_d3d9.c sampler_for); Off in the Android preset
 //                             (a phone's memory bandwidth)
-//   Steam Integration         (Windows, Linux) On (the default) or Off: achievements (Windows: through
-//                             tools/steamhelper.exe; Linux x86-64: the player's own steamclient.so) and Steam's overlay,
+//   Steam Integration         On (the default) or Off: achievements, cloud saves (Windows: through
+//                             tools/steamhelper.exe; Linux x86-64, macOS: the player's own steamclient.so / .dylib;
+//                             Linux ARM64: tools/steamhelper_linux_x64 through FEX / Box64) and Steam's overlay (not macOS, ARM64),
 //                             while Steam runs (src/runtime/host_steam.c); Off: XRC_NO_STEAM=1 in
 //                             WhiteRecomp.cfg, no Build needed
 //   Memory                    4 GB (the default) or 2 GB: the guest address space the game runs in; 2 GB is what the

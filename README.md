@@ -65,8 +65,10 @@ macOS support is new and has not been run on a Mac yet. Reports of what works an
 
 - **The game files:** FINAL FANTASY XIII on Steam is a Windows game, so Steam for macOS won't install it. Copy the `FINAL FANTASY XIII` folder from a Windows PC (or from a CrossOver or Whisky install of Steam), then pick it with **Browse…**.
 - **What Build makes:** a native game for your Mac (ARM64 on Apple silicon, x86-64 on Intel Macs) in `~/Library/Application Support/ff13-launcher/game`, not beside the launcher (nothing may be added inside a signed app). **Run** starts it.
+- **A Mac app for the game:** each Build also puts **FINAL FANTASY XIII (WhiteRecomp).app** in `~/Applications`, with the game's icon. Start the game from there, Launchpad or Spotlight without opening the launcher (with no game built, it opens the launcher instead).
+- **Saves:** besides Steam's own folder (`~/Library/Application Support/Steam/userdata/<account>/292120/remote`), the game looks in CrossOver and Whisky bottles for the original game's saves when it starts (see Steam Cloud saves).
 - **Graphics, sound and controllers:** the app carries MoltenVK (Vulkan on Apple's Metal) and SDL2, and the launcher and the game use those.
-- **Not on macOS:** Steam achievements and the overlay, and the Debug & Profile Tools' profiler.
+- **Not on macOS:** the Steam overlay, and the Debug & Profile Tools' profiler. Steam achievements and Steam Cloud work with Steam for Mac running.
 
 ## Options
 
@@ -164,9 +166,9 @@ Many movie files hold several cutscenes one after another (`z016_us.win32.wmp` h
 
 #### Steam Integration
 
-Windows and Linux (x86-64 PCs; not ARM64 builds).
+Windows, Linux (x86-64, and ARM64 with Steam running under FEX or Box64) and macOS (Steam for Mac).
 
-- **On** (default): with Steam running and signed in when the game starts, achievements unlock on your Steam account with Steam's pop-up in the game window, the Steam overlay works (**Shift+Tab**; Vulkan graphics driver), and Steam shows you as playing FINAL FANTASY XIII. On Linux the game uses your Steam installation's own `steamclient.so` (regular or Flatpak Steam); the overlay is less certain there than on Windows, but achievements don't depend on it. Without Steam running, the game plays normally without them; start Steam before the game, since a Steam started later isn't noticed.
+- **On** (default): with Steam running and signed in when the game starts, achievements unlock on your Steam account with Steam's pop-up in the game window, the Steam overlay works (**Shift+Tab**; Vulkan graphics driver), and Steam shows you as playing FINAL FANTASY XIII. Discord shows it too ("Playing FINAL FANTASY XIII") when Discord is running; `XRC_DISCORD=0` turns that off. On Linux the game uses your Steam installation's own `steamclient.so` (regular or Flatpak Steam); the overlay is less certain there than on Windows, but achievements don't depend on it. Without Steam running, the game plays normally without them; start Steam before the game, since a Steam started later isn't noticed.
 - **Off:** none of that. The game doesn't touch Steam at all, Steam Cloud included.
 
 Takes effect the next time the game starts, with no Build needed.
@@ -183,10 +185,12 @@ When the game starts it also looks for saves outside the cloud, and copies in an
 
 - Steam's own folders: `Steam\userdata\<account>\<app>\remote`, the `<app>` folder, and the account folder. It checks every account and every app ID, so the Japan/Asia edition is covered whatever its ID. This includes a save file you put there by hand, which Steam itself doesn't list until it syncs it.
 - The original game's save folder: `%LOCALAPPDATA%\SquareEnix\FinalFantasyXIII\save` on Windows, and Proton's copy of it on Linux.
+- Wine prefixes on Linux and macOS: `~/.wine`, CrossOver and Whisky bottles (macOS), Bottles (Linux): the original game's save folder in them, and a Windows Steam's `userdata` there.
+- The folders you add under **Features & Mods > Save Folders**.
 
 A file counts as a save if it is named like `ff13-00.dat`, or if it is a `.dat` file of a save's exact size (300600 bytes); a renamed one becomes Save Data 01. A copied file counts as new from the moment it was copied, even though copying keeps the old "modified" date. The game's log lists every save it found and where.
 
-If Steam isn't running, or Steam Cloud is off, saves found this way are still copied in, but nothing is sent. Steam uploads the saves when the game ends.
+If Steam isn't running, saves found this way are still copied in, and the saves you make go into Steam's `remote` folder instead (an older copy there kept first in `save_cloud_backup`); Steam sends them to the cloud when it next starts. With Steam Cloud off in Steam's settings, or Steam Integration off, nothing is sent or written to Steam's folders. Steam uploads the saves when the game ends.
 
 ### Performance
 
@@ -282,6 +286,19 @@ Options that change what the game plays. They go into the built game's settings,
 - **Subtitles & UI:** **English** (the default), **Japanese**, **French**, **German**, **Italian** or **Spanish**: subtitles, menus and all other text. Every one of them is in the game's files; the PC release only lets you pick some of them (Japanese text is not offered at all), the port lets you pick any. Any voice works with any text language. With the Asian (JP) edition of the game, **Korean** and **Traditional Chinese** are offered too (only that edition has their text).
 
 These replace the language you chose for the game in Steam.
+
+### Save Folders
+
+More folders to look for saves in, each time the game starts: the `.dat` save files directly in each folder (not its subfolders) are copied in when they are newer than yours, as Steam's are (see Steam Cloud saves). **Add Folder…** adds one; each has a remove button.
+
+### HD Textures
+
+The [FF XIII HD Project](https://www.nexusmods.com/finalfantasy13/mods/17) mod's textures, imported from its ZIP file:
+
+- **Get** opens the mod's page on Nexus Mods to download the ZIP.
+- **Import ZIP…** picks the ZIP. The launcher checks it, then runs the mod's own installer steps on copies of the game's archives (the mod's Windows tools; through Wine on Linux and macOS) and puts the results in `white_data_hd`, next to the game's `white_data` (or in the launcher's data folder when the game's folder can't be written). Your game files are not changed. It takes a while (about half an hour or more), needs about 25 GB free while it runs, and keeps about 12 GB. It is made for the voice language set at the time (English or Japanese voices use different archives).
+- **HD Textures On/Off:** off until a ZIP has been imported, on by itself after an import. With it on, the game reads the HD archives instead of its own. No rebuild needed.
+- **Discard Old Assets** (after a finished import): deletes the mod's ZIP and the game's original archives that the HD copies replace, to free space. HD Textures then stays on, and the original game can't start without those archives: Steam's **Verify integrity of game files** brings them back.
 
 ## What the download contains
 

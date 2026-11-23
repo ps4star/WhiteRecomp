@@ -314,6 +314,7 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	// the movie converter the game runs in the background for movies without their MP4 (Windows: tools/bink2mp4.exe),
 	// and the Steam achievements helper (tools/steamhelper.exe)
 	when ODIN_OS == .Windows {_ = bundle_extract(t, data_dir, {"tools/"})}
+	when ODIN_OS == .Linux && ODIN_ARCH == .arm64 {_ = bundle_extract(t, data_dir, {STEAMHELPER_LINUX})} // (Steam's x86-64 helper: src/runtime/host_steam.c)
 	if appimage { 	// (its .cfg inside it, with this computer's paths)
 		ai := pjoin({gdir, appimage_file(appimage_arch())}, context.temp_allocator)
 		if !appimage_pack(t, ai, out_exe, cfg_text(), appimage_arch(), portable = false) {t.failed = true; return}
@@ -331,6 +332,7 @@ build_task :: proc(t: ^Task, spec: Build_Spec = {}) {
 	_ = os.make_directory_all(data_path("cdrive"))
 	build_stamp(gdir) // (main.odin: this launcher's build -- Run offers it)
 	logf(t, "Built %s", out_exe)
+	when ODIN_OS == .Darwin {_ = mac_app_install(t, out_exe, gdir)} // (~/Applications: the game started without the launcher -- mac_app.odin)
 	set_status(t, 1, "Built")
 }
 
@@ -380,6 +382,8 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	s := build_settings(spec)
 	fmt.sbprintf(b, "XRC_GAME_ARGS=%s\n", game_args(s))
 	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", subtitle_for_game(s.subs)) // (the text language: Features & Mods > Subtitles & UI)
+	if len(s.save_dirs) > 0 {fmt.sbprintf(b, "XRC_SAVE_DIRS=%s\n", strings.join(s.save_dirs[:], "|", context.temp_allocator))} // (Features & Mods > Save Folders; "|": in no Windows path)
+	if spec.cross == nil {hd_cfg_line(b)} // (Features & Mods > HD Textures: this computer's folder)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
 	if s.shadow_res == 0 {fmt.sbprintf(b, "XRC_NO_SHADOWS=1\n")}
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
@@ -400,6 +404,9 @@ write_cfg :: proc(gdir: string) -> bool {
 	return os.write_entire_file(pjoin({gdir, GAME_NAME + ".cfg"}, context.temp_allocator), transmute([]u8)text) == nil
 }
 
+// Linux ARM64's Steam helper in the bundle (x86-64 Linux, run through FEX / Box64: tools/steamhelper_linux)
+STEAMHELPER_LINUX :: "tools/steamhelper_linux_x64"
+
 cfg_text :: proc() -> string {
 	b := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&b, "# WhiteRecomp's settings, written by the launcher's Build (the environment overrides them)\n")
@@ -410,6 +417,7 @@ cfg_text :: proc() -> string {
 		fmt.sbprintf(&b, "XRC_STEAM_HELPER=%s\n", data_path("tools", "steamhelper.exe"))
 		// (SDL2 -- the window, keyboard, mouse, controllers -- is linked into the game: sdl2/libSDL2.a, src/runtime/sdl_static.c)
 	}
+	when ODIN_OS == .Linux && ODIN_ARCH == .arm64 {fmt.sbprintf(&b, "XRC_STEAM_HELPER=%s\n", data_path("tools", "steamhelper_linux_x64"))}
 	when ODIN_OS == .Darwin {
 		// the .app's own MoltenVK (Vulkan on Metal) and SDL2 (window, controllers, sound), if it has them: the game
 		// loads those; else it looks in Homebrew's and /usr/local's lib
@@ -417,7 +425,6 @@ cfg_text :: proc() -> string {
 			if mvk := pjoin({fw, "libMoltenVK.dylib"}, context.temp_allocator); file_exists(mvk) {fmt.sbprintf(&b, "XRC_VK_LIB=%s\n", mvk)}
 			if sdl := pjoin({fw, "libSDL2-2.0.0.dylib"}, context.temp_allocator); file_exists(sdl) {fmt.sbprintf(&b, "XRC_SDL_LIB=%s\n", sdl)}
 		}
-		fmt.sbprintf(&b, "XRC_NO_STEAM=1\n") // (Steam's macOS client has no FINAL FANTASY XIII to report to)
 	}
 	cfg_game_lines(&b)
 	return strings.to_string(b)

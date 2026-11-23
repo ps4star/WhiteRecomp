@@ -89,17 +89,22 @@ appimage_pack :: proc(t: ^Task, out, exe, cfg: string, arch: string, portable: b
 		return false
 	}
 	defer delete(game)
-	files := []App_File {
-		{"AppRun", transmute([]u8)apprun_text(portable), true},
-		{"whiterecomp.desktop", transmute([]u8)string(DESKTOP), false},
-		{"whiterecomp.png", APPIMAGE_ICON, false},
-		{".DirIcon", APPIMAGE_ICON, false},
-		{fmt.tprintf("usr/bin/%s", GAME_NAME), game, true},
-		{fmt.tprintf("usr/bin/%s.cfg", GAME_NAME), transmute([]u8)cfg, false},
+	files := make([dynamic]App_File, context.temp_allocator)
+	append(&files,
+		App_File{"AppRun", transmute([]u8)apprun_text(portable), true},
+		App_File{"whiterecomp.desktop", transmute([]u8)string(DESKTOP), false},
+		App_File{"whiterecomp.png", APPIMAGE_ICON, false},
+		App_File{".DirIcon", APPIMAGE_ICON, false},
+		App_File{fmt.tprintf("usr/bin/%s", GAME_NAME), game, true},
+		App_File{fmt.tprintf("usr/bin/%s.cfg", GAME_NAME), transmute([]u8)cfg, false},
+	)
+	// (ARM64: Steam's x86-64 helper beside the game -- where the game looks for it: src/runtime/host_steam.c)
+	if arch == "aarch64" {
+		if h, hok := bundle_read(STEAMHELPER_LINUX, context.temp_allocator); hok {append(&files, App_File{"usr/bin/steamhelper_linux_x64", h, true})}
 	}
-	img, how, ok := squashfs_mksquashfs(t, files)
+	img, how, ok := squashfs_mksquashfs(t, files[:])
 	if !ok {
-		img = squashfs_write(files)
+		img = squashfs_write(files[:])
 		how = "not compressed: install squashfs-tools (mksquashfs) for a smaller file"
 	}
 	defer delete(img)

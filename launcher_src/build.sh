@@ -10,7 +10,7 @@
 #      profile for Profile-Guided Optimization (build/pgo/ff13.profdata: tools/xrc_build.sh XRC_PGO says how), FFmpeg's
 #      static libraries for the target with their headers and license (third_party/ffmpeg: the game links them, for
 #      the movies), the movie converter (build/bink2mp4.exe: tools/bink2mp4/build.sh) and the Steam achievements helper
-#      (build/steamhelper.exe: tools/steamhelper/build.sh); Windows also the ffmpeg.exe it
+#      (build/steamhelper.exe: tools/steamhelper/build.sh), Linux ARM64's (build/steamhelper_linux_x64: tools/steamhelper_linux/build.sh); Windows also the ffmpeg.exe it
 #      encodes with (third_party/ffmpeg_exe: a static GPL build, run as its own program), Linux x86-64 and macOS the
 #      same one as tools/wine/ffmpeg.exe (the converter runs through Wine there: launcher/wine.odin). Both also carry what the
 #      Cross-Compile tab (cross.odin) builds for Linux ARM64 with: its system files (build/arm64_tools/sysroot_min:
@@ -71,7 +71,7 @@ for T in $TARGETS; do
 	rsync -a --delete --exclude bundle.bin launcher/ "$STAGE/launcher/" || exit 1
 	rsync -a --delete shared/ "$STAGE/shared/" || exit 1
 	if [ -z "${LAUNCHER_NO_BUNDLE:-}" ] || [ ! -f "$STAGE/launcher/bundle.bin" ]; then
-		for f in $GEN/xrc_table.c $GEN/match/match_table.c build/bink2mp4.exe build/steamhelper.exe third_party/ffmpeg/lib/$FFP/libavcodec.a build/pgo/ff13.profdata \
+		for f in $GEN/xrc_table.c $GEN/match/match_table.c build/bink2mp4.exe build/steamhelper.exe build/steamhelper_linux_x64 third_party/ffmpeg/lib/$FFP/libavcodec.a build/pgo/ff13.profdata \
 			build/arm64_tools/sysroot_min/usr/lib/aarch64-linux-gnu/libc.so third_party/ffmpeg/lib/linux_arm64/libavcodec.a \
 			build/android_sysroot/sysroot/glue/android_native_app_glue.c build/android_sysroot/apk/AndroidManifest.xml \
 			third_party/appimage/runtime-x86_64 third_party/appimage/runtime-aarch64; do
@@ -88,7 +88,7 @@ for T in $TARGETS; do
 			"$(M third_party/vulkan/include)=vulkan/include" \
 			"$(M third_party/appimage)=appimage" \
 			"$(M build/pgo/ff13.profdata)=pgo/ff13.profdata" \
-			"$(M build/bink2mp4.exe)=tools/bink2mp4.exe" "$(M build/steamhelper.exe)=tools/steamhelper.exe" \
+			"$(M build/bink2mp4.exe)=tools/bink2mp4.exe" "$(M build/steamhelper.exe)=tools/steamhelper.exe" "$(M build/steamhelper_linux_x64)=tools/steamhelper_linux_x64" \
 			"$(M build/arm64_tools/sysroot_min)=cross/linux_arm64/sysroot" \
 			"$(M third_party/ffmpeg/lib/linux_arm64)=cross/linux_arm64/ffmpeg/lib" \
 			"$(M build/android_sysroot/sysroot)=cross/android_arm64/sysroot" "$(M build/android_sysroot/apk)=cross/android_arm64/apk" \

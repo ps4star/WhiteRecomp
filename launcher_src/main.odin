@@ -193,6 +193,22 @@ main :: proc() {
 			for l in task.log {fmt.println(l)}
 			os.exit(task.failed ? 1 : 0)
 		}
+		if a == "--hd-import" { 	// (--hd-import ZIP: Features & Mods > HD Textures' Import, without a window)
+			zip := ""
+			for b, i in os.args {if b == "--hd-import" && i + 1 < len(os.args) {zip = os.args[i + 1]}}
+			task_start("Checking", check_all_task)
+			thread_join_task()
+			hd_import_start(zip)
+			last := ""
+			for sync.atomic_load(&task.running) {
+				sync.mutex_lock(&task.mutex)
+				if task.status != last {last = strings.clone(task.status); fmt.println(last)}
+				sync.mutex_unlock(&task.mutex)
+				time.sleep(2 * time.Second)
+			}
+			for l in task.log {fmt.println(l)}
+			os.exit(task.failed ? 1 : 0)
+		}
 		if a == "--check" {
 			task_start("Checking", check_all_task)
 			thread_join_task()
@@ -253,7 +269,7 @@ main :: proc() {
 	for !app.window.close_requested {
 		frame_start := time.tick_now()
 		win_events := iv.pump(app, &ctx)
-		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || browser_is_open() {
+		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || confirm_hd_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || browser_is_open() {
 			last_active = frame_start
 		}
 		mx, my := input.mouse_position(&ctx)
@@ -264,7 +280,7 @@ main :: proc() {
 			no_compiler_dialog = len(compilers_get()) == 0 ? 1 : 2
 		}
 		pick_poll()
-		g.modal = confirm_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || no_compiler_dialog == 1 || browser_is_open()
+		g.modal = confirm_discard || confirm_hd_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || no_compiler_dialog == 1 || browser_is_open()
 		_, wy := input.wheel(&ctx)
 		frame_wheel = int(wy * 3)
 		if !g.modal {log_scroll = max(0, log_scroll + frame_wheel)}
@@ -300,11 +316,12 @@ draw_window :: proc(g: ^Gui, w: ^platform.Window) {
 	case .Cross:
 		draw_cross(g, rest)
 	case .Features:
-		draw_features(g, rest)
+		draw_features(g, w, rest)
 	}
 	if update_dialog < 0 {update_dialog = built_game_file() != "" && build_stale() ? 1 : 0}
 	if update_dialog == 1 && !confirm_discard {draw_update(g)}
 	if confirm_discard {draw_confirm(g, get_game())}
+	if confirm_hd_discard && !confirm_discard {draw_hd_discard_confirm(g)}
 	if sync.atomic_load(&reconvert_dialog) && !confirm_discard {draw_reconvert(g, get_game())}
 	if no_compiler_dialog == 1 {draw_no_compiler(g, w)}
 	if browser_is_open() {draw_browser(g, frame_wheel)}
@@ -705,15 +722,15 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		note_text(g, mf == .None ? "No cutscene files to play" : "Hover for how cutscenes work", note, DIM)
 		tooltip_zone(g, "cutscenes", whole, CUTSCENE_TIP)
 	}
-	// ---- Steam (host_steam.c -- Windows: the achievements helper; Linux x86-64: the player's steamclient.so; both: Steam's
-	// overlay)
-	when ODIN_OS == .Windows || ODIN_OS == .Linux {
+	// ---- Steam (host_steam.c -- Windows: the achievements helper; Linux x86-64 and macOS: the player's steamclient.so /
+	// .dylib; Linux ARM64: an x86-64 helper through FEX / Box64; the overlay on Windows and Linux x86-64 only)
+	{
 		section(g, oi, &row, "Steam")
 		// Steam Integration: achievements and the overlay (XRC_NO_STEAM=1 in its .cfg when off: no Build needed)
 		{
 			_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Steam Integration:")
 			if on, ch := toggle(g, ctrl, !settings.steam_off, active); ch {settings.steam_off = !on; changed = true; game_changed = true}
-			note_text(g, settings.steam_off ? "No achievements or overlay; Steam does not show the game as running" : "Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed", note, DIM)
+			note_text(g, settings.steam_off ? "No achievements or cloud saves; Steam does not show the game as running" : STEAM_NOTE, note, DIM)
 		}
 	}
 	// ---- Performance
@@ -982,3 +999,11 @@ movie_files :: proc() -> Movie_Files {
 	return .None
 }
 movie_skip :: proc() -> bool {return settings.skip_movies || movie_files() == .None}
+
+// Steam Integration's note: what it gives on this computer (no overlay where Steam's cannot hook the game's Vulkan:
+// macOS -- MoltenVK on Metal -- and Linux ARM64 -- Steam's overlay is x86-64 code there)
+when ODIN_OS == .Darwin || (ODIN_OS == .Linux && ODIN_ARCH == .arm64) {
+	STEAM_NOTE :: "Achievements and cloud saves while Steam runs (start it first); no Build needed"
+} else {
+	STEAM_NOTE :: "Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed"
+}

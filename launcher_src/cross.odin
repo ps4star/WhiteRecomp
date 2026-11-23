@@ -142,6 +142,13 @@ cross_write_extras :: proc(t: ^Task, x: ^Cross_Target, dir, lib: string, appimag
 	cfg_game_lines(&b)
 	if os.write_entire_file(pjoin({dir, GAME_NAME + ".cfg"}, context.temp_allocator), b.buf[:]) != nil {return false}
 	_ = os.make_directory_all(pjoin({dir, "cdrive"}, context.temp_allocator))
+	if x.key == "linux_arm64" { 	// (Steam's x86-64 helper, beside the game: src/runtime/host_steam.c looks there)
+		if h, hok := bundle_read(STEAMHELPER_LINUX, context.temp_allocator); hok {
+			hp := pjoin({dir, "steamhelper_linux_x64"}, context.temp_allocator)
+			_ = os.write_entire_file(hp, h)
+			when ODIN_OS != .Windows {_ = os.chmod(hp, {.Read_User, .Write_User, .Execute_User, .Read_Group, .Execute_Group, .Read_Other, .Execute_Other})}
+		}
+	}
 	r := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&r, "WhiteRecomp for %s\n", x.name)
 	fmt.sbprintf(&r, "==========================\n\n")
@@ -154,6 +161,10 @@ cross_write_extras :: proc(t: ^Task, x: ^Cross_Target, dir, lib: string, appimag
 	fmt.sbprintf(&r, "     Converted cutscenes (white_data/movie/*.mp4) come with it: convert them on a Windows PC first.\n")
 	fmt.sbprintf(&r, "  3. Run ./%s  (it needs Vulkan graphics drivers and SDL2: e.g. sudo apt install libsdl2-2.0-0 mesa-vulkan-drivers,\n", GAME_NAME)
 	fmt.sbprintf(&r, "     and OpenSSL 3, which every current distribution has).\n\n")
+	if x.key == "linux_arm64" {
+		fmt.sbprintf(&r, "Steam (achievements, cloud saves, \"Playing\" on your profile): start Steam first. It runs on ARM64 under FEX or\n")
+		fmt.sbprintf(&r, "Box64, and so does steamhelper_linux_x64 here, which the game starts for it (chmod +x it if the copy lost that).\n\n")
+	}
 	fmt.sbprintf(&r, "Saves go in cdrive/ here. To bring your saves from the PC, copy the launcher's cdrive folder over this one.\n")
 	return os.write_entire_file(pjoin({dir, "README.txt"}, context.temp_allocator), r.buf[:]) == nil
 }

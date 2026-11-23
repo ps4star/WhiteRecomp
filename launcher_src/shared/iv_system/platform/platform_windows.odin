@@ -417,7 +417,7 @@ com_release :: proc(object: rawptr) {
 // Shows a file dialog and returns the path the user chose. `save`: the Save dialog (it asks before replacing a file); otherwise the Open dialog asking
 // for a folder. `dir` is the folder it opens in ("" lets Windows choose), `suggested` the name it starts with (Save only).
 @(private = "file")
-file_dialog :: proc(w: ^Window, save: bool, title, suggested, dir: string, allocator: runtime.Allocator, program := false) -> (path: string, ok: bool) {
+file_dialog :: proc(w: ^Window, save: bool, title, suggested, dir: string, allocator: runtime.Allocator, program := false, filter_name := "", filter_spec := "") -> (path: string, ok: bool) {
 	win32.CoInitializeEx(nil, .APARTMENTTHREADED) // (the dialogs are COM objects; a second call, or one in another mode, is harmless)
 
 	obj: rawptr
@@ -434,7 +434,7 @@ file_dialog :: proc(w: ^Window, save: bool, title, suggested, dir: string, alloc
 	opts |= win32.FOS_FORCEFILESYSTEM | win32.FOS_PATHMUSTEXIST
 	if save {
 		opts |= win32.FOS_OVERWRITEPROMPT
-	} else if program {
+	} else if program || filter_spec != "" {
 		opts |= win32.FOS_FILEMUSTEXIST
 	} else {
 		opts |= win32.FOS_PICKFOLDERS
@@ -449,6 +449,10 @@ file_dialog :: proc(w: ^Window, save: bool, title, suggested, dir: string, alloc
 		if suggested != "" {
 			fd->SetFileName(wide_z(suggested))
 		}
+	} else if filter_spec != "" {
+		types := [2]win32.COMDLG_FILTERSPEC{{wide_z(filter_name), wide_z(filter_spec)}, {wide_z("All files"), wide_z("*.*")}}
+		fd->SetFileTypes(u32(len(types)), &types[0])
+		fd->SetFileTypeIndex(1)
 	} else if program {
 		types := [2]win32.COMDLG_FILTERSPEC{{wide_z("Programs"), wide_z("*.exe;*.com;*.bat;*.cmd")}, {wide_z("All files"), wide_z("*.*")}}
 		fd->SetFileTypes(u32(len(types)), &types[0])
@@ -504,6 +508,13 @@ ask_save_changes :: proc(w: ^Window, title, text: string) -> (answer: Save_Answe
 		return .Discard, true
 	}
 	return .Cancel, true
+}
+
+// Asks the user for a file to open, in an Explorer window (it blocks until the window is closed): the files matching `filter_spec`
+// ("*.zip", "*.png;*.jpg") listed first, under `filter_name`. `dir` is the folder it opens in ("" lets Windows choose). Returns the
+// file's full path (the caller owns the string), or false if it was cancelled.
+pick_open_file :: proc(w: ^Window, title, dir, filter_name, filter_spec: string, allocator := context.allocator) -> (path: string, ok: bool) {
+	return file_dialog(w, false, title, "", dir, allocator, filter_name = filter_name, filter_spec = filter_spec)
 }
 
 // Asks the user for a program, in an Explorer window (it blocks until the window is closed): programs (.exe, .com, .bat, .cmd) are listed first.

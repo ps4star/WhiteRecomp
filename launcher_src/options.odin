@@ -148,10 +148,13 @@ link_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 		return f[:]
 	}
 	if spec.cross != nil { 	// (always LLVM's linker: it links ELF on any computer)
-		append(&f, "-no-pie", "-fuse-ld=lld", fmt.tprintf("--ld-path=%s", spec.lld))
+		append(&f, "-no-pie", "-fuse-ld=lld", fmt.tprintf("--ld-path=%s", spec.lld), "-Wl,-S")
 		if lto_on(spec) {append(&f, lto_flag(spec), fmt.tprintf("-O%d", clamp(build_settings(spec).opt_level, 0, 3)))}
 		return f[:]
 	}
+	// (-Wl,-S: no debug info in the game -- only the prebuilt SDL2 library has any, about 10 MB on Windows; the symbol
+	// table stays: crash reports name functions from it)
+	append(&f, "-Wl,-S")
 	when ODIN_OS == .Linux {append(&f, "-no-pie")}
 	if lto_on() {
 		append(&f, lto_flag(), fmt.tprintf("-O%d", clamp(settings.opt_level, 0, 3)))

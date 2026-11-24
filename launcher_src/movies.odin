@@ -127,7 +127,6 @@ convert_task :: proc(t: ^Task) {
 		t.failed = true
 		return
 	}
-	if !write_v10(game) {logf(t, "Could not write %s", v10_path(game))} // (what is converted from here on: one MP4 a stream)
 	todo, old := 0, 0
 	for m in list_movies(game) {
 		if !m.stub && !m.discarded {todo += m.missing}
@@ -251,43 +250,3 @@ discard_task :: proc(t: ^Task) {
 	set_status(t, 1, "%.1f GB freed", f64(freed) / 1e9)
 }
 
-// ---------------------------------------------------------------------------------------------- the .v10 mark
-// white_data/movie/.v10: the MP4s there were made by a converter that knows a .wmp can hold several cutscenes (v10:
-// one MP4 a stream). Written when Convert Movies starts. MP4s without it are an older converter's: only each file's first cutscene, so
-// later scenes played the wrong video under their subtitles. The launcher deletes those when it starts
-// (old_movies_cleanup) and asks for a new conversion.
-V10_MARK :: ".v10"
-
-v10_path :: proc(game: string) -> string {return pjoin({movie_dir(game), V10_MARK}, context.temp_allocator)}
-
-write_v10 :: proc(game: string) -> bool {
-	return os.write_entire_file(v10_path(game), transmute([]u8)string("cutscenes converted one MP4 per stream (launcher v10)\n")) == nil
-}
-
-// Without the mark: every MP4 in the movie folder (and any temporary file of a conversion) deleted. deleted: how many
-// MP4s; lost: movies an older Discard Movies cut down, whose later cutscenes are gone (Steam's verify brings them back).
-old_movies_cleanup :: proc(t: ^Task, game: string) -> (deleted: int, lost: int) {
-	if file_exists(v10_path(game)) {return}
-	dir := movie_dir(game)
-	list, err := os.read_all_directory_by_path(dir, context.temp_allocator)
-	if err != nil {return}
-	for e in list {
-		n := strings.to_lower(e.name, context.temp_allocator)
-		if strings.has_suffix(n, ".mp4") || strings.has_suffix(n, ".tmp.pcm") {
-			if os.remove(e.fullpath) == nil {
-				if !strings.contains(n, ".tmp.") {deleted += 1}
-			} else {
-				logf(t, "Could not delete %s", e.name)
-			}
-		}
-	}
-	if deleted == 0 {return}
-	for m in list_movies(game) {
-		if m.discarded && !m.heads {lost += 1}
-	}
-	logf(t, "Deleted %d cutscene MP4s made by an older launcher: it converted only the first cutscene of each movie file, so later scenes played the wrong video. Press Convert Movies to convert them again.", deleted)
-	if lost > 0 {
-		logf(t, "%d movie files were cut down by an older Discard Movies: have Steam verify the game's files (Properties > Installed Files > Verify integrity) before converting.", lost)
-	}
-	return
-}

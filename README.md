@@ -85,7 +85,7 @@ The options are grouped as on the tab: Display, Graphics, Audio & Controls, Cuts
 
 The picture's shape, which chooses the resolutions **Resolution** offers: **16:9** (default), **16:10** or **Ultrawide** (21:9 and 32:9). It is not a setting of its own: it follows the resolution chosen.
 
-- **16:10** renders at a 16:10 screen's own resolution (sharp, no scaling). The game itself draws a 16:9 picture, so it has thin black bars above and below (about 60 pixels each at 1920 x 1200).
+- **16:10** fills a 16:10 screen at its own resolution (sharp, no scaling, nothing stretched): the view keeps 16:9's width and shows more above and below, and the menus and HUD keep their 16:9 layout in the middle. Only the prerendered movies, made for 16:9, have thin black bars above and below.
 - **Ultrawide** widens the view with the Ultrawide Fix's patches (see Thanks): the menus stay 16:9 in the middle.
 
 #### Resolution
@@ -170,7 +170,7 @@ If neither is there (the `.wmp` files discarded or missing, and no MP4s), the op
 
 With **MP4**, each cutscene is converted to an MP4 once. **Convert Movies** on the Home tab does them all, using every CPU thread but one. The game itself no longer converts anything while you play.
 
-Many movie files hold several cutscenes one after another (`z016_us.win32.wmp` holds 8). Each cutscene gets its own MP4: the first one `<name>.mp4`, the others `<name>_<offset>.mp4`. Older launchers converted only the first cutscene of each file, so later scenes played the wrong video under their subtitles, or were skipped (and `z004` never finished converting). MP4s converted now come with a `.v10` file in the movie folder. When the launcher starts and finds MP4s without it, it deletes them and asks you to run **Convert Movies** again. If you used **Discard Movies** with an older launcher, those cutscenes were cut out of the files: have Steam restore them first (Properties > Installed Files > Verify integrity of game files), then Convert Movies.
+Many movie files hold several cutscenes one after another (`z016_us.win32.wmp` holds 8). Each cutscene gets its own MP4: the first one `<name>.mp4`, the others `<name>_<offset>.mp4`. Older launchers converted only the first cutscene of each file, so later scenes played the wrong video under their subtitles, or were skipped (and `z004` never finished converting). The launcher never deletes converted MP4s by itself: if your cutscenes were converted by a launcher older than v0.0.10 and play the wrong video, delete the MP4s in `white_data/movie` and press **Convert Movies**. If you used **Discard Movies** with such an old launcher, those cutscenes were cut out of the files: have Steam restore them first (Properties > Installed Files > Verify integrity of game files), then Convert Movies.
 
 - **Play** (with Bink2) or **Play if converted** (with MP4; default): with MP4, a cutscene plays once its MP4 exists, and is skipped until then.
 - **Auto-skip:** every cutscene is skipped, even converted ones, which is handy for replays and speedruns. Converted ones play again if you switch back (followed by a new Build).

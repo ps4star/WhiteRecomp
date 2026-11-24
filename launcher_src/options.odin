@@ -236,8 +236,8 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 // 960x540 below it for slow GPUs. Then the ultrawide ones (21:9, 32:9; RES_ULTRAWIDE on): the runtime draws the 3D across
 // the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: the 13UW mod's patches, Hor+, the HUD
 // centred; F5 / F6 / F7 the field of view). 1280x540 first: an ultrawide picture with fewer pixels than 720p (691,200), for
-// trying ultrawide on a slow machine. Then 16:10 (RES_16_10 on): the game draws its 16:9 picture letterboxed in them
-// (black bars above and below, the window keeping the 16:10 shape -- xrc_view_rect), as the retail game does; no
+// trying ultrawide on a slow machine. Then 16:10 (RES_16_10 on): the runtime fills them (xrc_widescreen, narrower than 16:9: the 3D Vert+, the HUD
+// 1280 x 720 centred in a taller canvas, movies letterboxed -- not the retail game's letterbox of everything); no
 // 1280x800 (the game falls back to 1280x720 for a size 1280 wide): 1200x750 instead, fewer pixels than 720p (900,000). The Aspect Ratio dropdown (Display) shows one
 // group: res_aspect.
 Resolution :: struct {w, h: int}

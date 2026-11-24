@@ -41,7 +41,6 @@ Game_State :: struct {
 	ok:        bool,
 	why:       string,
 	to_convert, discardable, kept: int,
-	old_deleted, old_lost: int, // old_movies_cleanup: MP4s of an older converter deleted at start; movies cut down by an older Discard
 	free_bytes: i64,
 	has_mp4, has_bink: bool, // cutscene files there: some converted MP4s; some full .wmp files (not a stub of the install, not discarded)
 	edition: string, // the exe's: "EN" (North America / Europe) or "JP" (the Asian edition; game.odin OTHER_EDITIONS)
@@ -73,11 +72,6 @@ refresh_game :: proc(t: ^Task) {
 		g.ok = ok
 		g.why = strings.clone(why)
 		if ok {
-			// MP4s an older converter made (no .v10): deleted, and the player asked to convert again (movies.odin)
-			if deleted, lost := old_movies_cleanup(t, settings.game_dir); deleted > 0 {
-				g.old_deleted, g.old_lost = deleted, lost
-				sync.atomic_store(&reconvert_dialog, true)
-			}
 			for m in list_movies(settings.game_dir) {
 				if !m.stub && !m.discarded {g.to_convert += m.missing} // (cutscenes: a movie file can hold several)
 				if !m.stub && !m.discarded {g.has_bink = true}
@@ -119,7 +113,6 @@ confirm_discard: bool
 // the launcher was updated (another bundle built the game here: build_stale): its fixes need a clean Build -- asked once
 // at start (-1: not decided yet, 1: shown, 0: answered or not needed); the Home tab's "Rebuild" opens it again
 update_dialog: int = -1
-reconvert_dialog: bool // old cutscene MP4s were deleted: asks for a new conversion
 no_compiler_dialog: int // 0 not decided yet, 1 showing, 2 closed
 log_scroll: int // lines up from the end
 frame_wheel: int // this frame's wheel steps
@@ -269,7 +262,7 @@ main :: proc() {
 	for !app.window.close_requested {
 		frame_start := time.tick_now()
 		win_events := iv.pump(app, &ctx)
-		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || confirm_hd_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || browser_is_open() {
+		if len(app.window.input) > 0 || win_events != {} || sync.atomic_load(&task.running) || confirm_discard || confirm_hd_discard || update_dialog == 1 || browser_is_open() {
 			last_active = frame_start
 		}
 		mx, my := input.mouse_position(&ctx)
@@ -280,7 +273,7 @@ main :: proc() {
 			no_compiler_dialog = len(compilers_get()) == 0 ? 1 : 2
 		}
 		pick_poll()
-		g.modal = confirm_discard || confirm_hd_discard || update_dialog == 1 || sync.atomic_load(&reconvert_dialog) || no_compiler_dialog == 1 || browser_is_open()
+		g.modal = confirm_discard || confirm_hd_discard || update_dialog == 1 || no_compiler_dialog == 1 || browser_is_open()
 		_, wy := input.wheel(&ctx)
 		frame_wheel = int(wy * 3)
 		if !g.modal {log_scroll = max(0, log_scroll + frame_wheel)}
@@ -322,7 +315,6 @@ draw_window :: proc(g: ^Gui, w: ^platform.Window) {
 	if update_dialog == 1 && !confirm_discard {draw_update(g)}
 	if confirm_discard {draw_confirm(g, get_game())}
 	if confirm_hd_discard && !confirm_discard {draw_hd_discard_confirm(g)}
-	if sync.atomic_load(&reconvert_dialog) && !confirm_discard {draw_reconvert(g, get_game())}
 	if no_compiler_dialog == 1 {draw_no_compiler(g, w)}
 	if browser_is_open() {draw_browser(g, frame_wheel)}
 }
@@ -595,7 +587,7 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		asp := res_aspect(clamp(settings.resolution, 0, len(RESOLUTIONS) - 1))
 		an := ASPECT_NAMES
 		if n, ch := dropdown(g, "aspect", ctrl, an[:], asp, active = active); ch && n != asp {settings.resolution = res_for_aspect(n, settings.resolution); changed = true; game_changed = true}
-		note_text(g, asp == ASPECT_16_10 ? "16:10: the game's 16:9 picture with thin black bars above and below" : asp == ASPECT_ULTRAWIDE ? "21:9 and 32:9: the 3D drawn across the whole width" : "The game's own shape", note, DIM)
+		note_text(g, asp == ASPECT_16_10 ? "16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)" : asp == ASPECT_ULTRAWIDE ? "21:9 and 32:9: the 3D drawn across the whole width" : "The game's own shape", note, DIM)
 	}
 	// Resolution: the game's -Width= / -Height= (in its .cfg: no Build needed) -- those of the aspect ratio above
 	{
@@ -913,35 +905,6 @@ draw_update :: proc(g: ^Gui) {
 		})
 	}
 	if button(g, no, "Later") {update_dialog = 0}
-}
-
-// old cutscene MP4s deleted at start (movies.odin old_movies_cleanup): asks for a new conversion
-draw_reconvert :: proc(g: ^Gui, gs: Game_State) {
-	g.in_modal = true
-	defer g.in_modal = false
-	box := dialog_box(g, px(g, 560), px(g, gs.old_lost > 0 ? 330 : 270))
-	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
-	ren.draw_text(g.dl, g.big, "Convert the cutscenes again", {in_.x, in_.y}, TEXT)
-	y := in_.y + g.big.line_height + px(g, 12)
-	text := fmt.tprintf("%d cutscene MP4s made by an older launcher were deleted. Many movie files hold several cutscenes, and the old converter made only the first one of each, so later scenes played the wrong video under their subtitles, or were skipped.", gs.old_deleted)
-	conv_ok, conv_why := convert_possible()
-	if conv_ok {
-		text = fmt.tprintf("%s Press Convert Movies to convert them all again.", text)
-	} else {
-		text = fmt.tprintf("%s Convert Movies cannot run yet: %s", text, conv_why)
-	}
-	y += paragraph(g, g.font, text, {in_.x, y, in_.w, 0}, TEXT, px(g, 2)) + px(g, 12)
-	if gs.old_lost > 0 {
-		paragraph(g, g.font, fmt.tprintf("%d movie files were cut down by an older Discard Movies, and their cutscenes are gone. Have Steam restore them first: Properties > Installed Files > Verify integrity of game files.", gs.old_lost), {in_.x, y, in_.w, 0}, TEXT, px(g, 2))
-	}
-	btns := dialog_buttons(g, box)
-	yes, no := ui.columns(btns, 0, 2, px(g, 8)), ui.columns(btns, 1, 2, px(g, 8))
-	can := !sync.atomic_load(&task.running) && gs.ok && conv_ok && gs.to_convert > 0
-	if button(g, yes, "Convert Movies", can, primary = true) {
-		sync.atomic_store(&reconvert_dialog, false)
-		task_start("Convert Movies", proc(t: ^Task) {convert_task(t); refresh_game(t)})
-	}
-	if button(g, no, can ? "Later" : "OK") {sync.atomic_store(&reconvert_dialog, false)}
 }
 
 draw_no_compiler :: proc(g: ^Gui, w: ^platform.Window) {

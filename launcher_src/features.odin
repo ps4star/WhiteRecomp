@@ -8,6 +8,11 @@
 //     Subtitles & UI  the game's text language (SUBTITLE_IDS: every one its files hold -- tested: the title menu translated;
 //                 the NA/EU data lacks "tchinese" and "koreana": those two only with the Asian edition), the string the runtime gives it (XRC_LANGUAGE;
 //                 src/runtime/hle_system.c steam_language -- else Steam's language for the game)
+//   Cutscenes
+//     Cutscene Colors  Corrected (default): the movies converted from YUV as the full-range videos they are; Original: the
+//                 retail PC port's limited-range conversion (crushed darks, blown-out brights). XRC_MOVIE_COLORS=original
+//     Brightness, Contrast, Saturation  sliders, percent (100 = as is): XRC_MOVIE_BRIGHTNESS / _CONTRAST / _SATURATION, folded
+//                 into the movie shader's rows when the game starts (hle_d3d9.c movie_shader_colors)
 package launcher
 
 import "core:fmt"
@@ -31,6 +36,11 @@ subtitle_count :: proc() -> int {return get_game().edition == "JP" ? len(SUBTITL
 // the language the game is given (XRC_LANGUAGE): an Asian-only one with another edition: English (its text is not there)
 subtitle_for_game :: proc(k: int) -> string {return subtitle_id(k) if k < subtitle_count() else "english"}
 
+// the tab's scroll position, and its scroll bar's drag (grab: the mouse's offset in the thumb)
+feat_scroll: int
+feat_drag: bool
+feat_grab: int
+
 draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	running := sync.atomic_load(&task.running)
 	active := !running
@@ -39,10 +49,46 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	_, rest = ui.cut_top(rest, px(g, 8))
 	row_h := px(g, 50)
 	label_w, ctrl_w := px(g, 230), px(g, 270)
-	nrows := 2 + len(settings.save_dirs) + 1 + 3 // (Language: 2; Save Folders: one a folder, and Add Folder…; HD Textures: 3)
-	oc, _ := ui.cut_top(rest, px(g, 4) + 3 * px(g, 34) + 2 * px(g, 18) + nrows * row_h + px(g, 16))
+	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 3 // (Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 3)
+	// the card as tall as its rows; taller than the tab, it fills the tab and scrolls (the wheel over it, or its scroll
+	// bar), as the Options tab does
+	total := px(g, 4) + 4 * px(g, 34) + 3 * px(g, 18) + nrows * row_h + px(g, 16)
+	oc := rest
+	if total <= rest.h {oc, _ = ui.cut_top(rest, total)}
 	card(g, oc)
-	oi := ui.inset_xy(oc, px(g, 20), px(g, 8))
+	view := ui.inset_xy(oc, px(g, 20), px(g, 8))
+	max_scroll := max(0, total - oc.h)
+	oi := view
+	if max_scroll > 0 {
+		sb_w := px(g, 8)
+		track := ui.Rect{view.x + view.w - sb_w + px(g, 12), view.y, sb_w, view.h}
+		oi.w -= px(g, 12)
+		ch := view.h + max_scroll
+		if live(g) && g.drag_id == "" {
+			min_th := px(g, 28)
+			th := ui.thumb(track, ch, view.h, feat_scroll, true, min_th)
+			if inside(oc, g.mouse) {feat_scroll -= frame_wheel * px(g, 16)}
+			if g.clicked && inside(ui.outset(track, px(g, 4)), g.mouse) {
+				if inside(th, g.mouse) {feat_drag = true; feat_grab = g.mouse.y - th.y} else {feat_scroll += g.mouse.y < th.y ? -view.h : view.h}
+				g.clicked = false
+			}
+			if feat_drag {
+				if g.down {feat_scroll = ui.thumb_offset(track, ch, view.h, g.mouse.y, feat_grab, true, min_th)} else {feat_drag = false}
+			}
+		}
+		feat_scroll = clamp(feat_scroll, 0, max_scroll)
+		th := ui.thumb(track, ch, view.h, feat_scroll, true, px(g, 28))
+		fill_round(g, track, sb_w / 2, ren.Color{0, 0, 0, 12})
+		fill_round(g, th, sb_w / 2, feat_drag || inside(ui.outset(track, px(g, 4)), g.mouse) ? ren.Color{0, 0, 0, 110} : ren.Color{0, 0, 0, 70})
+	} else {feat_scroll = 0}
+	// (the rows scrolled out of the view are clipped; the mouse outside the view reaches none of them -- except a slider
+	// being dragged, which follows it anywhere)
+	saved_mouse := g.mouse
+	if !inside(view, g.mouse) && g.drag_id == "" {g.mouse = {-1 << 20, -1 << 20}}
+	defer g.mouse = saved_mouse
+	ren.push_clip(g.dl, {view.x - px(g, 6), view.y, oi.w + px(g, 12), view.h})
+	defer ren.pop_clip(g.dl)
+	oi.y -= feat_scroll
 	row := 0
 	first := true
 	changed := false
@@ -77,6 +123,34 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		sel := settings.subs if settings.subs < subtitle_count() else 0 // (Korean / Chinese chosen with the Asian edition, now another: English)
 		if n, ch := dropdown(g, "subtitles", ctrl, subs[:subtitle_count()], sel, active = active); ch {settings.subs = n; changed = true}
 		note_text(g, "The language of subtitles, menus and all other text", note, DIM)
+	}
+	section(g, oi, &row, &first, "Cutscenes")
+	{ // (the movies' YUV -> RGB: hle_d3d9.c movie_shader_colors -- the retail port reads FF13's full-range Bink videos as limited range)
+		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Cutscene Colors:")
+		colors := [2]string{"Corrected", "Original"}
+		if n, ch := dropdown(g, "movie_colors", ctrl, colors[:], settings.movie_colors_orig ? 1 : 0, active = active); ch {settings.movie_colors_orig = n == 1; changed = true}
+		note_text(g, settings.movie_colors_orig ? "As the PC release shows them: dark scenes crushed to black, bright ones blown out" : "The cutscenes' full color range, as encoded: detail kept in dark and bright scenes", note, DIM)
+		// the picture: percent, 100 = as is (XRC_MOVIE_BRIGHTNESS / _CONTRAST / _SATURATION, read when the game starts); saved when
+		// the slider is let go
+		Adj :: struct {name, id, tip: string, v: ^int, lo, hi: int}
+		adjs := [3]Adj{
+			{"Brightness:", "movie_brightness", "Cutscene brightness (a gain: black stays black)", &settings.movie_brightness, 50, 150},
+			{"Contrast:", "movie_contrast", "Cutscene contrast, about mid-gray", &settings.movie_contrast, 50, 150},
+			{"Saturation:", "movie_saturation", "Cutscene color strength (0%: black and white)", &settings.movie_saturation, 0, 200},
+		}
+		for a in adjs {
+			c2, n2 := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, a.name)
+			v, _, done := slider(g, a.id, c2, a.v^, a.lo, a.hi, active)
+			a.v^ = v
+			if done {changed = true}
+			label(g, g.font, fmt.tprintf("%d%%", v), {n2.x, n2.y, px(g, 56), n2.h}, TEXT)
+			bx := n2.x + px(g, 60)
+			if v != 100 {
+				if button(g, {bx, n2.y + (n2.h - px(g, 28)) / 2, px(g, 80), px(g, 28)}, "Reset", active) {a.v^ = 100; changed = true}
+				bx += px(g, 92)
+			}
+			note_text(g, a.tip, {bx, n2.y, n2.x + n2.w - bx, n2.h}, DIM)
+		}
 	}
 	section(g, oi, &row, &first, "Save Folders")
 	{ // (each: its own .dat files, not its subfolders' -- taken in when newer than the game's, as Steam's cloud copies are)

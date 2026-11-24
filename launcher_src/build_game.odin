@@ -385,6 +385,10 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if len(s.save_dirs) > 0 {fmt.sbprintf(b, "XRC_SAVE_DIRS=%s\n", strings.join(s.save_dirs[:], "|", context.temp_allocator))} // (Features & Mods > Save Folders; "|": in no Windows path)
 	if spec.cross == nil {hd_cfg_line(b)} // (Features & Mods > HD Textures: this computer's folder)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
+	if s.movie_colors_orig {fmt.sbprintf(b, "XRC_MOVIE_COLORS=original\n")} // (Features & Mods > Cutscene Colors: Original -- the retail limited-range look)
+	if s.movie_brightness != 100 {fmt.sbprintf(b, "XRC_MOVIE_BRIGHTNESS=%d\n", s.movie_brightness)} // (Features & Mods > Cutscenes: the picture, percent)
+	if s.movie_contrast != 100 {fmt.sbprintf(b, "XRC_MOVIE_CONTRAST=%d\n", s.movie_contrast)}
+	if s.movie_saturation != 100 {fmt.sbprintf(b, "XRC_MOVIE_SATURATION=%d\n", s.movie_saturation)}
 	if s.shadow_res == 0 {fmt.sbprintf(b, "XRC_NO_SHADOWS=1\n")}
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
 	if s.stretch {fmt.sbprintf(b, "XRC_STRETCH=1\n")}

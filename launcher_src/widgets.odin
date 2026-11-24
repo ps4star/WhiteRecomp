@@ -66,6 +66,8 @@ Gui :: struct {
 	tip_since:            time.Time,
 	tip_text:             string,
 	tip_seen:             bool, // a zone was hovered this frame
+	// the slider being dragged (its id; "": none)
+	drag_id:              string,
 }
 
 px :: proc(g: ^Gui, v: int) -> int {return int(f32(v) * g.s)}
@@ -329,6 +331,31 @@ toggle :: proc(g: ^Gui, r: ui.Rect, on: bool, active := true) -> (bool, bool) {
 	label(g, g.font, on ? "On" : "Off", {track.x + tw + px(g, 12), r.y, zone.w - tw - px(g, 12), r.h}, active ? TEXT : FAINT)
 	if hot && g.clicked {return !on, true}
 	return on, false
+}
+
+// A slider from lo to hi: click or drag along it. Returns the value, whether it moved, and whether a drag (or a click)
+// just ended -- the moment to save.
+slider :: proc(g: ^Gui, id: string, r: ui.Rect, v, lo, hi: int, active := true) -> (int, bool, bool) {
+	th := px(g, 4)
+	kd := px(g, 16)
+	track := ui.Rect{r.x + kd / 2, r.y + (r.h - th) / 2, r.w - kd, th}
+	ok := active && live(g)
+	hot := ok && inside(r, g.mouse)
+	if hot && g.clicked {g.drag_id = id}
+	nv, done := v, false
+	if g.drag_id == id {
+		if ok && g.down {
+			t := clamp(f32(g.mouse.x - track.x) / f32(max(track.w, 1)), 0, 1)
+			nv = lo + int(t * f32(hi - lo) + 0.5)
+		} else {g.drag_id = ""; done = true}
+	}
+	f := clamp(f32(nv - lo) / f32(max(hi - lo, 1)), 0, 1)
+	kx := track.x + int(f * f32(track.w))
+	round_box(g, track, th / 2, !active ? DIS_FILL : BTN_HOT, !active ? DIS_BORDER : BTN_BORDER)
+	if active && kx - track.x >= th {fill_round(g, {track.x, track.y, kx - track.x, th}, th / 2, hot || g.drag_id == id ? ACCENT_HOT : ACCENT)}
+	circle(g, kx, track.y + th / 2, hot || g.drag_id == id ? kd + px(g, 2) : kd, !active ? FAINT : ACCENT)
+	circle(g, kx, track.y + th / 2, kd / 2, ren.WHITE)
+	return nv, nv != v, done
 }
 
 // A zone that shows text in a tooltip at the mouse when it rests there.

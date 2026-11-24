@@ -287,6 +287,13 @@ Options that change what the game plays. They go into the built game's settings,
 
 These replace the language you chose for the game in Steam.
 
+### Cutscenes
+
+- **Cutscene Colors:** **Corrected** (the default) or **Original**. FINAL FANTASY XIII's cutscenes are encoded in full color range, but the PC release shows them as if they were limited range, which crushes dark scenes to black and blows out bright ones. **Corrected** shows them as encoded, keeping the detail in shadows and highlights. **Original** gives the PC release's look. With **Cutscene Files** set to MP4 the cutscenes already had the corrected colors; with Bink2 they had the PC release's look until now.
+- **Brightness**, **Contrast** and **Saturation:** sliders for the cutscenes' picture, in percent; 100% leaves it as it is (**Reset** puts a slider back). Brightness goes from 50% to 150% (black stays black), Contrast from 50% to 150% (around mid-gray), and Saturation from 0% (black and white) to 200%. They apply to both MP4 and Bink2 cutscenes, and need no rebuild.
+
+The idea comes from the L'Cienema mod by cyanea-bt. The port does it its own way (in the game's movie shader) and uses none of the mod's files.
+
 ### Save Folders
 
 More folders to look for saves in, each time the game starts: the `.dat` save files directly in each folder (not its subfolders) are copied in when they are newer than yours, as Steam's are (see Steam Cloud saves). **Add Folder…** adds one; each has a remove button.

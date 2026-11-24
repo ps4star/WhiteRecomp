@@ -109,6 +109,10 @@ Settings :: struct {
 	subs:            int,  // Features & Mods > Subtitles & UI: an index of SUBTITLE_IDS (features.odin; XRC_LANGUAGE), 0 = English
 	save_dirs:       [dynamic]string, // Features & Mods > Save Folders: more folders whose .dat saves the game takes in (XRC_SAVE_DIRS; host_steam.c)
 	hd_on:           bool, // Features & Mods > HD Textures: On (XRC_HD_DIR in the .cfg: hd.odin), once a ZIP has been imported
+	movie_colors_orig: bool, // Features & Mods > Cutscene Colors: Original, the retail look (XRC_MOVIE_COLORS=original); else Corrected, the default (hle_d3d9.c movie_shader_colors)
+	movie_brightness: int, // Features & Mods > Cutscenes: the movies' picture, percent (100 = as is): XRC_MOVIE_BRIGHTNESS 50..150,
+	movie_contrast:   int, // XRC_MOVIE_CONTRAST 50..150,
+	movie_saturation: int, // XRC_MOVIE_SATURATION 0..200 (hle_d3d9.c movie_shader_colors; read at start, no Build)
 	cross_target:    string, // the Cross-Compile tab's Target (cross.odin: a Cross_Target key; "": the first)
 	cross_cpu:       string, // its CPU (-mcpu=; "": the target's first, generic)
 	appimage:        bool, // Home tab's "As AppImage" (Linux launchers): the game as WhiteRecomp-<arch>.AppImage (appimage.odin)
@@ -123,6 +127,9 @@ settings := Settings {
 	resolution      = RES_DEFAULT,
 	pgo             = true,
 	shadow_res      = 1024,
+	movie_brightness = 100,
+	movie_contrast   = 100,
+	movie_saturation = 100,
 	aa_fxaa         = true,
 	aa_quality      = 4,
 	aniso           = true,
@@ -159,6 +166,14 @@ load_settings :: proc() {
 			settings.skip_movies = v == "1"
 		case "movie_files":
 			settings.movie_bink = v == "bink"
+		case "movie_colors":
+			settings.movie_colors_orig = v == "original"
+		case "movie_brightness":
+			if n_ok && n >= 50 && n <= 150 {settings.movie_brightness = n}
+		case "movie_contrast":
+			if n_ok && n >= 50 && n <= 150 {settings.movie_contrast = n}
+		case "movie_saturation":
+			if n_ok && n >= 0 && n <= 200 {settings.movie_saturation = n}
 		case "pad_once":
 			settings.pad_once = v == "1"
 		case "pipe_threads":
@@ -228,6 +243,8 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "vulkan %d\n", settings.vulkan ? 1 : 0)
 	fmt.sbprintf(&b, "skip_movies %d\n", settings.skip_movies ? 1 : 0)
 	fmt.sbprintf(&b, "movie_files %s\n", settings.movie_bink ? "bink" : "mp4")
+	fmt.sbprintf(&b, "movie_colors %s\n", settings.movie_colors_orig ? "original" : "corrected")
+	fmt.sbprintf(&b, "movie_brightness %d\nmovie_contrast %d\nmovie_saturation %d\n", settings.movie_brightness, settings.movie_contrast, settings.movie_saturation)
 	fmt.sbprintf(&b, "pad_once %d\n", settings.pad_once ? 1 : 0)
 	fmt.sbprintf(&b, "pipe_threads %d\n", settings.pipe_threads)
 	keys := GRAPHICS_KEYS

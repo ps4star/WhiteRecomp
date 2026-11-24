@@ -40,9 +40,11 @@ Put the launcher in a folder of its own. **Build** creates the game beside it.
 6. **Cutscenes** play straight from the game's own movie files when **Cutscene Files** is set to **Bink2** ([Options > Cutscenes](#cutscenes)); nothing to convert. Or, for MP4: **Convert Movies** (on Linux and macOS it needs Wine) converts the game's cutscenes to MP4, once. There are about 7 hours of them (English and Japanese), so it takes a while, but it can be stopped and resumed.
 7. **Discard Movies** (optional, MP4 only). Once the MP4s exist, this frees about 40 GB by cutting the original movie files down. Bink2 then can't be used any more.
 
+**The launcher's language:** the drop-down at the top right of its window (English, 日本語, 繁體中文, 简体中文, 한국어, Русский, Deutsch, Français, Español, Português (Brasil), Italiano, Polski). It changes only the launcher's own text; the game's language is under [Features & Mods > Language](#language).
+
 **As AppImage** (Linux launchers: the switch above **Build**). When it's on, Build makes one file, `WhiteRecomp-x86_64.AppImage` (or `-aarch64` on ARM64), instead of `WhiteRecomp` and its `WhiteRecomp.cfg`: the game, its settings and an icon packed into a single program you can keep anywhere. **Run** starts it. AppImages open through FUSE (`libfuse2` / `libfuse2t64`); without it, Run has the AppImage unpack itself to a temporary folder first. With `mksquashfs` installed (`squashfs-tools`) the AppImage is compressed (about a third of the size); without it, it's packed uncompressed.
 
-A **Build** compiles only what changed since the last one, so a second Build is much quicker than the first. Files an older launcher unpacked that this one no longer has are deleted. **Clear Cache** (left of Build) clears the launcher's data folder (`%LOCALAPPDATA%\ff13-launcher` on Windows, `~/Library/Application Support/ff13-launcher` on macOS, `~/.local/share/ff13-launcher` on Linux): the unpacked sources, the compiled objects and the tools, so the next Build starts over and compiles everything. Use it if a Build behaves strangely. After you update the launcher (a new version, or new downloads of the same version), it notices that your game was built by the older one and asks you to **Clear Cache and Build** -- do that, or the game keeps the old code and its bugs (Run reads **Rebuild to Run** until then). Kept: your saves (`cdrive`), the launcher's settings (`settings.txt`), the Android signing key and an FFmpeg you put in `ffmpeg/` yourself. While a task runs, **Cancel** appears left of the buttons.
+A **Build** compiles only what changed since the last one, so a second Build is much quicker than the first. Files an older launcher unpacked that this one no longer has are deleted. **Clear Cache** (left of Build) deletes everything the launcher and the game have stored: the whole data folder (`%LOCALAPPDATA%\ff13-launcher` on Windows, `~/Library/Application Support/ff13-launcher` on macOS, `~/.local/share/ff13-launcher` on Linux) -- the unpacked sources, the compiled objects, the tools, imported HD textures and an FFmpeg you put in `ffmpeg/` yourself -- and, beside the launcher, the built game with its `.cfg`, logs, crash reports and pipeline caches (nothing else in that folder), so the next Build starts over and compiles everything. Use it if a Build behaves strangely. After you update the launcher (a new version, or new downloads of the same version), it notices that your game was built by the older one and asks you to **Clear Cache and Build** -- do that, or the game keeps the old code and its bugs (Run reads **Rebuild to Run** until then). Kept: your saves (`cdrive`), the Android signing key, and the launcher's settings (`settings.txt`, the language) only if every one of them is a setting this version has -- a file from an older version with an option that is gone or a value it no longer takes is deleted, and every setting goes back to its default. While a task runs, **Cancel** appears left of the buttons.
 
 ## Requirements
 
@@ -269,6 +271,10 @@ Turn it off again (and Build) if anything goes wrong. Bug reports from playing w
   - the profiler and tracing switches (environment variables starting with `XRC_`) for diagnosing problems
 
   These cost almost nothing while unused.
+
+#### Profiler
+
+Only with Debug & Profile Tools on, Windows only. **On:** F12 in the game starts a capture and F12 again stops it; the report (where the game's time went, by function and by thread) is saved beside the game as `WhiteRecomp-profile-<date>-<time>.txt`. **Off** (default): F12 does nothing. Changing it needs no Build.
 
 #### Always on
 

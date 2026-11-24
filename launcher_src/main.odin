@@ -5,8 +5,8 @@
 //            a log, Cancel), and in the bottom right corner the buttons:
 //              Build              the game, with the computer's C compiler and the options (build_game.odin); each
 //                                 one compiles only what changed since the last (Clear Cache, left of it, clears the data
-//                                 folder: wipe_data_dir -- all but the saves, settings,
-//                                 Android key and the player's ffmpeg/)
+//                                 folder and the game's files beside the launcher: wipe_data_dir -- all but the
+//                                 saves, the Android key and settings this version writes itself)
 //              Convert Movies     the Bink movies to MP4, once (movies.odin)
 //              Discard Movies     frees the space of the Bink movies that have their MP4 (movies.odin)
 //              Cancel             (left of them while a task runs)
@@ -104,8 +104,8 @@ wake_window :: proc() {} // (the window redraws every frame)
 // ---------------------------------------------------------------------------------------------- main
 Tab :: enum {
 	Home,
-	Options,
 	Cross,
+	Options,
 	Features,
 }
 tab: Tab
@@ -150,6 +150,7 @@ main :: proc() {
 	quiet_child_errors()
 	init_paths()
 	load_settings()
+	i18n_init()
 	if !bundle_open() {
 		fmt.eprintln("WhiteRecomp: its bundled sources are missing or damaged")
 		os.exit(1)
@@ -168,6 +169,12 @@ main :: proc() {
 				sync.mutex_unlock(&task.mutex)
 				time.sleep(2 * time.Second)
 			}
+			for l in task.log {fmt.println(l)}
+			os.exit(task.failed ? 1 : 0)
+		}
+		if a == "--clear-cache" { 	// (the Home tab's Clear Cache, without a window: wipe_data_dir)
+			task_start("Clear Cache", proc(t: ^Task) {if !wipe_data_dir(t) {t.failed = true}})
+			thread_join_task()
 			for l in task.log {fmt.println(l)}
 			os.exit(task.failed ? 1 : 0)
 		}
@@ -247,10 +254,10 @@ main :: proc() {
 		if ren_assets.font_add_file(&lib, "segoe_sb", pjoin({fonts, "seguisb.ttf"}, context.temp_allocator)) {semibold = "segoe_sb"}
 	}
 	g := Gui{s = max(app.window.dpi_scale, 1), win = app.window}
-	g.font = ren_assets.font_make(&lib, &app.renderer, regular, 14 * g.s)
-	g.small = ren_assets.font_make(&lib, &app.renderer, regular, 12 * g.s)
-	g.bold = ren_assets.font_make(&lib, &app.renderer, semibold, 14 * g.s)
-	g.big = ren_assets.font_make(&lib, &app.renderer, semibold, 20 * g.s)
+	font_src = {&lib, &app.renderer, regular, semibold}
+	fonts_make(&g) // (i18n.odin: with the fallbacks for the chosen language)
+	shaders_init(&app.renderer, &lib) // the window background, its blurred copy and the glass panels (shaders.odin)
+	defer shaders_destroy(&app.renderer)
 
 	task_start("Checking", check_all_task)
 
@@ -278,8 +285,10 @@ main :: proc() {
 		frame_wheel = int(wy * 3)
 		if !g.modal {log_scroll = max(0, log_scroll + frame_wheel)}
 
+		lang_apply(&g) // (a language chosen last frame: its fonts, made before this frame draws)
 		g.dl = ren.begin_frame(&app.renderer, WIN_BG)
 		g.screen = {0, 0, app.window.size.x, app.window.size.y}
+		draw_background(&g)
 		gui_begin(&g)
 		draw_window(&g, app.window)
 		gui_end(&g)
@@ -299,7 +308,10 @@ thread_join_task :: proc() {
 draw_window :: proc(g: ^Gui, w: ^platform.Window) {
 	body := ui.inset_xy(g.screen, px(g, 24), px(g, 12))
 	bar, rest := ui.cut_top(body, px(g, 40))
-	tab = Tab(tabs(g, bar, {"Home", "Options", "Cross-Compile", "Features & Mods"}, int(tab)))
+	lang_r: ui.Rect
+	lang_r, bar = ui.cut_right(bar, px(g, 190), px(g, 12))
+	tab = Tab(tabs(g, bar, {"Home", "Cross-Compile", "Options", "Features & Mods"}, int(tab)))
+	lang_dropdown(g, {lang_r.x, lang_r.y + px(g, 4), lang_r.w, px(g, 32)})
 	_, rest = ui.cut_top(rest, px(g, 16))
 	switch tab {
 	case .Home:
@@ -375,8 +387,8 @@ draw_home :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	if button(g, build_r, "Build", can_build, primary = true, f = g.bold) {
 		if built_game_file() != "" && build_stale() {update_dialog = 1} else {task_start("Build", proc(t: ^Task) {build_task(t)})} // (an older launcher's build: Clear Cache first -- draw_update)
 	}
-	// Clear Cache: the data folder cleared (wipe_data_dir: all but the saves, settings, Android key and the player's
-	// ffmpeg/), so the next Build unpacks and compiles everything again
+	// Clear Cache: all stored state cleared (wipe_data_dir: all but the saves, the Android key and settings this version
+	// writes itself), so the next Build unpacks and compiles everything again
 	if button(g, clear_r, "Clear Cache", !running && !playing) {
 		task_start("Clear Cache", proc(t: ^Task) {if !wipe_data_dir(t) {t.failed = true}})
 	}
@@ -407,7 +419,7 @@ draw_home :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	label(g, g.bold, "Game folder", l1, TEXT)
 	// the edition, as a small tag after the heading
 	if gs.ok && gs.edition != "" {
-		tx := l1.x + text_w(g.bold, "Game folder") + px(g, 10)
+		tx := l1.x + text_w(g.bold, tr("Game folder")) + px(g, 10)
 		tw := text_w(g.small, gs.edition) + px(g, 12)
 		tag := ui.Rect{tx, l1.y + (l1.h - px(g, 20)) / 2, tw, px(g, 20)}
 		fill_round(g, tag, px(g, 4), ACCENT)
@@ -483,7 +495,7 @@ draw_task :: proc(g: ^Gui, r: ui.Rect, running: bool) {
 	_, logr = ui.cut_top(logr, px(g, 6))
 
 	// the log, newest at the bottom (the wheel scrolls back)
-	round_box(g, logr, px(g, 4), LOG_BG, CARD_BORDER)
+	panel(g, logr, px(g, 4), LOG_BG)
 	li := ui.inset_xy(logr, px(g, 10), px(g, 6))
 	lh := g.small.line_height
 	rows := max(1, li.h / lh)
@@ -562,14 +574,14 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		top := row^ > 0 ? px(g, 18) : px(g, 4)
 		y := oi.y + row^ + top
 		label(g, g.bold, name, {oi.x, y, oi.w, px(g, 26)}, ACCENT)
-		ren.draw_rect(g.dl, {oi.x, y + px(g, 30), oi.w, 2}, CARD_BORDER)
+		separator(g, {oi.x, y + px(g, 30), oi.w, 2})
 		row^ += top + px(g, 34)
 		opt_after_head = true
 	}
 	next_row :: proc(g: ^Gui, oi: ui.Rect, row: ^int, row_h, label_w, ctrl_w: int, name: string, indent := 0) -> (whole, ctrl, note: ui.Rect) {
 		y := oi.y + row^
 		whole = {oi.x, y, oi.w, row_h}
-		if !opt_after_head {ren.draw_rect(g.dl, {oi.x + indent, y, oi.w - indent, 1}, CARD_BORDER)}
+		if !opt_after_head {separator(g, {oi.x + indent, y, oi.w - indent, 1})}
 		opt_after_head = false
 		label(g, g.font, name, {oi.x + indent, y, label_w - indent, row_h}, indent > 0 ? DIM : TEXT)
 		ctrl = {oi.x + label_w, y + (row_h - px(g, 32)) / 2, ctrl_w, px(g, 32)}
@@ -810,8 +822,14 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 	// Debug & Profile Tools
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Debug & Profile Tools:")
-		if on, ch := toggle(g, ctrl, settings.tools, active); ch {settings.tools = on; changed = true}
+		if on, ch := toggle(g, ctrl, settings.tools, active); ch {settings.tools = on; changed = true; game_changed = true}
 		note_text(g, settings.tools ? "Logs, tracing, the profiler and an FPS counter (console window)" : "Off: no console window, nothing printed", note, DIM)
+	}
+	// Profiler (with the tools only: the cfg line, no Build)
+	if settings.tools {
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Profiler:")
+		if on, ch := toggle(g, ctrl, settings.profiler, active); ch {settings.profiler = on; changed = true; game_changed = true}
+		note_text(g, settings.profiler ? "On: F12 in the game starts and stops a capture; the report is saved beside the game" : "Off: F12 does nothing", note, DIM)
 	}
 	opt_content_h = row + px(g, 12)
 	if changed {save_settings()}
@@ -825,12 +843,12 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 // "As AppImage:" and its switch in row, the switch over the button below it (Home: Build; Cross-Compile: its Build)
 appimage_switch :: proc(g: ^Gui, id: string, button_r, row: ui.Rect, on: ^bool, active: bool) -> bool {
 	text :: "As AppImage:"
-	lw := text_w(g.font, text) + px(g, 12)
-	tr := ui.Rect{button_r.x, row.y, button_r.w, row.h}
-	label(g, g.font, text, {tr.x - lw, tr.y, lw, tr.h}, active ? TEXT : FAINT)
-	v, ch := toggle(g, tr, on^, active)
+	lw := text_w(g.font, tr(text)) + px(g, 12)
+	sw := ui.Rect{button_r.x, row.y, button_r.w, row.h}
+	label(g, g.font, text, {sw.x - lw, sw.y, lw, sw.h}, active ? TEXT : FAINT)
+	v, ch := toggle(g, sw, on^, active)
 	if ch {on^ = v}
-	tooltip_zone(g, id, {tr.x - lw, tr.y, lw + px(g, 100), tr.h}, "On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.")
+	tooltip_zone(g, id, {sw.x - lw, sw.y, lw + px(g, 100), sw.h}, "On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.")
 	return ch
 }
 
@@ -851,15 +869,17 @@ dialog_box :: proc(g: ^Gui, w, h: int) -> ui.Rect {
 	ren.draw_rect(g.dl, g.screen, ren.Color{0, 0, 0, 77})
 	box := ui.center(g.screen, w, h)
 	for k in 1 ..= 6 {fill_round(g, ui.translate(ui.outset(box, k), 0, k), px(g, 8) + k, ren.Color{0, 0, 0, 6})}
-	round_box(g, box, px(g, 8), ren.Color{255, 255, 255, 255}, ren.Color{200, 200, 200, 255})
+	glass_box(g, box, px(g, 8), 0.86, ren.Color{255, 255, 255, 255}) // (milkier: a dialog's text sits over the dimmed window)
 	return box
 }
 
 // the dialog's button row: a light grey strip at its bottom
 dialog_buttons :: proc(g: ^Gui, box: ui.Rect) -> ui.Rect {
 	strip := ui.Rect{box.x + 1, box.y + box.h - px(g, 80), box.w - 2, px(g, 80) - px(g, 8)}
-	ren.draw_rect(g.dl, strip, WIN_BG)
-	fill_round(g, {box.x + 1, box.y + box.h - px(g, 16), box.w - 2, px(g, 15)}, px(g, 7), WIN_BG)
+	if glass_shader == 0 { // (glass dialogs: only the line above the buttons)
+		ren.draw_rect(g.dl, strip, WIN_BG)
+		fill_round(g, {box.x + 1, box.y + box.h - px(g, 16), box.w - 2, px(g, 15)}, px(g, 7), WIN_BG)
+	}
 	ren.draw_rect(g.dl, {box.x + 1, strip.y, box.w - 2, 1}, CARD_BORDER)
 	return ui.Rect{box.x + px(g, 24), strip.y + px(g, 24), box.w - px(g, 48), px(g, 32)}
 }
@@ -869,7 +889,7 @@ draw_confirm :: proc(g: ^Gui, gs: Game_State) {
 	defer g.in_modal = false
 	box := dialog_box(g, px(g, 520), px(g, 250))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
-	ren.draw_text(g.dl, g.big, "Discard the old movies?", {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, tr("Discard the old movies?"), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 12)
 	text := fmt.tprintf("%d Bink movies (.wmp) that have their MP4 are cut down to their header, freeing %.1f GB. The game keeps playing the MP4s; to get the originals back, verify the game's files in Steam.", gs.discardable, f64(gs.free_bytes) / 1e9)
 	if gs.kept > 0 {text = fmt.tprintf("%s %d movies without an MP4 are kept whole.", text, gs.kept)}
@@ -891,9 +911,9 @@ draw_update :: proc(g: ^Gui) {
 	defer g.in_modal = false
 	box := dialog_box(g, px(g, 540), px(g, 270))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
-	ren.draw_text(g.dl, g.big, "The launcher was updated", {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, tr("The launcher was updated"), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 12)
-	paragraph(g, g.font, "Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves and settings are kept.", {in_.x, y, in_.w, 0}, TEXT, px(g, 2))
+	paragraph(g, g.font, "Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.", {in_.x, y, in_.w, 0}, TEXT, px(g, 2))
 	btns := dialog_buttons(g, box)
 	yes, no := ui.columns(btns, 0, 2, px(g, 8)), ui.columns(btns, 1, 2, px(g, 8))
 	busy := sync.atomic_load(&task.running) || sync.atomic_load(&game_running)
@@ -912,7 +932,7 @@ draw_no_compiler :: proc(g: ^Gui, w: ^platform.Window) {
 	defer g.in_modal = false
 	box := dialog_box(g, px(g, 640), px(g, 450))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
-	ren.draw_text(g.dl, g.big, "A C compiler is needed", {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, tr("A C compiler is needed"), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 12)
 	when ODIN_OS == .Linux {
 		y += paragraph(g, g.font, "The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.", {in_.x, y, in_.w, 0}, TEXT, px(g, 2))
@@ -923,15 +943,15 @@ draw_no_compiler :: proc(g: ^Gui, w: ^platform.Window) {
 	lh := g.font.line_height + px(g, 10)
 	when ODIN_OS == .Windows {
 		x := in_.x + px(g, 12)
-		ren.draw_text(g.dl, g.bold, "Windows", {in_.x, y}, TEXT); y += lh
+		ren.draw_text(g.dl, g.bold, tr("Windows"), {in_.x, y}, TEXT); y += lh
 		lw := link(g, x, y, "LLVM-MinGW (Clang)", "https://github.com/mstorsjo/llvm-mingw/releases")
-		ren.draw_text(g.dl, g.small, "  the ucrt-x86_64 zip, or: winget install MartinStorsjo.LLVM-MinGW.UCRT", {x + lw, y + px(g, 2)}, DIM); y += lh
+		ren.draw_text(g.dl, g.small, tr("  the ucrt-x86_64 zip, or: winget install MartinStorsjo.LLVM-MinGW.UCRT"), {x + lw, y + px(g, 2)}, DIM); y += lh
 		link(g, x, y, "MSYS2 (its clang64 Clang)", "https://www.msys2.org/"); y += lh
 	} else {
 		x := in_.x + px(g, 12)
-		ren.draw_text(g.dl, g.bold, "Linux", {in_.x, y}, TEXT); y += lh
+		ren.draw_text(g.dl, g.bold, tr("Linux"), {in_.x, y}, TEXT); y += lh
 		lw := link(g, x, y, "Clang", "https://clang.llvm.org/get_started.html")
-		ren.draw_text(g.dl, g.small, "  e.g. sudo apt install clang  /  sudo dnf install clang", {x + lw, y + px(g, 2)}, DIM); y += lh
+		ren.draw_text(g.dl, g.small, tr("  e.g. sudo apt install clang  /  sudo dnf install clang"), {x + lw, y + px(g, 2)}, DIM); y += lh
 	}
 	btns := dialog_buttons(g, box)
 	d := dep_get(.Compiler)

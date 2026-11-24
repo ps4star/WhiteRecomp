@@ -395,6 +395,7 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
 	if s.aniso {fmt.sbprintf(b, "XRC_VK_ANISO=16\n")} // (Anisotropic Filtering: On -- up to what the GPU has)
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
+	if s.tools && s.profiler {fmt.sbprintf(b, "XRC_PROF=1\n")} // (Options > Profiler: F12 in the game -- a game built with the Debug & Profile Tools)
 	if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
 	if spec.cross != nil && spec.cross.android {
 		fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", s.pipe_threads)
@@ -433,16 +434,15 @@ cfg_text :: proc() -> string {
 	cfg_game_lines(&b)
 	return strings.to_string(b)
 }
-
 // ---------------------------------------------------------------------------------------------- a clean data folder
-// Clear Cache (the Home tab) clears the data folder: everything in it is deleted -- the unpacked
-// sources, the objects of every earlier build (this computer's and each Cross-Compile target's), the compiler probe,
-// the tools, the cross files, macOS's built game -- so nothing an older launcher or build left there can stick around
-// (a Build itself keeps them: it compiles only what changed).
-// Kept, as nothing can make them again: the saves and the game's own settings (cdrive/), the launcher's settings
-// (settings.txt), the Android signing key (an APK signed with another one cannot update the installed app) and the
-// player's own FFmpeg (ffmpeg/, which the launcher never writes).
-DATA_KEEP :: [?]string{"cdrive", "settings.txt", "android_key.bin", "android_cert.der", "ffmpeg"}
+// Clear Cache (and "Clear Cache and Build"): every bit of stored state but the launcher itself. Kept: the saves (cdrive),
+// the Android signing key (an APK signed with another will not install over the last one), and the launcher's own
+// settings -- settings.txt only when it is exactly what this launcher writes (settings_file_exact: a switch it no
+// longer has, a value it does not take, an older version's file -- deleted, and every setting back to its default),
+// language.txt only when it is one of its languages. Everything else in the data folder goes: unpacked sources,
+// objects, tools, the HD import, Wine, a player's own ffmpeg/ ... -- and beside the launcher, the files the launcher and
+// the game write there (clear_beside): never anything else of that folder (it is often Downloads, or the player's own).
+DATA_KEEP :: [?]string{"cdrive", "android_key.bin", "android_cert.der"}
 
 wipe_data_dir :: proc(t: ^Task) -> bool {
 	list, err := os.read_all_directory_by_path(data_dir, context.temp_allocator)
@@ -450,9 +450,16 @@ wipe_data_dir :: proc(t: ^Task) -> bool {
 		logf(t, "Could not read the data folder %s: %v", data_dir, err)
 		return false
 	}
+	settings_ok := settings_file_exact()
+	lang_ok := false
+	if d, lerr := os.read_entire_file(data_path("language.txt"), context.temp_allocator); lerr == nil {
+		for l in LANGS {if string(d) == l.code {lang_ok = true}}
+	}
 	n, failed := 0, 0
 	outer: for e in list {
 		for k in DATA_KEEP {if strings.equal_fold(e.name, k) {continue outer}}
+		if settings_ok && strings.equal_fold(e.name, "settings.txt") {continue}
+		if lang_ok && strings.equal_fold(e.name, "language.txt") {continue}
 		set_status(t, 0, "Clearing the data folder: %s", e.name)
 		// (a link is deleted, not what it points to)
 		r := e.type == .Directory ? os.remove_all(e.fullpath) : os.remove(e.fullpath)
@@ -463,10 +470,46 @@ wipe_data_dir :: proc(t: ^Task) -> bool {
 			n += 1
 		}
 	}
+	if !settings_ok {
+		settings_reset() // (what was in use came from that file: not written back by the next save)
+		log_line(t, "The settings were not this launcher version's own: they are back to the defaults.")
+	}
+	n += clear_beside(t, &failed)
+	stale_known = -1
 	if failed > 0 {
-		log_line(t, "The data folder could not be cleared: close any program using its files and Build again.")
+		log_line(t, "The cache could not be cleared completely: close any program using its files and try again.")
 		return false
 	}
-	logf(t, "Cleared the data folder %s (%d items deleted; the saves, settings, Android key and ffmpeg/ stay).", data_dir, n)
+	if settings_ok {logf(t, "Cleared the cache (%d items deleted; the saves, settings and the Android key stay).", n)} else {logf(t, "Cleared the cache (%d items deleted; the saves and the Android key stay).", n)}
 	return true
+}
+
+// the files the launcher and the game write beside the launcher (game_out_dir: its own folder; macOS: the data
+// folder's game/, already gone): the game (and its AppImage, APK), its .cfg and .build-id, its logs, crash reports,
+// profiler captures, and the Vulkan pipeline caches. Each by its name only; the launcher itself never.
+clear_beside :: proc(t: ^Task, failed: ^int) -> int {
+	gdir := game_out_dir()
+	if !dir_exists(gdir) {return 0}
+	self, _ := os.get_executable_path(context.temp_allocator)
+	list, err := os.read_all_directory_by_path(gdir, context.temp_allocator)
+	if err != nil {return 0}
+	n := 0
+	for e in list {
+		if e.type == .Directory {continue}
+		nm := e.name
+		ours := nm == GAME_NAME + EXE_SUFFIX || nm == GAME_NAME || nm == GAME_NAME + ".cfg" || nm == BUILD_ID_FILE ||
+			nm == GAME_NAME + ".log" || nm == GAME_NAME + ".prev.log" || nm == GAME_NAME + "-crash.txt" ||
+			nm == GAME_NAME + ".apk" || nm == "vk_pipelines.bin" || nm == "vk_pipelist.bin" ||
+			(strings.has_prefix(nm, GAME_NAME + "-profile-") && strings.has_suffix(nm, ".txt")) ||
+			(strings.has_prefix(nm, GAME_NAME + "-") && strings.has_suffix(nm, ".AppImage"))
+		if !ours || (self != "" && strings.equal_fold(nm, filepath.base(self))) {continue} // (gdir is the launcher's own folder: its name decides)
+		set_status(t, 0, "Clearing: %s", nm)
+		if r := os.remove(e.fullpath); r != nil {
+			logf(t, "Could not delete %s: %v", e.fullpath, r)
+			failed^ += 1
+		} else {
+			n += 1
+		}
+	}
+	return n
 }

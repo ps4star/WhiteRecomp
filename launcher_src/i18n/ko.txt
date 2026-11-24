@@ -1,0 +1,919 @@
+# The launcher in ko (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages ko
+Cannot make the APK's signing key (no random numbers from the system).
+	APK 서명 키를 만들 수 없습니다(시스템에서 난수를 얻을 수 없음).
+Cannot make the APK's certificate.
+	APK 인증서를 만들 수 없습니다.
+Cannot sign the APK's certificate.
+	APK 인증서에 서명할 수 없습니다.
+Cannot keep the APK's signing key in %s.
+	APK 서명 키를 %s에 보관할 수 없습니다.
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	APK용 새 서명 키: %s (잘 보관하세요: 같은 키로 서명된 경우에만 기존 앱 위에 업데이트를 설치할 수 있습니다)
+Cannot sign the APK.
+	APK에 서명할 수 없습니다.
+Cannot write %s.
+	%s을(를) 쓸 수 없습니다.
+This launcher carries no APK files for %s (%s).
+	이 런처에는 %s(%s)용 APK 파일이 없습니다.
+Cannot read %s.
+	%s을(를) 읽을 수 없습니다.
+Writing the APK
+	APK 쓰는 중
+As AppImage
+	AppImage로
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp: $XRC_GAME_DIR에 게임이 없습니다
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	"FINAL FANTASY XIII" 폴더(white_data가 있는 폴더)를 AppImage 옆에 복사하거나 XRC_GAME_DIR을 설정하세요.
+Packing the AppImage
+	AppImage 패키징 중
+This launcher carries no AppImage runtime for %s.
+	이 런처에는 %s용 AppImage 런타임이 없습니다.
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	압축되지 않음: 파일을 더 작게 하려면 squashfs-tools(mksquashfs)를 설치하세요
+Checking the game
+	게임 확인 중
+No C compiler that can build the game: install one first.
+	게임을 빌드할 수 있는 C 컴파일러가 없습니다. 먼저 설치하세요.
+Game: %s
+	게임: %s
+Compiler: %s
+	컴파일러: %s
+Deleted %d old source files
+	이전 소스 파일 %d개를 삭제했습니다
+Sources: %s (%d files changed)
+	소스: %s (%d개 파일 변경됨)
+This launcher carries no files for %s.
+	이 런처에는 %s용 파일이 없습니다.
+FFmpeg: your own build in %s
+	FFmpeg: %s의 사용자 빌드
+Options: %v
+	옵션: %v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	이 빌드에서는 링크 타임 최적화가 꺼집니다: Clang의 LTO에는 옆에 LLVM 링커(ld.lld)가 필요한데 없습니다.
+Compiling %d of %d files on %d cores
+	%d / %d개 파일을 %d개 코어로 컴파일 중
+Compiling: %d of %d (%s)
+	컴파일 중: %d / %d (%s)
+Linking
+	링크 중
+Linking failed.
+	링크에 실패했습니다.
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	(WhiteRecomp가 실행 중이면 종료한 후 다시 [빌드]하세요: Windows는 실행 중인 프로그램을 교체할 수 없습니다.)
+Cannot write the output in %s.
+	%s에 출력을 쓸 수 없습니다.
+Built %s: copy it to the %s computer with %s (it says how).
+	%s 빌드 완료: %s 컴퓨터에 %s(으)로 복사하세요(방법이 안내되어 있습니다).
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	%s 빌드 완료: %s 기기에 설치하세요. 방법과 게임 파일 위치는 %s에 안내되어 있습니다.
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	%s 빌드 완료: %s 폴더를 %s 컴퓨터에 복사하세요(방법은 폴더 안의 README.txt 참고).
+Built
+	빌드 완료
+Built %s
+	%s 빌드 완료
+Cannot write %s in %s.
+	%s을(를) %s에 쓸 수 없습니다.
+Profile-Guided Optimization is off for this build: %s.
+	이 빌드에서는 프로필 기반 최적화가 꺼집니다: %s.
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	이 빌드에서는 프로필 기반 최적화가 꺼집니다: 번들에 프로필이 없습니다.
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	이 빌드에서는 프로필 기반 최적화가 꺼집니다: 이 Clang은 프로필을 읽을 수 없습니다(이전 버전?).
+Profile-Guided Optimization: %s
+	프로필 기반 최적화: %s
+Could not read the data folder %s: %v
+	데이터 폴더 %s을(를) 읽을 수 없습니다: %v
+Clearing the data folder: %s
+	데이터 폴더 지우는 중: %s
+Could not delete %s: %v
+	%s을(를) 삭제할 수 없습니다: %v
+Any ARM64 CPU (Default)
+	모든 ARM64 CPU(기본값)
+Ampere / Graviton 2 servers
+	Ampere / Graviton 2 서버
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	64비트 ARM Linux(glibc 2.34 이상: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 이후)
+Any ARM64 phone (Default)
+	모든 ARM64 휴대폰(기본값)
+2019 and later flagships (Cortex-A76)
+	2019년 이후 플래그십(Cortex-A76)
+2021 and later flagships (Cortex-X1)
+	2021년 이후 플래그십(Cortex-X1)
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 이상, 64비트 ARM, Vulkan: 설치용 APK(컷신은 아직 미지원)
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	Clang이 필요합니다(GCC는 자기 컴퓨터용으로만 컴파일합니다): Clang을 설치한 후 홈 탭에서 [다시 확인]을 누르세요.
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	Clang 옆에 LLVM 링커(ld.lld.exe)가 필요합니다: LLVM-MinGW와 MSYS2의 Clang에 포함되어 있습니다.
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	LLVM 링커 lld가 필요합니다(예: sudo apt install lld).
+Target: %s, CPU %s
+	대상: %s, CPU %s
+Linker: %s
+	링커: %s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	옵션 탭의 설정으로 다른 종류의 컴퓨터용 게임을 빌드합니다. 이 컴퓨터가 아닌 해당 컴퓨터에서 실행됩니다.
+Target:
+	대상:
+Runs on every 64-bit ARM phone
+	모든 64비트 ARM 휴대폰에서 실행
+Runs on every ARM64 CPU
+	모든 ARM64 CPU에서 실행
+Faster there, but only that CPU and newer ones
+	해당 기기에서 더 빠르지만, 그 CPU 이상에서만 실행
+Settings:
+	설정:
+Use Android Preset
+	Android 프리셋 사용
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	옵션 탭을 휴대폰용으로 설정합니다: 960x540, 60 fps, 그림자 512, 안티앨리어싱 끔, 효과 절반 해상도, 메모리 4 GB, -O1, 파이프라인 스레드 2개. 이 컴퓨터용 빌드에도 적용됩니다.
+Sets the Options tab: 960x540, 60 fps, light graphics
+	옵션 탭 설정: 960x540, 60 fps, 가벼운 그래픽
+Compiler:
+	컴파일러:
+Looking for compilers…
+	컴파일러 찾는 중…
+No Clang found
+	Clang을 찾을 수 없음
+Linker:
+	링커:
+No lld found
+	lld를 찾을 수 없음
+Output:
+	출력:
+Not built yet
+	아직 빌드되지 않음
+Build for %s
+	%s용 빌드
+Wait for the current task to finish.
+	현재 작업이 끝날 때까지 기다리세요.
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	게임이 필요합니다(빌드 시 exe를 읽음): 홈 탭에서 게임 폴더를 선택하세요.
+Builds the game for %s into %s.
+	%s용 게임을 %s에 빌드합니다.
+Cancel
+	취소
+Clang (Best)
+	Clang(최적)
+Choose clang
+	clang 선택
+cannot write in the launcher's folder
+	런처 폴더에 쓸 수 없음
+it does not start
+	실행되지 않음
+not found
+	찾을 수 없음
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	C 라이브러리 헤더(pthread.h)가 없습니다 -- SteamOS에서 제거됩니다. [자동 설치]로 복원할 수 있습니다
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	C 라이브러리 헤더(pthread.h)가 없습니다: glibc 개발 파일을 설치하세요([자동 설치])
+it cannot build the game (%s)
+	게임을 빌드할 수 없음(%s)
+the programs it makes do not run here (%s)
+	생성한 프로그램이 여기서 실행되지 않음(%s)
+the programs it makes do not run here
+	생성한 프로그램이 여기서 실행되지 않음
+C compiler
+	C 컴파일러
+builds the game from the bundled sources
+	번들된 소스로 게임을 빌드합니다
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	Visual C++(cl)이 설치되어 있지만 아직 게임을 빌드할 수 없습니다(clang 필요)
+none found
+	찾을 수 없음
+Install LLVM-MinGW (winget)
+	LLVM-MinGW 설치(winget)
+Install Apple's command line tools
+	Apple 명령줄 도구 설치
+Install Clang and the C headers (%s)
+	Clang 및 C 헤더 설치(%s)
+Install Clang (%s)
+	Clang 설치(%s)
+Links
+	관련 링크
+converts the movies (the game plays them without it)
+	동영상을 변환합니다(없어도 게임은 동영상을 재생할 수 있음)
+included with the launcher
+	런처에 포함됨
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	런처에 포함됨(Windows용 FFmpeg: [동영상 변환]이 Wine을 통해 실행)
+Install FFmpeg (winget)
+	FFmpeg 설치(winget)
+Install FFmpeg (Homebrew)
+	FFmpeg 설치(Homebrew)
+Install Homebrew (brew.sh) first, then FFmpeg
+	먼저 Homebrew(brew.sh)를 설치한 후 FFmpeg를 설치하세요
+Install FFmpeg (%s)
+	FFmpeg 설치(%s)
+Looking for C compilers
+	C 컴파일러 찾는 중
+Looking for FFmpeg
+	FFmpeg 찾는 중
+Looking for Wine
+	Wine 찾는 중
+Checked what is installed
+	설치된 항목을 확인했습니다
+The install ended with code %d.
+	설치가 코드 %d(으)로 종료되었습니다.
+Finish the installer Apple opened, then press Check again.
+	Apple이 연 설치 프로그램을 완료한 후 [다시 확인]을 누르세요.
+Choose clang…
+	clang 선택…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	clang.exe를 선택하세요(예: LLVM-MinGW의 bin\clang.exe)
+Checking
+	확인 중
+runs the movie converter (a Windows program) for Convert Movies
+	[동영상 변환]에서 동영상 변환기(Windows 프로그램)를 실행합니다
+not found (only Convert Movies needs it)
+	찾을 수 없음([동영상 변환]에만 필요)
+Install Wine (Homebrew)
+	Wine 설치(Homebrew)
+Install Homebrew (brew.sh) first, then Wine
+	먼저 Homebrew(brew.sh)를 설치한 후 Wine을 설치하세요
+not found: install Proton in Steam (only Convert Movies needs it)
+	찾을 수 없음: Steam에서 Proton을 설치하세요([동영상 변환]에만 필요)
+In Steam: Library > search Proton > install one, then Check again
+	Steam에서: 라이브러리 > Proton 검색 > 하나를 설치한 후 [다시 확인]을 누르세요
+Install Wine (%s)
+	Wine 설치(%s)
+English
+	영어
+Japanese
+	일본어
+French
+	프랑스어
+German
+	독일어
+Italian
+	이탈리아어
+Spanish
+	스페인어
+Korean
+	한국어
+Traditional Chinese
+	중국어(번체)
+These can be changed once the current task has finished.
+	현재 작업이 끝나면 변경할 수 있습니다.
+These apply the next time the game starts; no Build needed.
+	다음 게임 시작 시 적용됩니다. 빌드할 필요 없습니다.
+Language
+	언어
+Voice:
+	음성:
+The spoken language, cutscenes included
+	음성 언어(컷신 포함)
+Subtitles & UI:
+	자막 및 UI:
+The language of subtitles, menus and all other text
+	자막, 메뉴 및 기타 모든 텍스트의 언어
+Cutscenes
+	컷신
+Cutscene Colors:
+	컷신 색상:
+Corrected
+	보정
+Original
+	원본
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	PC판 그대로의 표시: 어두운 장면은 검게 뭉개지고 밝은 장면은 하얗게 날아감
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	인코딩된 그대로의 전체 색 범위: 어두운 장면과 밝은 장면의 디테일 유지
+Brightness:
+	밝기:
+Cutscene brightness (a gain: black stays black)
+	컷신 밝기(게인: 검은색은 그대로 유지)
+Contrast:
+	대비:
+Cutscene contrast, about mid-gray
+	중간 회색 기준 컷신 대비
+Saturation:
+	채도:
+Cutscene color strength (0%: black and white)
+	컷신 색 강도(0%: 흑백)
+Reset
+	초기화
+Save Folders
+	세이브 폴더
+Not found
+	찾을 수 없음
+1 .dat file
+	.dat 파일 1개
+Remove
+	제거
+No folders added
+	추가된 폴더 없음
+Add Folder…
+	폴더 추가…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	Steam 외에 게임이 불러올 세이브 파일(.dat)이 있는 폴더. 각 세이브는 가장 최신 사본이 사용됩니다
+HD Textures
+	HD 텍스처
+Import ZIP Again…
+	ZIP 다시 가져오기…
+Import ZIP…
+	ZIP 가져오기…
+Get
+	받기
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	[받기]는 모드 ZIP을 다운로드합니다(Nexus Mods). [ZIP 가져오기…]는 텍스처를 게임 파일 옆에 배치합니다(진행 중 약 25 GB의 여유 공간 필요)
+Importing: %s
+	가져오는 중: %s
+Imported from %s (%s voices); the game's own files are unchanged
+	%s에서 가져옴(%s 음성). 게임 원본 파일은 변경되지 않았습니다
+Import Archive Again…
+	아카이브 다시 가져오기…
+Import Archive…
+	아카이브 가져오기…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	[받기]는 모드를 다운로드합니다(Nexus Mods: 독립 실행형 버전). [아카이브 가져오기…]는 텍스처(약 3.5 GB)를 게임 파일 옆에 압축 해제합니다
+Imported from %s (%s files): sharper fonts, menus and maps
+	%s에서 가져옴(%s개 파일): 더 선명한 글꼴, 메뉴, 지도
+HD Textures:
+	HD 텍스처:
+Import an HD mod first
+	먼저 HD 모드를 가져오세요
+the HD Project's and the HD Fonts & GUI textures
+	HD Project 및 HD Fonts & GUI 텍스처
+the HD Project's textures
+	HD Project 텍스처
+the HD Fonts & GUI textures
+	HD Fonts & GUI 텍스처
+The game uses %s
+	게임에서 사용: %s
+The game's own textures
+	게임 원본 텍스처
+The game's original archives were discarded: the HD textures are always used
+	게임의 원본 아카이브가 삭제되었습니다: HD 텍스처가 항상 사용됩니다
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	%s 음성용으로 가져옴: 현재 음성에서는 게임 원본 텍스처가 사용됩니다(다시 가져오세요)
+Old Assets:
+	이전 에셋:
+Discard Old Assets
+	이전 에셋 삭제
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	가져온 후: 모드 ZIP과 HD 사본으로 대체된 게임 아카이브를 삭제합니다
+Discarded (Steam's Verify integrity of game files restores them)
+	삭제됨(Steam의 게임 파일 무결성 확인으로 복원 가능)
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	약 %.1f GB 확보(모드 ZIP과 대체된 게임 아카이브)
+Choose a folder with save files (.dat)
+	세이브 파일(.dat)이 있는 폴더 선택
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	HD 모드 아카이브 선택(HD Project의 .zip, HD Fonts and GUI의 .rar)
+Choose the FINAL FANTASY XIII folder
+	FINAL FANTASY XIII 폴더 선택
+Mod archives (.zip, .rar)
+	모드 아카이브(.zip, .rar)
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|모드 아카이브
+Up
+	위로
+Home
+	홈
+(no folders or ZIP files here)
+	(여기에 폴더나 ZIP 파일이 없음)
+(no folders here)
+	(여기에 폴더가 없음)
+Click the FF XIII HD Project's ZIP file to import it.
+	FF XIII HD Project의 ZIP 파일을 클릭하여 가져옵니다.
+FINAL FANTASY XIII is in this folder.
+	이 폴더에 FINAL FANTASY XIII가 있습니다.
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	FINAL FANTASY XIII가 설치된 폴더(white_data가 있는 폴더)를 여세요.
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	이 폴더에 .dat 파일이 없습니다(하위 폴더는 제외하고 이 폴더의 파일만 확인합니다).
+Choose this folder
+	이 폴더 선택
+the launcher's sources are damaged (no dispatch table)
+	런처 소스가 손상되었습니다(디스패치 테이블 없음)
+the launcher's sources are damaged (no exe check)
+	런처 소스가 손상되었습니다(exe 검사 없음)
+it cannot be read
+	읽을 수 없음
+it is not a Windows program
+	Windows 프로그램이 아님
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	게임의 다른 지역판입니다(Steam 디포 %s. 이 런처의 코드는 북미/유럽판, 디포 292122 기준): 아직 지원되지 않으며, 다시 설치해도 같은 판이 설치됩니다
+Steam's DRM wrapper removed
+	Steam DRM 래퍼 제거됨
+a modified copy of the game (%s)
+	수정된 게임 사본(%s)
+a different version of the game or a modified copy
+	다른 버전의 게임 또는 수정된 사본
+Cannot run %s.
+	%s을(를) 실행할 수 없습니다.
+Cannot copy %s to %s (is there room?).
+	%s을(를) %s에 복사할 수 없습니다(공간이 충분한가요?).
+Choose the FINAL FANTASY XIII folder first (Home).
+	먼저 FINAL FANTASY XIII 폴더를 선택하세요(홈).
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	게임의 원본 아카이브가 삭제되었습니다([이전 에셋 삭제]): 가져오려면 원본이 필요합니다. Steam에서 복원한 후(속성 > 설치된 파일 > 게임 파일 무결성 확인) 다시 가져오세요.
+Checking the ZIP
+	ZIP 확인 중
+Cannot open %s.
+	%s을(를) 열 수 없습니다.
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	게임에 white_data/sys/%s%s.win32.bin이 없습니다(%s 음성).
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	모드의 도구는 Windows 프로그램입니다: Wine을 설치하고(홈 탭: [다시 확인]) 다시 가져오세요.
+Setting up Wine (the first time: about a minute)
+	Wine 설정 중(처음 한 번: 약 1분)
+Wine could not set up its folder (%s).
+	Wine이 폴더를 설정하지 못했습니다(%s).
+Cannot make %s.
+	%s을(를) 만들 수 없습니다.
+Importing %s (%d textures) for %s voices into %s
+	%s(텍스처 %d개)을(를) %s 음성용으로 %s에 가져오는 중
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	시간이 걸리며 진행 중에는 약 25 GB의 여유 공간이 필요합니다(최종적으로 약 8 GB 사용). 게임 원본 파일은 변경되지 않습니다.
+FF XIII HD Project import: %s -> %s (region %s)
+	FF XIII HD Project 가져오기: %s -> %s (지역 %s)
+Unpacking the ZIP: %d of about %d files
+	ZIP 압축 해제 중: %d / 약 %d개 파일
+Cannot unpack %s from the ZIP (is there room?).
+	ZIP에서 %s을(를) 압축 해제할 수 없습니다(공간이 충분한가요?).
+The mod's ff13tool.exe does not run here.
+	모드의 ff13tool.exe가 여기서 실행되지 않습니다.
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	이를 위해 Wine의 32비트 지원이 필요합니다(홈 탭의 Wine 항목 참고).
+Copying the game's archives
+	게임 아카이브 복사 중
+Unpacking white_img%s
+	white_img%s 압축 해제 중
+Unpacking zone %s
+	구역 %s 압축 해제 중
+zone %s: no %s / %s
+	구역 %s: %s / %s 없음
+Unpacking white_scr%s
+	white_scr%s 압축 해제 중
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool이 white_scr을 압축 해제하지 못했습니다(가져오기 로그 참고).
+Log: %s
+	로그: %s
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	주요 캐릭터 모델이 원본이 아닙니다(다른 모드?): 그대로 둡니다.
+Putting in the HD textures: %d of %d (%s %s)
+	HD 텍스처 적용 중: %d / %d (%s %s)
+Packing white_scr%s again
+	white_scr%s 다시 패킹 중
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool이 white_scr을 다시 패킹하지 못했습니다(가져오기 로그 참고).
+No texture could be put in (see the import log): nothing was changed.
+	텍스처를 하나도 적용하지 못했습니다(가져오기 로그 참고): 아무것도 변경되지 않았습니다.
+Finishing
+	마무리 중
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	HD Fonts and GUI 텍스처를 유지하지 못했습니다: 해당 모드의 아카이브를 다시 가져오세요.
+Cannot move the new archives to %s.
+	새 아카이브를 %s(으)로 옮길 수 없습니다.
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	HD 텍스처 가져오기 완료: 구역 %d개, 모델 %d개, 위치 %s. HD 텍스처가 켜졌습니다.
+Imported
+	가져옴
+There is no finished HD Textures import.
+	완료된 HD 텍스처 가져오기가 없습니다.
+Cannot write in %s.
+	%s에 쓸 수 없습니다.
+Deleting %s
+	%s 삭제 중
+Could not delete %s.
+	%s을(를) 삭제할 수 없습니다.
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	게임의 원본 아카이브 %d개%s을(를) 삭제했습니다: %.1f GB 확보. HD 텍스처는 켜진 상태로 유지되며, Steam의 게임 파일 무결성 확인으로 원본을 복원할 수 있습니다.
+Discard the old assets?
+	이전 에셋을 삭제하시겠습니까?
+, and the mod's ZIP (%s)
+	, 모드 ZIP(%s)
+Discard
+	삭제
+Keep them
+	유지
+Checking %s
+	%s 확인 중
+Importing %s (%d files, %.1f GB) into %s
+	%s(%d개 파일, %.1f GB)을(를) %s에 가져오는 중
+Unpacking: %d of %d files
+	압축 해제 중: %d / %d개 파일
+Cannot unpack %s (%s).
+	%s을(를) 압축 해제할 수 없습니다(%s).
+Cannot write %s (is there room?).
+	%s을(를) 쓸 수 없습니다(공간이 충분한가요?).
+Cannot move the textures to %s.
+	텍스처를 %s(으)로 옮길 수 없습니다.
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	HD Fonts and GUI 가져오기 완료: %d개 파일, 위치 %s. HD 텍스처가 켜졌습니다.
+Could not make %s: start the game with Run.
+	%s을(를) 만들 수 없습니다: [실행]으로 게임을 시작하세요.
+no game built yet
+	아직 빌드된 게임 없음
+Could not write %s: start the game with Run.
+	%s을(를) 쓸 수 없습니다: [실행]으로 게임을 시작하세요.
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	게임이 응용 프로그램 폴더에도 있습니다(%s): 런처 없이 그곳이나 Launchpad, Spotlight에서 시작할 수 있습니다.
+Looking for FINAL FANTASY XIII
+	FINAL FANTASY XIII 찾는 중
+not found: choose its folder
+	찾을 수 없음: 폴더를 선택하세요
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	해당 폴더에 white_data/prog/win/bin/ffxiiiimg.exe가 없음
+Game: %s (%s)
+	게임: %s (%s)
+Rebuild
+	다시 빌드
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp: 번들된 소스가 없거나 손상되었습니다
+Build
+	빌드
+Cross-Compile
+	크로스 컴파일
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	게임 정상 %v, 변환할 컷신 %d개, 삭제 가능 %d개(%.1f GB), 유지 %d개
+compiler: %s (%s)%s
+	컴파일러: %s (%s)%s
+options: %v
+	옵션: %v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp: 창을 열 수 없습니다: %s
+WhiteRecomp: could not open a window
+	WhiteRecomp: 창을 열 수 없습니다
+Options
+	옵션
+Features & Mods
+	기능 및 모드
+Running…
+	실행 중…
+Run
+	실행
+Could not start %s.
+	%s을(를) 시작할 수 없습니다.
+The game is running.
+	게임이 실행 중입니다.
+Starts %s.
+	%s을(를) 시작합니다.
+Rebuild to Run
+	다시 빌드 후 실행
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	여기 있는 게임은 다른 버전의 런처로 빌드되었습니다: 캐시를 지우고 게임을 다시 빌드하여 이 버전의 수정 사항을 반영합니다.
+Discard Movies
+	동영상 삭제
+Convert Movies
+	동영상 변환
+Clear Cache
+	캐시 지우기
+Close the game first: it cannot be rebuilt while it runs.
+	먼저 게임을 종료하세요: 실행 중에는 다시 빌드할 수 없습니다.
+Needs the game: choose its folder.
+	게임이 필요합니다: 게임 폴더를 선택하세요.
+Needs a C compiler.
+	C 컴파일러가 필요합니다.
+Builds the game with the options of the Options tab.
+	옵션 탭의 설정으로 게임을 빌드합니다.
+Needs the game.
+	게임이 필요합니다.
+Every movie is converted.
+	모든 동영상이 변환되었습니다.
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	아직 MP4가 없는 컷신 %d개를 변환합니다(취소한 후 나중에 이어서 할 수 있습니다).
+Close the game first.
+	먼저 게임을 종료하세요.
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	이전 빌드가 데이터 폴더에 남긴 항목(압축 해제된 소스, 컴파일된 오브젝트, 도구)을 삭제하여 다음 빌드에서 처음부터 모두 컴파일합니다. 세이브와 설정은 유지됩니다.
+Nothing to discard: no Bink movie has its MP4 yet.
+	삭제할 항목이 없습니다: 아직 MP4가 있는 Bink 동영상이 없습니다.
+Frees %.1f GB: the Bink movies that have their MP4.
+	%.1f GB 확보: MP4가 있는 Bink 동영상.
+Browse…
+	찾아보기…
+Game folder
+	게임 폴더
+The North America / Europe edition of the game.
+	북미/유럽판 게임입니다.
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	아시아판 게임입니다: 메뉴에서 Space로 결정하며(Enter 아님), 음성은 일본어만 있습니다.
+Requirements
+	요구 사항
+Check again
+	다시 확인
+Activity
+	작업 내역
+The options can be changed once the current task has finished.
+	현재 작업이 끝나면 옵션을 변경할 수 있습니다.
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	대부분 다음 빌드에 적용되며, 그래픽과 메모리는 다음 게임 시작 시 적용됩니다.
+Display
+	디스플레이
+Aspect Ratio:
+	화면비:
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10: 화면 전체 사용, 16:9보다 세로로 넓은 시야(동영상에는 얇은 여백 유지)
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 및 32:9: 3D를 가로 전체에 렌더링
+The game's own shape
+	게임 원래 비율
+Resolution:
+	해상도:
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	울트라와이드: 게임 중 F5 / F6으로 시야 넓히기 / 좁히기, F7로 초기화. 빌드 필요 없음
+What the game renders at; the window can be resized; no Build needed
+	게임 렌더링 해상도. 창 크기 조절 가능. 빌드 필요 없음
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	낮을수록 GPU 부담이 적고 덜 선명함. 창 크기 조절 가능. 빌드 필요 없음
+Higher costs GPU time; the window can be resized; no Build needed
+	높을수록 GPU 부담 증가. 창 크기 조절 가능. 빌드 필요 없음
+Window Scaling:
+	창 크기 조정:
+Fit (Default)
+	맞춤(기본값)
+Stretch
+	늘이기
+Fills the window; the picture is squeezed if the window is another shape
+	창을 가득 채움. 창 비율이 다르면 화면이 찌그러짐
+Keeps the picture's shape: black bars in a window of another shape
+	화면 비율 유지: 비율이 다른 창에서는 검은 여백 표시
+Graphics Driver:
+	그래픽 드라이버:
+The port's Vulkan renderer
+	이식판의 Vulkan 렌더러
+Graphics
+	그래픽
+Graphics:
+	그래픽:
+No shadows, no anti-aliasing: the fastest
+	그림자 없음, 안티앨리어싱 없음: 가장 빠름
+Low-resolution shadows, 2x FXAA
+	저해상도 그림자, 2x FXAA
+The game's shadows, 4x FXAA
+	게임 원래 그림자, 4x FXAA
+The sharpest shadows, 8x FXAA: costly on the GPU
+	가장 선명한 그림자, 8x FXAA: GPU 부담 큼
+Shadows and anti-aliasing as set below
+	아래 설정에 따른 그림자 및 안티앨리어싱
+Shadow Resolution:
+	그림자 해상도:
+Off (No Shadows)
+	끔(그림자 없음)
+1024 x 1024 (Default)
+	1024 x 1024(기본값)
+Sharper shadows cost GPU time; Off is the fastest
+	선명한 그림자일수록 GPU 부담 증가. 끔이 가장 빠름
+Anti-alias Method:
+	안티앨리어싱 방식:
+FXAA (Default)
+	FXAA(기본값)
+A cheap filter on the 3D image (not the HUD)
+	3D 화면(HUD 제외)에 적용하는 가벼운 필터
+Multisampling: costly on integrated GPUs
+	멀티샘플링: 내장 GPU에서는 부담 큼
+Anti-alias Quality:
+	안티앨리어싱 품질:
+1x (Off)
+	1x(끔)
+4x (Default)
+	4x(기본값)
+FXAA strength: higher smooths longer edges
+	FXAA 강도: 높을수록 긴 가장자리도 부드럽게
+Samples per pixel (up to what the GPU has)
+	픽셀당 샘플 수(GPU 지원 한도까지)
+Effects Resolution:
+	효과 해상도:
+Half (Default)
+	절반(기본값)
+Full
+	전체
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	효과도 나머지와 같은 선명도. 내장 GPU에서는 전투 중 부담 큼
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	전투 효과의 GPU 부담이 4분의 1로 줄고 약간 부드럽게 표시. 빌드 필요 없음
+Anisotropic Filtering:
+	비등방성 필터링:
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x: 멀리 있는 지면과 벽도 선명. 빌드 필요 없음
+The game's own texture filtering (blurrier at a distance); no Build needed
+	게임 원래 텍스처 필터링(멀리 있으면 흐림). 빌드 필요 없음
+Audio & Controls
+	오디오 및 조작
+Audio:
+	오디오:
+Music, sound and voices
+	음악, 효과음, 음성
+No audio work at all (play your own music)
+	오디오 처리 없음(직접 음악을 틀 때)
+Gamepad Scanning:
+	게임패드 검색:
+Every 2 seconds (Default)
+	2초마다(기본값)
+Once
+	한 번
+Only the controllers there at the start (plug one in: restart the game)
+	시작 시 연결된 컨트롤러만(새로 연결하면 게임 재시작 필요)
+A controller plugged in while playing is found within 2 seconds
+	플레이 중 연결한 컨트롤러를 2초 이내에 인식
+Cutscene Files:
+	컷신 파일:
+None found
+	찾을 수 없음
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	컷신 파일 없음: 컷신을 재생하려면 Steam에서 게임을 새로 다시 설치하세요
+The game's own Bink 2 videos, no conversion; no Build needed
+	게임 원래 Bink 2 동영상, 변환 없음. 빌드 필요 없음
+The MP4s Convert Movies made; no Build needed
+	[동영상 변환]으로 만든 MP4. 빌드 필요 없음
+Cutscenes:
+	컷신:
+Play
+	재생
+Play if converted
+	변환된 경우 재생
+Auto-skip
+	자동 건너뛰기
+No cutscene files to play
+	재생할 컷신 파일 없음
+Hover for how cutscenes work
+	마우스를 올리면 컷신 작동 방식 표시
+Steam Integration:
+	Steam 연동:
+No achievements or cloud saves; Steam does not show the game as running
+	업적과 클라우드 세이브 없음. Steam에 게임이 실행 중으로 표시되지 않음
+Performance
+	성능
+Pipeline Build Threads:
+	파이프라인 빌드 스레드:
+Threads preparing new graphics effects in the background; no Build needed
+	새 그래픽 효과를 백그라운드에서 준비하는 스레드. 빌드 필요 없음
+Memory:
+	메모리:
+4GB (Recommended)
+	4GB(권장)
+The 2 GB the original exe gets; no Build needed
+	원본 exe가 받는 2 GB. 빌드 필요 없음
+The address space a 4 GB-patched exe gets; no Build needed
+	4 GB 패치된 exe가 받는 주소 공간. 빌드 필요 없음
+No C compiler found
+	C 컴파일러를 찾을 수 없음
+Where to get one
+	받는 곳
+Optimization Level:
+	최적화 수준:
+Higher: a slower build, a faster game
+	높을수록 빌드는 느리고 게임은 빠름
+Profile-Guided Optimization:
+	프로필 기반 최적화:
+Off: the game built without the profile
+	끔: 프로필 없이 빌드된 게임
+On: optimized for how the game runs (a faster game)
+	켬: 게임 실행 방식에 맞춰 최적화(더 빠른 게임)
+Link-Time Optimization:
+	링크 타임 최적화:
+Off: a faster Build
+	끔: 더 빠른 빌드
+On: optimizes across files (a much slower Build)
+	켬: 파일 간 최적화(빌드가 훨씬 느림)
+Needs LLVM's linker (lld) beside Clang: not found
+	Clang 옆에 LLVM 링커(lld)가 필요함: 찾을 수 없음
+Experimental Optimizations:
+	실험적 최적화:
+On: less-tested speed-ups that may break things
+	켬: 충분히 테스트되지 않은 속도 향상, 문제가 생길 수 있음
+Off: only the tested ones
+	끔: 테스트된 것만
+Debug & Profile Tools:
+	디버그 및 프로필 도구:
+Logs, tracing, the profiler and an FPS counter (console window)
+	로그, 추적, 프로파일러, FPS 카운터(콘솔 창)
+Off: no console window, nothing printed
+	끔: 콘솔 창 없음, 출력 없음
+As AppImage:
+	AppImage로:
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	켬: [빌드] 시 프로그램과 .cfg 대신 게임과 설정이 들어 있는 단일 파일 WhiteRecomp-<CPU>.AppImage를 만듭니다. 끔: 이전처럼 프로그램을 만듭니다.
+Discard the old movies?
+	이전 동영상을 삭제하시겠습니까?
+The launcher was updated
+	런처가 업데이트되었습니다
+Clear Cache and Build
+	캐시 지우고 빌드
+Later
+	나중에
+A C compiler is needed
+	C 컴파일러가 필요합니다
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	런처는 사용자의 컴퓨터에서 게임을 빌드하므로 C 컴파일러가 필요합니다: Clang(최적: 더 빠른 게임) 또는 GCC. 찾지 못했습니다. 하나를 설치한 후 [다시 확인]을 누르세요.
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	런처는 사용자의 컴퓨터에서 게임을 빌드하므로 Clang이 필요합니다(게임은 Clang으로만 빌드되며 GCC는 사용하지 않음). 찾지 못했습니다. 설치한 후 [다시 확인]을 누르세요. 설치했는데 찾지 못한 경우에는 [선택]으로 지정하세요.
+LLVM-MinGW (Clang)
+	LLVM-MinGW(Clang)
+MSYS2 (its clang64 Clang)
+	MSYS2(clang64 Clang)
+Tried: %s
+	시도함: %s
+Install it for me
+	자동 설치
+Choose clang.exe…
+	clang.exe 선택…
+Close
+	닫기
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Steam 실행 중 업적 및 클라우드 세이브 사용(먼저 Steam 실행). 빌드 필요 없음
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Steam 실행 중 업적 및 오버레이(Shift+Tab) 사용. 빌드 필요 없음
+Every movie already has its MP4s.
+	모든 동영상에 이미 MP4가 있습니다.
+Nothing to convert
+	변환할 항목 없음
+Converting through %s
+	%s을(를) 통해 변환 중
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	컷신 %d개 변환 중(전체: 영어와 일본어 약 7시간 분량. 취소한 후 나중에 이어서 할 수 있습니다)
+Converting: 0 of %d
+	변환 중: 0 / %d
+Converting with %s threads
+	%s개 스레드로 변환 중
+Converting %s: cutscene %d of %d
+	%s 변환 중: 컷신 %d / %d
+Converting %s: cutscene %d of %d, frame %d of %d
+	%s 변환 중: 컷신 %d / %d, 프레임 %d / %d
+The converter failed.
+	변환기가 실패했습니다.
+Converted %d cutscenes
+	컷신 %d개 변환 완료
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	%s 유지: 컷신 %d / %d개에 아직 MP4가 없습니다
+Discarding %s
+	%s 삭제 중
+Could not write %s.heads: %s kept
+	%s.heads를 쓸 수 없습니다: %s 유지됨
+Could not cut down %s: %v
+	%s을(를) 줄일 수 없습니다: %v
+Discarded %d old movies: %.1f GB freed%s
+	이전 동영상 %d개 삭제: %.1f GB 확보%s
+0 (Fastest)
+	0(가장 빠름)
+1 (Recommended)
+	1(권장)
+3 (Slowest)
+	3(가장 느림)
+Needs Clang (GCC cannot read the profile)
+	Clang 필요(GCC는 프로필을 읽을 수 없음)
+Ultrawide
+	울트라와이드
+Ultrafast (Worst Quality)
+	초고속(최저 품질)
+Fast
+	빠름
+Fancy (Default)
+	고품질(기본값)
+Ultrafancy
+	최고 품질
+Custom
+	사용자 지정
+Cancelled.
+	취소되었습니다.
+Could not start %s
+	%s을(를) 시작할 수 없습니다
+On
+	켬
+Off
+	끔
+Setting up Wine's folder for the converter (only the first time)
+	변환기용 Wine 폴더 설정 중(처음 한 번만)
+Wine could not set up its folder (%s; code %d).
+	Wine이 폴더를 설정하지 못했습니다(%s, 코드 %d).
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine이 32비트 Windows 프로그램인 변환기를 실행할 수 없습니다.
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	32비트 프로그램을 실행할 수 있는 Wine을 사용하세요(Wine 9 이상, 예: Homebrew의 wine-stable). Apple 실리콘 Mac에서는 Rosetta 2도 필요합니다(softwareupdate --install-rosetta).
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	Proton의 Wine입니다(Steam에서 발견). Steam에서 다른 Proton을 설치하고(라이브러리 > Proton 검색. 예: Proton 9.0 또는 Proton - Experimental) [다시 확인]을 누르거나, Wine 자체를 설치하세요.
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	Wine의 32비트 지원을 설치하세요: Debian / Ubuntu는 wine32(sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora는 wine(함께 설치됨), Arch는 wine.
+Wine said: %s
+	Wine 메시지: %s
+Needs FFmpeg with its H.264 encoder (install it above).
+	H.264 인코더가 포함된 FFmpeg가 필요합니다(위에서 설치하세요).
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	이 런처에는 동영상 변환용 Windows FFmpeg가 없습니다(x86-64 Linux 및 macOS 런처에만 포함): 다른 PC에서 변환하세요.
+Needs Wine (install it above): the converter is a Windows program.
+	Wine이 필요합니다(위에서 설치하세요): 변환기는 Windows 프로그램입니다.
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	캐시를 지웠습니다(%d개 항목 삭제, 세이브, 설정, Android 키는 유지됨).
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	캐시를 지웠습니다(%d개 항목 삭제, 세이브와 Android 키는 유지됨).
+The settings were not this launcher version's own: they are back to the defaults.
+	설정이 이 버전의 런처 것이 아니어서 기본값으로 되돌렸습니다.
+The cache could not be cleared completely: close any program using its files and try again.
+	캐시를 완전히 지우지 못했습니다. 해당 파일을 사용하는 프로그램을 닫고 다시 시도하세요.
+Clearing: %s
+	지우는 중: %s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	게임이 이전 버전의 런처로 빌드되었습니다. 이 버전의 수정 사항을 반영하기 위해 캐시를 지우고 게임을 처음부터 다시 빌드합니다(몇 분 소요). 세이브는 유지되며, 설정도 이 버전이 모든 항목을 지원하면 유지됩니다.
+Profiler:
+	프로파일러:
+Off: F12 does nothing
+	끄기: F12는 아무 동작도 하지 않습니다
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	켜기: 게임 중 F12로 측정을 시작하고 멈춥니다. 보고서는 게임과 같은 폴더에 저장됩니다

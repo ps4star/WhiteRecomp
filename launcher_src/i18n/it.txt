@@ -1,0 +1,901 @@
+# The launcher in it (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages it
+Cannot make the APK's signing key (no random numbers from the system).
+	Impossibile creare la chiave di firma dell'APK (il sistema non fornisce numeri casuali).
+Cannot make the APK's certificate.
+	Impossibile creare il certificato dell'APK.
+Cannot sign the APK's certificate.
+	Impossibile firmare il certificato dell'APK.
+Cannot keep the APK's signing key in %s.
+	Impossibile conservare la chiave di firma dell'APK in %s.
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	Nuova chiave di firma per i tuoi APK: %s (conservala: un aggiornamento si installa sopra l'app solo se firmato con la stessa chiave)
+Cannot sign the APK.
+	Impossibile firmare l'APK.
+Cannot write %s.
+	Impossibile scrivere %s.
+This launcher carries no APK files for %s (%s).
+	Questo launcher non contiene file APK per %s (%s).
+Cannot read %s.
+	Impossibile leggere %s.
+Writing the APK
+	Scrittura dell'APK
+As AppImage
+	Come AppImage
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp: il gioco non si trova in $XRC_GAME_DIR
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	Copia la cartella "FINAL FANTASY XIII" (quella che contiene white_data) accanto all'AppImage, oppure imposta XRC_GAME_DIR.
+Packing the AppImage
+	Creazione dell'AppImage
+This launcher carries no AppImage runtime for %s.
+	Questo launcher non contiene un runtime AppImage per %s.
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	non compresso: installa squashfs-tools (mksquashfs) per un file più piccolo
+Checking the game
+	Controllo del gioco
+No C compiler that can build the game: install one first.
+	Nessun compilatore C in grado di compilare il gioco: installane prima uno.
+Game: %s
+	Gioco: %s
+Compiler: %s
+	Compilatore: %s
+Deleted %d old source files
+	Eliminati %d vecchi file sorgente
+Sources: %s (%d files changed)
+	Sorgenti: %s (%d file modificati)
+This launcher carries no files for %s.
+	Questo launcher non contiene file per %s.
+FFmpeg: your own build in %s
+	FFmpeg: la tua build in %s
+Options: %v
+	Opzioni: %v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	La Link-Time Optimization è disattivata per questa build: quella di Clang richiede il linker di LLVM (ld.lld) accanto, e non c'è.
+Compiling %d of %d files on %d cores
+	Compilazione di %d file su %d con %d core
+Compiling: %d of %d (%s)
+	Compilazione: %d di %d (%s)
+Linking failed.
+	Linking non riuscito.
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	(Se WhiteRecomp è in esecuzione, chiudilo e premi di nuovo Compila: Windows non può sostituire un programma in esecuzione.)
+Cannot write the output in %s.
+	Impossibile scrivere l'output in %s.
+Built %s: copy it to the %s computer with %s (it says how).
+	Compilato %s: copialo sul computer %s con %s (spiega come).
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	Compilato %s: installalo sul dispositivo %s; %s spiega come e dove vanno i file del gioco.
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	Compilato %s: copia la cartella %s sul computer %s (il suo README.txt spiega come).
+Built
+	Compilato
+Built %s
+	Compilato %s
+Cannot write %s in %s.
+	Impossibile scrivere %s in %s.
+Profile-Guided Optimization is off for this build: %s.
+	La Profile-Guided Optimization è disattivata per questa build: %s.
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	La Profile-Guided Optimization è disattivata per questa build: nessun profilo nel pacchetto.
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	La Profile-Guided Optimization è disattivata per questa build: questo Clang non riesce a leggere il profilo (una versione più vecchia?).
+Could not read the data folder %s: %v
+	Impossibile leggere la cartella dati %s: %v
+Clearing the data folder: %s
+	Svuotamento della cartella dati: %s
+Could not delete %s: %v
+	Impossibile eliminare %s: %v
+Any ARM64 CPU (Default)
+	Qualsiasi CPU ARM64 (predefinito)
+Ampere / Graviton 2 servers
+	Server Ampere / Graviton 2
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	Linux ARM a 64 bit (glibc 2.34 o successiva: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 e successivi)
+Any ARM64 phone (Default)
+	Qualsiasi telefono ARM64 (predefinito)
+2019 and later flagships (Cortex-A76)
+	Top di gamma dal 2019 in poi (Cortex-A76)
+2021 and later flagships (Cortex-X1)
+	Top di gamma dal 2021 in poi (Cortex-X1)
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 o successivo, ARM a 64 bit, Vulkan: un APK da installare (ancora senza filmati)
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	Richiede Clang (GCC compila solo per il proprio computer): installa Clang, poi premi Ricontrolla nella scheda Home.
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	Richiede il linker di LLVM (ld.lld.exe) accanto a Clang: LLVM-MinGW e il Clang di MSYS2 lo includono.
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	Richiede il linker di LLVM, lld (es. sudo apt install lld).
+Target: %s, CPU %s
+	Destinazione: %s, CPU %s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	Compila il gioco per un altro tipo di computer, con le opzioni della scheda Opzioni. Gira lì, non qui.
+Target:
+	Destinazione:
+Runs on every 64-bit ARM phone
+	Funziona su ogni telefono ARM a 64 bit
+Runs on every ARM64 CPU
+	Funziona su ogni CPU ARM64
+Faster there, but only that CPU and newer ones
+	Più veloce lì, ma solo su quella CPU e su quelle più recenti
+Settings:
+	Impostazioni:
+Use Android Preset
+	Usa preset Android
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	Imposta la scheda Opzioni per un telefono: 960x540, 60 fps, ombre a 512, anti-aliasing disattivato, effetti a metà risoluzione, 4 GB di memoria, -O1, 2 thread per le pipeline. Le usano anche le build per questo computer.
+Sets the Options tab: 960x540, 60 fps, light graphics
+	Imposta la scheda Opzioni: 960x540, 60 fps, grafica leggera
+Compiler:
+	Compilatore:
+Looking for compilers…
+	Ricerca dei compilatori…
+No Clang found
+	Nessun Clang trovato
+No lld found
+	Nessun lld trovato
+Not built yet
+	Non ancora compilato
+Build for %s
+	Compila per %s
+Wait for the current task to finish.
+	Attendi la fine dell'operazione in corso.
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	Richiede il gioco (il suo exe viene letto per la build): scegline la cartella nella scheda Home.
+Builds the game for %s into %s.
+	Compila il gioco per %s in %s.
+Cancel
+	Annulla
+Clang (Best)
+	Clang (migliore)
+Choose clang
+	Scegli clang
+cannot write in the launcher's folder
+	impossibile scrivere nella cartella del launcher
+it does not start
+	non si avvia
+not found
+	non trovato
+No such file
+	File inesistente
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	mancano gli header della libreria C (pthread.h) -- SteamOS li rimuove; Installa per me li ripristina
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	mancano gli header della libreria C (pthread.h): installa i file di sviluppo di glibc (Installa per me)
+it cannot build the game (%s)
+	non riesce a compilare il gioco (%s)
+the programs it makes do not run here (%s)
+	i programmi che produce non funzionano qui (%s)
+the programs it makes do not run here
+	i programmi che produce non funzionano qui
+C compiler
+	Compilatore C
+builds the game from the bundled sources
+	compila il gioco dai sorgenti inclusi
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	Visual C++ (cl) è installato, ma non può ancora compilare il gioco (serve clang)
+none found
+	nessuno trovato
+Install LLVM-MinGW (winget)
+	Installa LLVM-MinGW (winget)
+Install Apple's command line tools
+	Installa gli strumenti da riga di comando di Apple
+Install Clang and the C headers (%s)
+	Installa Clang e gli header C (%s)
+Install Clang (%s)
+	Installa Clang (%s)
+Links
+	Link
+converts the movies (the game plays them without it)
+	converte i filmati (il gioco li riproduce anche senza)
+included with the launcher
+	incluso nel launcher
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	incluso nel launcher (l'FFmpeg per Windows: Converti filmati lo esegue tramite Wine)
+Install FFmpeg (winget)
+	Installa FFmpeg (winget)
+Install FFmpeg (Homebrew)
+	Installa FFmpeg (Homebrew)
+Install Homebrew (brew.sh) first, then FFmpeg
+	Installa prima Homebrew (brew.sh), poi FFmpeg
+Install FFmpeg (%s)
+	Installa FFmpeg (%s)
+Looking for C compilers
+	Ricerca dei compilatori C
+Looking for FFmpeg
+	Ricerca di FFmpeg
+Looking for Wine
+	Ricerca di Wine
+Checked what is installed
+	Controllato ciò che è installato
+The install ended with code %d.
+	L'installazione è terminata con codice %d.
+Finish the installer Apple opened, then press Check again.
+	Completa il programma di installazione aperto da Apple, poi premi Ricontrolla.
+Choose clang…
+	Scegli clang…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	Scegli clang.exe (es. bin\clang.exe di LLVM-MinGW)
+Checking
+	Controllo
+runs the movie converter (a Windows program) for Convert Movies
+	esegue il convertitore di filmati (un programma Windows) per Converti filmati
+not found (only Convert Movies needs it)
+	non trovato (serve solo a Converti filmati)
+Install Wine (Homebrew)
+	Installa Wine (Homebrew)
+Install Homebrew (brew.sh) first, then Wine
+	Installa prima Homebrew (brew.sh), poi Wine
+not found: install Proton in Steam (only Convert Movies needs it)
+	non trovato: installa Proton in Steam (serve solo a Converti filmati)
+In Steam: Library > search Proton > install one, then Check again
+	In Steam: Libreria > cerca Proton > installane uno, poi premi Ricontrolla
+Install Wine (%s)
+	Installa Wine (%s)
+English
+	Inglese
+Japanese
+	Giapponese
+French
+	Francese
+German
+	Tedesco
+Italian
+	Italiano
+Spanish
+	Spagnolo
+Korean
+	Coreano
+Traditional Chinese
+	Cinese tradizionale
+These can be changed once the current task has finished.
+	Si possono modificare al termine dell'operazione in corso.
+These apply the next time the game starts; no Build needed.
+	Si applicano al prossimo avvio del gioco; non serve Compila.
+Language
+	Lingua
+Voice:
+	Voci:
+The spoken language, cutscenes included
+	La lingua parlata, filmati inclusi
+Subtitles & UI:
+	Sottotitoli e interfaccia:
+The language of subtitles, menus and all other text
+	La lingua di sottotitoli, menu e di tutto il resto del testo
+Cutscenes
+	Filmati
+Cutscene Colors:
+	Colori dei filmati:
+Corrected
+	Corretti
+Original
+	Originali
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	Come li mostra la versione PC: scene scure schiacciate sul nero, quelle chiare bruciate
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	L'intera gamma di colori dei filmati, così come codificata: dettagli preservati nelle scene scure e chiare
+Brightness:
+	Luminosità:
+Cutscene brightness (a gain: black stays black)
+	Luminosità dei filmati (un guadagno: il nero resta nero)
+Contrast:
+	Contrasto:
+Cutscene contrast, about mid-gray
+	Contrasto dei filmati, attorno al grigio medio
+Saturation:
+	Saturazione:
+Cutscene color strength (0%: black and white)
+	Intensità del colore dei filmati (0%: bianco e nero)
+Reset
+	Ripristina
+Save Folders
+	Cartelle dei salvataggi
+Not found
+	Non trovata
+1 .dat file
+	1 file .dat
+Remove
+	Rimuovi
+No folders added
+	Nessuna cartella aggiunta
+Add Folder…
+	Aggiungi cartella…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	Cartelle con file di salvataggio (.dat) da far acquisire al gioco, oltre a quelle di Steam; vince la copia più recente di ogni salvataggio
+HD Textures
+	Texture HD
+Import ZIP Again…
+	Importa di nuovo ZIP…
+Import ZIP…
+	Importa ZIP…
+Get
+	Ottieni
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	Ottieni scarica lo ZIP della mod (Nexus Mods); Importa ZIP… mette le sue texture accanto a quelle del gioco (servono circa 25 GB liberi durante l'operazione)
+Importing: %s
+	Importazione: %s
+Imported from %s (%s voices); the game's own files are unchanged
+	Importato da %s (voci in %s); i file del gioco restano invariati
+Import Archive Again…
+	Importa di nuovo archivio…
+Import Archive…
+	Importa archivio…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	Ottieni scarica la mod (Nexus Mods: la versione standalone); Importa archivio… estrae le sue texture (circa 3,5 GB) accanto a quelle del gioco
+Imported from %s (%s files): sharper fonts, menus and maps
+	Importato da %s (%s file): caratteri, menu e mappe più nitidi
+HD Textures:
+	Texture HD:
+Import an HD mod first
+	Importa prima una mod HD
+the HD Project's and the HD Fonts & GUI textures
+	le texture di HD Project e di HD Fonts & GUI
+the HD Project's textures
+	le texture di HD Project
+the HD Fonts & GUI textures
+	le texture di HD Fonts & GUI
+The game uses %s
+	Il gioco usa %s
+The game's own textures
+	Le texture originali del gioco
+The game's original archives were discarded: the HD textures are always used
+	Gli archivi originali del gioco sono stati scartati: le texture HD vengono sempre usate
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	Importato per le voci in %s: con le voci scelte si usano le texture originali del gioco (importa di nuovo)
+Old Assets:
+	Vecchie risorse:
+Discard Old Assets
+	Scarta vecchie risorse
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	Dopo un'importazione: elimina lo ZIP della mod e gli archivi del gioco sostituiti dalle copie HD
+Discarded (Steam's Verify integrity of game files restores them)
+	Scartati (Verifica integrità dei file di gioco di Steam li ripristina)
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	Libera circa %.1f GB (lo ZIP della mod e gli archivi sostituiti del gioco)
+Choose a folder with save files (.dat)
+	Scegli una cartella con file di salvataggio (.dat)
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	Scegli l'archivio di una mod HD (il .zip di HD Project, il .rar di HD Fonts and GUI)
+Choose the FINAL FANTASY XIII folder
+	Scegli la cartella di FINAL FANTASY XIII
+Mod archives (.zip, .rar)
+	Archivi di mod (.zip, .rar)
+` : `choose folder with prompt 
+	` : `choose folder with prompt
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|Archivi di mod
+Up
+	Su
+(no folders or ZIP files here)
+	(nessuna cartella o file ZIP qui)
+(no folders here)
+	(nessuna cartella qui)
+Click the FF XIII HD Project's ZIP file to import it.
+	Fai clic sul file ZIP di FF XIII HD Project per importarlo.
+FINAL FANTASY XIII is in this folder.
+	FINAL FANTASY XIII è in questa cartella.
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	Apri la cartella in cui è installato FINAL FANTASY XIII (quella con white_data).
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	Nessun file .dat in questa cartella (si considerano solo i suoi file, non quelli delle sottocartelle).
+Choose this folder
+	Scegli questa cartella
+the launcher's sources are damaged (no dispatch table)
+	i sorgenti del launcher sono danneggiati (manca la tabella di dispatch)
+the launcher's sources are damaged (no exe check)
+	i sorgenti del launcher sono danneggiati (manca il controllo dell'exe)
+it cannot be read
+	non può essere letto
+it is not a Windows program
+	non è un programma Windows
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	è un'altra edizione regionale del gioco (depot Steam %s; il codice di questo launcher è dell'edizione Nord America / Europa, depot 292122): non è ancora supportata, e reinstallando si ottiene la stessa
+Steam's DRM wrapper removed
+	Wrapper DRM di Steam rimosso
+a modified copy of the game (%s)
+	una copia modificata del gioco (%s)
+a different version of the game or a modified copy
+	una versione diversa del gioco o una copia modificata
+Cannot run %s.
+	Impossibile eseguire %s.
+Cannot copy %s to %s (is there room?).
+	Impossibile copiare %s in %s (c'è spazio?).
+Choose the FINAL FANTASY XIII folder first (Home).
+	Scegli prima la cartella di FINAL FANTASY XIII (Home).
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	Gli archivi originali del gioco sono stati scartati (Scarta vecchie risorse): l'importazione ne ha bisogno. Falli ripristinare a Steam (Proprietà > File installati > Verifica integrità dei file di gioco), poi importa di nuovo.
+Checking the ZIP
+	Controllo dello ZIP
+Cannot open %s.
+	Impossibile aprire %s.
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	Il gioco non ha white_data/sys/%s%s.win32.bin (voci in %s).
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	Gli strumenti della mod sono programmi Windows: installa Wine (scheda Home: Controlla) e importa di nuovo.
+Setting up Wine (the first time: about a minute)
+	Configurazione di Wine (la prima volta: circa un minuto)
+Wine could not set up its folder (%s).
+	Wine non è riuscito a preparare la sua cartella (%s).
+Cannot make %s.
+	Impossibile creare %s.
+Importing %s (%d textures) for %s voices into %s
+	Importazione di %s (%d texture) per le voci in %s in %s
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	Richiede un po' di tempo e circa 25 GB liberi durante l'operazione (ne restano occupati circa 8). I file del gioco non vengono modificati.
+FF XIII HD Project import: %s -> %s (region %s)
+	Importazione di FF XIII HD Project: %s -> %s (regione %s)
+Unpacking the ZIP: %d of about %d files
+	Estrazione dello ZIP: %d di circa %d file
+Cannot unpack %s from the ZIP (is there room?).
+	Impossibile estrarre %s dallo ZIP (c'è spazio?).
+The mod's ff13tool.exe does not run here.
+	Il ff13tool.exe della mod non funziona qui.
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	Wine ha bisogno del supporto a 32 bit (vedi la riga di Wine nella scheda Home).
+Copying the game's archives
+	Copia degli archivi del gioco
+Unpacking white_img%s
+	Estrazione di white_img%s
+Unpacking zone %s
+	Estrazione della zona %s
+zone %s: no %s / %s
+	zona %s: manca %s / %s
+Unpacking white_scr%s
+	Estrazione di white_scr%s
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool non ha estratto white_scr (vedi il log dell'importazione).
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	I modelli dei personaggi principali non sono quelli originali (di un'altra mod?): vengono lasciati come sono.
+Putting in the HD textures: %d of %d (%s %s)
+	Inserimento delle texture HD: %d di %d (%s %s)
+Packing white_scr%s again
+	Nuovo impacchettamento di white_scr%s
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool non è riuscito a impacchettare di nuovo white_scr (vedi il log dell'importazione).
+No texture could be put in (see the import log): nothing was changed.
+	Nessuna texture inserita (vedi il log dell'importazione): non è stato modificato nulla.
+Finishing
+	Completamento
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	Impossibile conservare le texture di HD Fonts and GUI: importa di nuovo l'archivio di quella mod.
+Cannot move the new archives to %s.
+	Impossibile spostare i nuovi archivi in %s.
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	Texture HD importate: %d zone e %d modelli, in %s. Texture HD è Attivo.
+Imported
+	Importato
+There is no finished HD Textures import.
+	Nessuna importazione di texture HD completata.
+Cannot write in %s.
+	Impossibile scrivere in %s.
+Deleting %s
+	Eliminazione di %s
+Could not delete %s.
+	Impossibile eliminare %s.
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	Scartati %d archivi originali del gioco%s: liberati %.1f GB. Texture HD resta Attivo; Verifica integrità dei file di gioco di Steam ripristina gli originali.
+Discard the old assets?
+	Scartare le vecchie risorse?
+, and the mod's ZIP (%s)
+	, e lo ZIP della mod (%s)
+Discard
+	Scarta
+Keep them
+	Conservale
+Checking %s
+	Controllo di %s
+Importing %s (%d files, %.1f GB) into %s
+	Importazione di %s (%d file, %.1f GB) in %s
+Unpacking: %d of %d files
+	Estrazione: %d di %d file
+Cannot unpack %s (%s).
+	Impossibile estrarre %s (%s).
+Cannot write %s (is there room?).
+	Impossibile scrivere %s (c'è spazio?).
+Cannot move the textures to %s.
+	Impossibile spostare le texture in %s.
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	HD Fonts and GUI importato: %d file in %s. Texture HD è Attivo.
+Could not make %s: start the game with Run.
+	Impossibile creare %s: avvia il gioco con Avvia.
+no game built yet
+	nessun gioco ancora compilato
+Could not write %s: start the game with Run.
+	Impossibile scrivere %s: avvia il gioco con Avvia.
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	Il gioco è anche in Applicazioni (%s): avvialo da lì, da Launchpad o da Spotlight, senza il launcher.
+Looking for FINAL FANTASY XIII
+	Ricerca di FINAL FANTASY XIII
+not found: choose its folder
+	non trovato: scegline la cartella
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	quella cartella non contiene white_data/prog/win/bin/ffxiiiimg.exe
+Game: %s (%s)
+	Gioco: %s (%s)
+Rebuild
+	Ricompila
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp: i sorgenti inclusi mancano o sono danneggiati
+Build
+	Compila
+Cross-Compile
+	Compilazione incrociata
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	gioco ok %v, %d filmati da convertire, %d scartabili (%.1f GB), %d conservati
+compiler: %s (%s)%s
+	compilatore: %s (%s)%s
+options: %v
+	opzioni: %v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp: impossibile aprire una finestra: %s
+WhiteRecomp: could not open a window
+	WhiteRecomp: impossibile aprire una finestra
+Options
+	Opzioni
+Features & Mods
+	Funzioni e mod
+Running…
+	In esecuzione…
+Run
+	Avvia
+Could not start %s.
+	Impossibile avviare %s.
+The game is running.
+	Il gioco è in esecuzione.
+Starts %s.
+	Avvia %s.
+Rebuild to Run
+	Ricompila per avviare
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	Il gioco presente è stato compilato da un'altra versione di questo launcher: la cache viene svuotata e il gioco ricompilato, così include le correzioni di questa versione.
+Discard Movies
+	Scarta filmati
+Convert Movies
+	Converti filmati
+Clear Cache
+	Svuota cache
+Close the game first: it cannot be rebuilt while it runs.
+	Chiudi prima il gioco: non può essere ricompilato mentre è in esecuzione.
+Needs the game: choose its folder.
+	Richiede il gioco: scegline la cartella.
+Needs a C compiler.
+	Richiede un compilatore C.
+Builds the game with the options of the Options tab.
+	Compila il gioco con le opzioni della scheda Opzioni.
+Needs the game.
+	Richiede il gioco.
+Every movie is converted.
+	Tutti i filmati sono convertiti.
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	Converte i %d filmati che non hanno ancora un MP4 (si può annullare e riprendere più tardi).
+Close the game first.
+	Chiudi prima il gioco.
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	Elimina ciò che le build precedenti hanno lasciato nella cartella dati (sorgenti estratti, oggetti compilati, strumenti), così la prossima build riparte da zero e ricompila tutto. Salvataggi e impostazioni restano.
+Nothing to discard: no Bink movie has its MP4 yet.
+	Niente da scartare: nessun filmato Bink ha ancora il suo MP4.
+Frees %.1f GB: the Bink movies that have their MP4.
+	Libera %.1f GB: i filmati Bink che hanno già il loro MP4.
+Browse…
+	Sfoglia…
+Game folder
+	Cartella del gioco
+The North America / Europe edition of the game.
+	L'edizione Nord America / Europa del gioco.
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	L'edizione asiatica del gioco: Space conferma nei menu (Enter no) e ha solo voci in giapponese.
+Requirements
+	Requisiti
+Check again
+	Ricontrolla
+Activity
+	Attività
+The options can be changed once the current task has finished.
+	Le opzioni si possono modificare al termine dell'operazione in corso.
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	La maggior parte si applica alla prossima build; Grafica e Memoria al prossimo avvio del gioco.
+Display
+	Schermo
+Aspect Ratio:
+	Proporzioni:
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10: tutto lo schermo, visuale più alta che in 16:9 (i filmati mantengono sottili bande)
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 e 32:9: il 3D disegnato su tutta la larghezza
+The game's own shape
+	Il formato originale del gioco
+Resolution:
+	Risoluzione:
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	Ultrawide: in gioco, F5 / F6 allargano / restringono il campo visivo, F7 lo ripristina; non serve Compila
+What the game renders at; the window can be resized; no Build needed
+	La risoluzione di rendering del gioco; la finestra è ridimensionabile; non serve Compila
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	Più bassa è più veloce sulla GPU, ma meno nitida; la finestra è ridimensionabile; non serve Compila
+Higher costs GPU time; the window can be resized; no Build needed
+	Più alta costa tempo di GPU; la finestra è ridimensionabile; non serve Compila
+Window Scaling:
+	Scala della finestra:
+Fit (Default)
+	Adatta (predefinito)
+Stretch
+	Allunga
+Fills the window; the picture is squeezed if the window is another shape
+	Riempie la finestra; l'immagine viene deformata se la finestra ha un'altra forma
+Keeps the picture's shape: black bars in a window of another shape
+	Mantiene le proporzioni dell'immagine: bande nere in una finestra di altra forma
+Graphics Driver:
+	Driver grafico:
+The port's Vulkan renderer
+	Il renderer Vulkan del port
+Graphics
+	Grafica
+Graphics:
+	Grafica:
+No shadows, no anti-aliasing: the fastest
+	Niente ombre, niente anti-aliasing: il più veloce
+Low-resolution shadows, 2x FXAA
+	Ombre a bassa risoluzione, FXAA 2x
+The game's shadows, 4x FXAA
+	Le ombre del gioco, FXAA 4x
+The sharpest shadows, 8x FXAA: costly on the GPU
+	Le ombre più nitide, FXAA 8x: pesante per la GPU
+Shadows and anti-aliasing as set below
+	Ombre e anti-aliasing come impostati sotto
+Shadow Resolution:
+	Risoluzione ombre:
+Off (No Shadows)
+	Disattivo (nessuna ombra)
+1024 x 1024 (Default)
+	1024 x 1024 (predefinito)
+Sharper shadows cost GPU time; Off is the fastest
+	Ombre più nitide costano tempo di GPU; Disattivo è il più veloce
+Anti-alias Method:
+	Metodo anti-aliasing:
+FXAA (Default)
+	FXAA (predefinito)
+A cheap filter on the 3D image (not the HUD)
+	Un filtro leggero sull'immagine 3D (non sull'HUD)
+Multisampling: costly on integrated GPUs
+	Multisampling: pesante sulle GPU integrate
+Anti-alias Quality:
+	Qualità anti-aliasing:
+1x (Off)
+	1x (Disattivo)
+4x (Default)
+	4x (predefinito)
+FXAA strength: higher smooths longer edges
+	Intensità FXAA: più alta smussa bordi più lunghi
+Samples per pixel (up to what the GPU has)
+	Campioni per pixel (fino al massimo della GPU)
+Effects Resolution:
+	Risoluzione effetti:
+Half (Default)
+	Metà (predefinito)
+Full
+	Piena
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	Effetti nitidi come il resto; pesante in battaglia sulle GPU integrate
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	Gli effetti di battaglia costano un quarto del tempo di GPU, un po' più morbidi; non serve Compila
+Anisotropic Filtering:
+	Filtro anisotropico:
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x: terreno e pareti restano nitidi in lontananza; non serve Compila
+The game's own texture filtering (blurrier at a distance); no Build needed
+	Il filtro delle texture originale del gioco (più sfocato in lontananza); non serve Compila
+Audio & Controls
+	Audio e controlli
+Music, sound and voices
+	Musica, suoni e voci
+No audio work at all (play your own music)
+	Nessuna elaborazione audio (ascolta la tua musica)
+Gamepad Scanning:
+	Rilevamento controller:
+Every 2 seconds (Default)
+	Ogni 2 secondi (predefinito)
+Once
+	Una volta
+Only the controllers there at the start (plug one in: restart the game)
+	Solo i controller presenti all'avvio (se ne colleghi uno: riavvia il gioco)
+A controller plugged in while playing is found within 2 seconds
+	Un controller collegato durante il gioco viene rilevato entro 2 secondi
+Cutscene Files:
+	File dei filmati:
+None found
+	Nessuno trovato
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	Nessun file dei filmati: reinstalla il gioco da zero da Steam perché i filmati funzionino
+The game's own Bink 2 videos, no conversion; no Build needed
+	I video Bink 2 originali del gioco, senza conversione; non serve Compila
+The MP4s Convert Movies made; no Build needed
+	Gli MP4 creati da Converti filmati; non serve Compila
+Cutscenes:
+	Filmati:
+Play
+	Riproduci
+Play if converted
+	Riproduci se convertiti
+Auto-skip
+	Salta automaticamente
+No cutscene files to play
+	Nessun file dei filmati da riprodurre
+Hover for how cutscenes work
+	Passa il mouse per sapere come funzionano i filmati
+Steam Integration:
+	Integrazione Steam:
+No achievements or cloud saves; Steam does not show the game as running
+	Niente obiettivi né salvataggi cloud; Steam non mostra il gioco come in esecuzione
+Performance
+	Prestazioni
+Pipeline Build Threads:
+	Thread di build delle pipeline:
+Threads preparing new graphics effects in the background; no Build needed
+	Thread che preparano nuovi effetti grafici in background; non serve Compila
+Memory:
+	Memoria:
+4GB (Recommended)
+	4GB (consigliato)
+The 2 GB the original exe gets; no Build needed
+	I 2 GB che riceve l'exe originale; non serve Compila
+The address space a 4 GB-patched exe gets; no Build needed
+	Lo spazio di indirizzi che riceve un exe con patch 4 GB; non serve Compila
+No C compiler found
+	Nessun compilatore C trovato
+Where to get one
+	Dove trovarne uno
+Optimization Level:
+	Livello di ottimizzazione:
+Higher: a slower build, a faster game
+	Più alto: build più lenta, gioco più veloce
+Off: the game built without the profile
+	Disattivo: il gioco compilato senza il profilo
+On: optimized for how the game runs (a faster game)
+	Attivo: ottimizzato per come gira il gioco (gioco più veloce)
+Off: a faster Build
+	Disattivo: build più veloce
+On: optimizes across files (a much slower Build)
+	Attivo: ottimizza tra i file (build molto più lenta)
+Needs LLVM's linker (lld) beside Clang: not found
+	Richiede il linker di LLVM (lld) accanto a Clang: non trovato
+Experimental Optimizations:
+	Ottimizzazioni sperimentali:
+On: less-tested speed-ups that may break things
+	Attivo: accelerazioni meno testate che possono causare problemi
+Off: only the tested ones
+	Disattivo: solo quelle testate
+Debug & Profile Tools:
+	Strumenti di debug e profiling:
+Logs, tracing, the profiler and an FPS counter (console window)
+	Log, tracing, il profiler e un contatore FPS (finestra della console)
+Off: no console window, nothing printed
+	Disattivo: nessuna finestra della console, nessun output
+As AppImage:
+	Come AppImage:
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	Attivo: Compila crea un unico file, WhiteRecomp-<CPU>.AppImage, con dentro il gioco e le sue impostazioni, invece del programma e del suo .cfg. Disattivo: il programma, come prima.
+Discard the old movies?
+	Scartare i vecchi filmati?
+The launcher was updated
+	Il launcher è stato aggiornato
+Clear Cache and Build
+	Svuota cache e compila
+Later
+	Più tardi
+A C compiler is needed
+	Serve un compilatore C
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	Il launcher compila il gioco sul tuo computer, e per farlo serve un compilatore C: Clang (il migliore: gioco più veloce) o GCC. Non ne è stato trovato nessuno. Installane uno, poi premi Ricontrolla.
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	Il launcher compila il gioco sul tuo computer, e per farlo serve Clang (il gioco si compila solo con Clang: GCC non viene usato). Non ne è stato trovato nessuno. Installane uno, poi premi Ricontrolla -- oppure, se è installato ma non viene trovato, usa Scegli.
+MSYS2 (its clang64 Clang)
+	MSYS2 (il suo Clang clang64)
+Tried: %s
+	Provati: %s
+Install it for me
+	Installa per me
+Choose clang.exe…
+	Scegli clang.exe…
+Close
+	Chiudi
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Obiettivi e salvataggi cloud mentre Steam è in esecuzione (avvialo prima); non serve Compila
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Obiettivi e l'overlay (Shift+Tab) mentre Steam è in esecuzione; non serve Compila
+Every movie already has its MP4s.
+	Ogni filmato ha già i suoi MP4.
+Nothing to convert
+	Niente da convertire
+Converting through %s
+	Conversione tramite %s
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	Conversione di %d filmati (tutti: circa 7 ore di video, in inglese e giapponese; si può annullare e riprendere più tardi)
+Converting: 0 of %d
+	Conversione: 0 di %d
+Converting with %s threads
+	Conversione con %s thread
+Converting %s: cutscene %d of %d
+	Conversione di %s: filmato %d di %d
+frame 
+	frame
+Converting %s: cutscene %d of %d, frame %d of %d
+	Conversione di %s: filmato %d di %d, fotogramma %d di %d
+The converter failed.
+	Il convertitore non è riuscito.
+Converted %d cutscenes
+	Convertiti %d filmati
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	%s conservato: %d dei suoi %d filmati non hanno ancora un MP4
+Discarding %s
+	Eliminazione di %s
+Could not write %s.heads: %s kept
+	Impossibile scrivere %s.heads: %s conservato
+Could not cut down %s: %v
+	Impossibile ridurre %s: %v
+Discarded %d old movies: %.1f GB freed%s
+	Scartati %d vecchi filmati: liberati %.1f GB%s
+0 (Fastest)
+	0 (il più veloce)
+1 (Recommended)
+	1 (consigliato)
+3 (Slowest)
+	3 (il più lento)
+Needs Clang (GCC cannot read the profile)
+	Richiede Clang (GCC non può leggere il profilo)
+Ultrafast (Worst Quality)
+	Ultraveloce (qualità peggiore)
+Fast
+	Veloce
+Fancy (Default)
+	Elevata (predefinito)
+Ultrafancy
+	Ultra
+Custom
+	Personalizzata
+Cancelled.
+	Annullato.
+Could not start %s
+	Impossibile avviare %s
+On
+	Attivo
+Off
+	Disattivo
+Setting up Wine's folder for the converter (only the first time)
+	Preparazione della cartella di Wine per il convertitore (solo la prima volta)
+Wine could not set up its folder (%s; code %d).
+	Wine non è riuscito a preparare la sua cartella (%s; codice %d).
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine non riesce a eseguire il convertitore, un programma Windows a 32 bit.
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	Usa un Wine che esegua programmi a 32 bit (Wine 9 o successivo, es. wine-stable di Homebrew); su un Mac con Apple silicon serve anche Rosetta 2 (softwareupdate --install-rosetta).
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	Questo è il Wine di un Proton (trovato in Steam). Installa un altro Proton in Steam (Libreria > cerca Proton; es. Proton 9.0 o Proton - Experimental) e premi Ricontrolla, oppure installa Wine vero e proprio.
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	Installa il supporto a 32 bit di Wine: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (lo include), Arch wine.
+Wine said: %s
+	Wine ha risposto: %s
+Needs FFmpeg with its H.264 encoder (install it above).
+	Richiede FFmpeg con il suo encoder H.264 (installalo sopra).
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	Questo launcher non ha un FFmpeg per Windows con cui convertire i filmati (ce l'hanno solo i launcher Linux x86-64 e macOS): convertili su un altro PC.
+Needs Wine (install it above): the converter is a Windows program.
+	Richiede Wine (installalo sopra): il convertitore è un programma Windows.
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	Cache svuotata (%d elementi eliminati; salvataggi, impostazioni e chiave Android vengono conservati).
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	Cache svuotata (%d elementi eliminati; salvataggi e chiave Android vengono conservati).
+The settings were not this launcher version's own: they are back to the defaults.
+	Le impostazioni non erano di questa versione del launcher: sono state riportate ai valori predefiniti.
+The cache could not be cleared completely: close any program using its files and try again.
+	Impossibile svuotare completamente la cache: chiudi i programmi che usano i suoi file e riprova.
+Clearing: %s
+	Pulizia: %s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	Il gioco è stato compilato da una versione precedente di questo launcher. Per avere le correzioni di questa versione, la cache viene svuotata e il gioco ricompilato da zero (qualche minuto). I salvataggi vengono conservati, e anche le impostazioni se questa versione le prevede ancora tutte.
+Profiler:
+	Profiler:
+Off: F12 does nothing
+	Off: F12 non fa nulla
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	On: F12 nel gioco avvia e ferma una cattura; il resoconto viene salvato accanto al gioco

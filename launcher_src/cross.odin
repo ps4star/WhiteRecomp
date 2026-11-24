@@ -230,7 +230,7 @@ draw_cross :: proc(g: ^Gui, r: ui.Rect) {
 	changed := false
 	next :: proc(g: ^Gui, oi: ui.Rect, row: ^int, row_h, label_w, ctrl_w: int, name: string) -> (ctrl, note: ui.Rect) {
 		y := oi.y + row^ * row_h
-		if row^ > 0 {ren.draw_rect(g.dl, {oi.x, y, oi.w, 1}, CARD_BORDER)}
+		if row^ > 0 {separator(g, {oi.x, y, oi.w, 1})}
 		label(g, g.font, name, {oi.x, y, label_w, row_h}, TEXT)
 		ctrl = {oi.x + label_w, y + (row_h - px(g, 32)) / 2, ctrl_w, px(g, 32)}
 		note = {ctrl.x + ctrl_w + px(g, 16), y, oi.w - label_w - ctrl_w - px(g, 16), row_h}

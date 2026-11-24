@@ -96,13 +96,13 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		top := row^ > 0 ? px(g, 18) : px(g, 4)
 		y := oi.y + row^ + top
 		label(g, g.bold, name, {oi.x, y, oi.w, px(g, 26)}, ACCENT)
-		ren.draw_rect(g.dl, {oi.x, y + px(g, 30), oi.w, 2}, CARD_BORDER)
+		separator(g, {oi.x, y + px(g, 30), oi.w, 2})
 		row^ += top + px(g, 34)
 		first^ = true
 	}
 	next_row :: proc(g: ^Gui, oi: ui.Rect, row: ^int, first: ^bool, row_h, label_w, ctrl_w: int, name: string) -> (ctrl, note: ui.Rect) {
 		y := oi.y + row^
-		if !first^ {ren.draw_rect(g.dl, {oi.x, y, oi.w, 1}, CARD_BORDER)}
+		if !first^ {separator(g, {oi.x, y, oi.w, 1})}
 		first^ = false
 		label(g, g.font, name, {oi.x, y, label_w, row_h}, TEXT)
 		ctrl = {oi.x + label_w, y + (row_h - px(g, 32)) / 2, ctrl_w, px(g, 32)}
@@ -157,7 +157,7 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		remove := -1
 		for d, k in settings.save_dirs {
 			y := oi.y + row
-			if !first {ren.draw_rect(g.dl, {oi.x, y, oi.w, 1}, CARD_BORDER)}
+			if !first {separator(g, {oi.x, y, oi.w, 1})}
 			first = false
 			n := count_dat(d)
 			bw := px(g, 100)

@@ -1,0 +1,925 @@
+# The launcher in ja (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages ja
+Cannot make the APK's signing key (no random numbers from the system).
+	APK の署名キーを作成できません（システムから乱数を取得できません）。
+Cannot make the APK's certificate.
+	APK の証明書を作成できません。
+Cannot sign the APK's certificate.
+	APK の証明書に署名できません。
+Cannot keep the APK's signing key in %s.
+	APK の署名キーを %s に保存できません。
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	APK 用の新しい署名キー：%s（保管してください：アプリの上書き更新は同じキーで署名した場合のみ可能です）
+Cannot sign the APK.
+	APK に署名できません。
+Cannot write %s.
+	%s を書き込めません。
+This launcher carries no APK files for %s (%s).
+	このランチャーには %s（%s）用の APK ファイルが含まれていません。
+Cannot read %s.
+	%s を読み込めません。
+Writing the APK
+	APK を書き込み中
+As AppImage
+	AppImage として
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp：$XRC_GAME_DIR にゲームがありません
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	「FINAL FANTASY XIII」フォルダー（white_data が入っているもの）を AppImage の隣にコピーするか、XRC_GAME_DIR を設定してください。
+Packing the AppImage
+	AppImage をパッケージ中
+This launcher carries no AppImage runtime for %s.
+	このランチャーには %s 用の AppImage ランタイムが含まれていません。
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	未圧縮：ファイルを小さくするには squashfs-tools（mksquashfs）をインストールしてください
+AppImage: %s (%.0f MB, %s)
+	AppImage：%s（%.0f MB、%s）
+Checking the game
+	ゲームを確認中
+No C compiler that can build the game: install one first.
+	ゲームをビルドできる C コンパイラーがありません。先にインストールしてください。
+Game: %s
+	ゲーム：%s
+Compiler: %s
+	コンパイラー：%s
+Deleted %d old source files
+	古いソースファイルを %d 個削除しました
+Sources: %s (%d files changed)
+	ソース：%s（%d ファイル変更）
+This launcher carries no files for %s.
+	このランチャーには %s 用のファイルが含まれていません。
+FFmpeg: your own build in %s
+	FFmpeg：%s にある独自ビルド
+Options: %v
+	オプション：%v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	このビルドではリンク時最適化はオフです：Clang の LTO には隣に LLVM のリンカー（ld.lld）が必要ですが、見つかりません。
+Compiling %d of %d files on %d cores
+	%d / %d ファイルを %d コアでコンパイル中
+Compiling: %d of %d (%s)
+	コンパイル中：%d / %d（%s）
+Linking
+	リンク中
+Linking failed.
+	リンクに失敗しました。
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	（WhiteRecomp が実行中の場合は終了してから、もう一度「ビルド」してください：Windows は実行中のプログラムを置き換えられません。）
+Cannot write the output in %s.
+	%s に出力を書き込めません。
+Built %s: copy it to the %s computer with %s (it says how).
+	%s をビルドしました：%s のコンピューターに %s でコピーしてください（手順はその中にあります）。
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	%s をビルドしました：%s のデバイスにインストールしてください。手順とゲームファイルの置き場所は %s にあります。
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	%s をビルドしました：フォルダー %s を %s のコンピューターにコピーしてください（手順はその README.txt にあります）。
+Built
+	ビルド完了
+Built %s
+	%s をビルドしました
+Cannot write %s in %s.
+	%s を %s に書き込めません。
+Profile-Guided Optimization is off for this build: %s.
+	このビルドではプロファイルに基づく最適化はオフです：%s。
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	このビルドではプロファイルに基づく最適化はオフです：バンドルにプロファイルがありません。
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	このビルドではプロファイルに基づく最適化はオフです：この Clang はプロファイルを読み込めません（古いバージョン？）。
+Profile-Guided Optimization: %s
+	プロファイルに基づく最適化：%s
+Could not read the data folder %s: %v
+	データフォルダー %s を読み込めませんでした：%v
+Clearing the data folder: %s
+	データフォルダーを消去中：%s
+Could not delete %s: %v
+	%s を削除できませんでした：%v
+Any ARM64 CPU (Default)
+	すべての ARM64 CPU（既定）
+Ampere / Graviton 2 servers
+	Ampere / Graviton 2 サーバー
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	64 ビット ARM Linux（glibc 2.34 以降：Debian 12、Ubuntu 22.04、Raspberry Pi OS 12 以降）
+Any ARM64 phone (Default)
+	すべての ARM64 スマートフォン（既定）
+2019 and later flagships (Cortex-A76)
+	2019 年以降のフラッグシップ（Cortex-A76）
+2021 and later flagships (Cortex-X1)
+	2021 年以降のフラッグシップ（Cortex-X1）
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 以降、64 ビット ARM、Vulkan：インストール用の APK（カットシーンは未対応）
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	Clang が必要です（GCC は自身のコンピューター向けにしかコンパイルできません）：Clang をインストールしてから、「ホーム」タブで「再確認」を押してください。
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	Clang の隣に LLVM のリンカー（ld.lld.exe）が必要です：LLVM-MinGW と MSYS2 の Clang には含まれています。
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	LLVM のリンカー lld が必要です（例：sudo apt install lld）。
+Target: %s, CPU %s
+	ターゲット：%s、CPU %s
+Linker: %s
+	リンカー：%s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	「オプション」タブの設定で、別の種類のコンピューター向けにゲームをビルドします。このコンピューターではなく、そのコンピューターで動作します。
+Target:
+	ターゲット：
+Runs on every 64-bit ARM phone
+	すべての 64 ビット ARM スマートフォンで動作
+Runs on every ARM64 CPU
+	すべての ARM64 CPU で動作
+Faster there, but only that CPU and newer ones
+	より高速ですが、その CPU 以降でのみ動作
+Settings:
+	設定：
+Use Android Preset
+	Android プリセットを使用
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	「オプション」タブをスマートフォン向けに設定します：960x540、60 fps、影 512、アンチエイリアスオフ、エフェクト半解像度、メモリ 4 GB、-O1、パイプラインスレッド 2。このコンピューター向けのビルドにも適用されます。
+Sets the Options tab: 960x540, 60 fps, light graphics
+	「オプション」タブを設定：960x540、60 fps、軽量グラフィック
+Compiler:
+	コンパイラー：
+Looking for compilers…
+	コンパイラーを検索中…
+No Clang found
+	Clang が見つかりません
+Linker:
+	リンカー：
+No lld found
+	lld が見つかりません
+Output:
+	出力：
+Not built yet
+	未ビルド
+Build for %s
+	%s 向けにビルド
+Wait for the current task to finish.
+	現在の処理が終わるまでお待ちください。
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	ゲームが必要です（ビルド時に exe を読み込みます）：「ホーム」タブでフォルダーを選択してください。
+Builds the game for %s into %s.
+	%s 向けのゲームを %s にビルドします。
+Cancel
+	キャンセル
+Clang (Best)
+	Clang（最適）
+Choose clang
+	clang を選択
+cannot write in the launcher's folder
+	ランチャーのフォルダーに書き込めません
+it does not start
+	起動しません
+not found
+	見つかりません
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	C ライブラリのヘッダー（pthread.h）がありません -- SteamOS はこれを削除します。「自動でインストール」で元に戻せます
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	C ライブラリのヘッダー（pthread.h）がありません：glibc の開発用ファイルをインストールしてください（自動でインストール）
+it cannot build the game (%s)
+	ゲームをビルドできません（%s）
+the programs it makes do not run here (%s)
+	生成したプログラムがここで動作しません（%s）
+the programs it makes do not run here
+	生成したプログラムがここで動作しません
+C compiler
+	C コンパイラー
+builds the game from the bundled sources
+	同梱のソースからゲームをビルドします
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	Visual C++（cl）はインストールされていますが、まだゲームをビルドできません（clang が必要です）
+none found
+	見つかりません
+Install LLVM-MinGW (winget)
+	LLVM-MinGW をインストール（winget）
+Install Apple's command line tools
+	Apple のコマンドラインツールをインストール
+Install Clang and the C headers (%s)
+	Clang と C ヘッダーをインストール（%s）
+Install Clang (%s)
+	Clang をインストール（%s）
+Links
+	関連リンク
+converts the movies (the game plays them without it)
+	ムービーを変換します（なくてもゲームは再生できます）
+included with the launcher
+	ランチャーに同梱
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	ランチャーに同梱（Windows 版 FFmpeg：「ムービーを変換」が Wine 経由で実行します）
+Install FFmpeg (winget)
+	FFmpeg をインストール（winget）
+Install FFmpeg (Homebrew)
+	FFmpeg をインストール（Homebrew）
+Install Homebrew (brew.sh) first, then FFmpeg
+	先に Homebrew（brew.sh）、次に FFmpeg をインストールしてください
+Install FFmpeg (%s)
+	FFmpeg をインストール（%s）
+Looking for C compilers
+	C コンパイラーを検索中
+Looking for FFmpeg
+	FFmpeg を検索中
+Looking for Wine
+	Wine を検索中
+Checked what is installed
+	インストール状況を確認しました
+The install ended with code %d.
+	インストールはコード %d で終了しました。
+Finish the installer Apple opened, then press Check again.
+	Apple が開いたインストーラーを完了してから、「再確認」を押してください。
+Choose clang…
+	clang を選択…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	clang.exe を選択してください（例：LLVM-MinGW の bin\clang.exe）
+Checking
+	確認中
+runs the movie converter (a Windows program) for Convert Movies
+	「ムービーを変換」でムービー変換ツール（Windows プログラム）を実行します
+not found (only Convert Movies needs it)
+	見つかりません（「ムービーを変換」でのみ必要）
+Install Wine (Homebrew)
+	Wine をインストール（Homebrew）
+Install Homebrew (brew.sh) first, then Wine
+	先に Homebrew（brew.sh）、次に Wine をインストールしてください
+not found: install Proton in Steam (only Convert Movies needs it)
+	見つかりません：Steam で Proton をインストールしてください（「ムービーを変換」でのみ必要）
+In Steam: Library > search Proton > install one, then Check again
+	Steam で：ライブラリ > Proton を検索 > いずれかをインストールしてから、「再確認」を押してください
+Install Wine (%s)
+	Wine をインストール（%s）
+English
+	英語
+Japanese
+	日本語
+French
+	フランス語
+German
+	ドイツ語
+Italian
+	イタリア語
+Spanish
+	スペイン語
+Korean
+	韓国語
+Traditional Chinese
+	繁体字中国語
+These can be changed once the current task has finished.
+	現在の処理が終わると変更できます。
+These apply the next time the game starts; no Build needed.
+	次回のゲーム起動時に適用されます。ビルドは不要です。
+Language
+	言語
+Voice:
+	音声：
+The spoken language, cutscenes included
+	話す言語（カットシーンを含む）
+Subtitles & UI:
+	字幕と UI：
+The language of subtitles, menus and all other text
+	字幕、メニュー、その他すべてのテキストの言語
+Cutscenes
+	カットシーン
+Cutscene Colors:
+	カットシーンの色：
+Corrected
+	補正
+Original
+	オリジナル
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	PC 版と同じ表示：暗いシーンは黒つぶれ、明るいシーンは白飛び
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	エンコードされたままのフルカラーレンジ：暗いシーンも明るいシーンもディテールを保持
+Brightness:
+	明るさ：
+Cutscene brightness (a gain: black stays black)
+	カットシーンの明るさ（ゲイン：黒は黒のまま）
+Contrast:
+	コントラスト：
+Cutscene contrast, about mid-gray
+	カットシーンのコントラスト（中間グレー基準）
+Saturation:
+	彩度：
+Cutscene color strength (0%: black and white)
+	カットシーンの色の強さ（0%：白黒）
+Reset
+	リセット
+Save Folders
+	セーブフォルダー
+Not found
+	見つかりません
+1 .dat file
+	.dat ファイル 1 個
+Remove
+	削除
+No folders added
+	フォルダーが追加されていません
+Add Folder…
+	フォルダーを追加…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	Steam のもの以外にゲームが読み込むセーブファイル（.dat）のあるフォルダー。各セーブは最新のコピーが優先されます
+HD Textures
+	HD テクスチャ
+FF XIII HD Project:
+	FF XIII HD Project：
+Import ZIP Again…
+	ZIP を再インポート…
+Import ZIP…
+	ZIP をインポート…
+Get
+	入手
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	「入手」で Mod の ZIP をダウンロードします（Nexus Mods）。「ZIP をインポート…」でそのテクスチャをゲームのファイルの隣に配置します（処理中は約 25 GB の空きが必要）
+Importing: %s
+	インポート中：%s
+Imported from %s (%s voices); the game's own files are unchanged
+	%s からインポート済み（%s 音声）。ゲーム本体のファイルは変更されていません
+HD Fonts & GUI:
+	HD Fonts & GUI：
+Import Archive Again…
+	アーカイブを再インポート…
+Import Archive…
+	アーカイブをインポート…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	「入手」で Mod をダウンロードします（Nexus Mods：スタンドアロン版）。「アーカイブをインポート…」でテクスチャ（約 3.5 GB）をゲームのファイルの隣に展開します
+Imported from %s (%s files): sharper fonts, menus and maps
+	%s からインポート済み（%s ファイル）：フォント、メニュー、マップがより鮮明に
+HD Textures:
+	HD テクスチャ：
+Import an HD mod first
+	先に HD Mod をインポートしてください
+the HD Project's and the HD Fonts & GUI textures
+	HD Project と HD Fonts & GUI のテクスチャ
+the HD Project's textures
+	HD Project のテクスチャ
+the HD Fonts & GUI textures
+	HD Fonts & GUI のテクスチャ
+The game uses %s
+	ゲームで使用：%s
+The game's own textures
+	ゲーム本来のテクスチャ
+The game's original archives were discarded: the HD textures are always used
+	ゲームの元のアーカイブは破棄されています：HD テクスチャが常に使用されます
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	%s 音声用にインポートされています：現在の音声ではゲーム本来のテクスチャが使用されます（再インポートしてください）
+Old Assets:
+	旧アセット：
+Discard Old Assets
+	古いアセットを破棄
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	インポート後：Mod の ZIP と、HD 版で置き換えられたゲームのアーカイブを削除します
+Discarded (Steam's Verify integrity of game files restores them)
+	破棄済み（Steam の「ゲームファイルの整合性を確認」で復元できます）
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	約 %.1f GB を解放します（Mod の ZIP と、置き換えられたゲームのアーカイブ）
+Choose a folder with save files (.dat)
+	セーブファイル（.dat）のあるフォルダーを選択
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	HD Mod のアーカイブを選択（HD Project の .zip、HD Fonts and GUI の .rar）
+Choose the FINAL FANTASY XIII folder
+	FINAL FANTASY XIII のフォルダーを選択
+Mod archives (.zip, .rar)
+	Mod アーカイブ（.zip、.rar）
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|Mod アーカイブ
+Up
+	上へ
+Home
+	ホーム
+(no folders or ZIP files here)
+	（ここにはフォルダーも ZIP ファイルもありません）
+(no folders here)
+	（ここにはフォルダーがありません）
+Click the FF XIII HD Project's ZIP file to import it.
+	FF XIII HD Project の ZIP ファイルをクリックしてインポートします。
+FINAL FANTASY XIII is in this folder.
+	このフォルダーに FINAL FANTASY XIII があります。
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	FINAL FANTASY XIII のインストール先フォルダー（white_data があるもの）を開いてください。
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	このフォルダーに .dat ファイルはありません（確認するのはこのフォルダー内のファイルのみで、サブフォルダーは対象外です）。
+Choose this folder
+	このフォルダーを選択
+the launcher's sources are damaged (no dispatch table)
+	ランチャーのソースが破損しています（ディスパッチテーブルがありません）
+the launcher's sources are damaged (no exe check)
+	ランチャーのソースが破損しています（exe チェックがありません）
+it cannot be read
+	読み込めません
+it is not a Windows program
+	Windows プログラムではありません
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	ゲームの別の地域版です（Steam デポ %s。このランチャーのコードは北米／欧州版、デポ 292122 のものです）：まだ対応しておらず、再インストールしても同じ版になります
+Steam's DRM wrapper removed
+	Steam の DRM ラッパーを除去済み
+a modified copy of the game (%s)
+	改変されたゲームのコピー（%s）
+a different version of the game or a modified copy
+	別バージョンのゲーム、または改変されたコピー
+Cannot run %s.
+	%s を実行できません。
+Cannot copy %s to %s (is there room?).
+	%s を %s にコピーできません（空き容量は足りていますか？）。
+Choose the FINAL FANTASY XIII folder first (Home).
+	先に FINAL FANTASY XIII のフォルダーを選択してください（ホーム）。
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	ゲームの元のアーカイブは破棄されています（古いアセットを破棄）：インポートにはこれが必要です。Steam で復元してから（プロパティ > インストール済みファイル > ゲームファイルの整合性を確認）、再インポートしてください。
+Checking the ZIP
+	ZIP を確認中
+Cannot open %s.
+	%s を開けません。
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	ゲームに white_data/sys/%s%s.win32.bin がありません（%s 音声）。
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	Mod のツールは Windows プログラムです：Wine をインストールして（「ホーム」タブの「再確認」）、再インポートしてください。
+Setting up Wine (the first time: about a minute)
+	Wine をセットアップ中（初回のみ：約 1 分）
+Wine could not set up its folder (%s).
+	Wine がフォルダーをセットアップできませんでした（%s）。
+Cannot make %s.
+	%s を作成できません。
+Importing %s (%d textures) for %s voices into %s
+	%s（テクスチャ %d 個）を %s 音声用として %s にインポート中
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	時間がかかり、処理中は約 25 GB の空きが必要です（最終的に約 8 GB を使用）。ゲーム本体のファイルは変更されません。
+FF XIII HD Project import: %s -> %s (region %s)
+	FF XIII HD Project のインポート：%s -> %s（地域 %s）
+Unpacking the ZIP: %d of about %d files
+	ZIP を展開中：%d / 約 %d ファイル
+Cannot unpack %s from the ZIP (is there room?).
+	ZIP から %s を展開できません（空き容量は足りていますか？）。
+The mod's ff13tool.exe does not run here.
+	Mod の ff13tool.exe がここでは動作しません。
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	そのためには Wine の 32 ビットサポートが必要です（「ホーム」タブの Wine の行を参照）。
+Copying the game's archives
+	ゲームのアーカイブをコピー中
+Unpacking white_img%s
+	white_img%s を展開中
+Unpacking zone %s
+	ゾーン %s を展開中
+zone %s: no %s / %s
+	ゾーン %s：%s / %s がありません
+Unpacking white_scr%s
+	white_scr%s を展開中
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool が white_scr を展開しませんでした（インポートログを参照）。
+Log: %s
+	ログ：%s
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	主要キャラクターのモデルがオリジナルではありません（別の Mod のもの？）：そのまま残します。
+Putting in the HD textures: %d of %d (%s %s)
+	HD テクスチャを適用中：%d / %d（%s %s）
+Packing white_scr%s again
+	white_scr%s を再パック中
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool が white_scr を再パックできませんでした（インポートログを参照）。
+No texture could be put in (see the import log): nothing was changed.
+	テクスチャを 1 つも適用できませんでした（インポートログを参照）：何も変更されていません。
+Finishing
+	仕上げ中
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	HD Fonts and GUI のテクスチャを保持できませんでした：その Mod のアーカイブを再インポートしてください。
+Cannot move the new archives to %s.
+	新しいアーカイブを %s に移動できません。
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	HD テクスチャをインポートしました：ゾーン %d 個、モデル %d 個（%s）。HD テクスチャはオンです。
+Imported
+	インポート済み
+There is no finished HD Textures import.
+	完了した HD テクスチャのインポートがありません。
+Cannot write in %s.
+	%s に書き込めません。
+Deleting %s
+	%s を削除中
+Could not delete %s.
+	%s を削除できませんでした。
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	ゲームの元のアーカイブ %d 個%sを破棄しました：%.1f GB を解放。HD テクスチャはオンのままです。Steam の「ゲームファイルの整合性を確認」で元のファイルを戻せます。
+Discard the old assets?
+	古いアセットを破棄しますか？
+, and the mod's ZIP (%s)
+	、および Mod の ZIP（%s）
+Discard
+	破棄
+Keep them
+	残す
+Checking %s
+	%s を確認中
+Importing %s (%d files, %.1f GB) into %s
+	%s（%d ファイル、%.1f GB）を %s にインポート中
+Unpacking: %d of %d files
+	展開中：%d / %d ファイル
+Cannot unpack %s (%s).
+	%s を展開できません（%s）。
+Cannot write %s (is there room?).
+	%s を書き込めません（空き容量は足りていますか？）。
+Cannot move the textures to %s.
+	テクスチャを %s に移動できません。
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	HD Fonts and GUI をインポートしました：%d ファイル（%s）。HD テクスチャはオンです。
+Could not make %s: start the game with Run.
+	%s を作成できませんでした：「実行」でゲームを起動してください。
+no game built yet
+	まだゲームがビルドされていません
+Could not write %s: start the game with Run.
+	%s を書き込めませんでした：「実行」でゲームを起動してください。
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	ゲームはアプリケーションフォルダーにもあります（%s）：ランチャーを使わずに、そこや Launchpad、Spotlight から起動できます。
+Looking for FINAL FANTASY XIII
+	FINAL FANTASY XIII を検索中
+not found: choose its folder
+	見つかりません：フォルダーを選択してください
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	そのフォルダーに white_data/prog/win/bin/ffxiiiimg.exe がありません
+Game: %s (%s)
+	ゲーム：%s（%s）
+Rebuild
+	再ビルド
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp：同梱のソースが見つからないか破損しています
+Build
+	ビルド
+Cross-Compile
+	クロスコンパイル
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	ゲーム OK %v、変換対象のカットシーン %d、破棄可能 %d（%.1f GB）、保持 %d
+compiler: %s (%s)%s
+	コンパイラー：%s（%s）%s
+options: %v
+	オプション：%v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp：ウィンドウを開けませんでした：%s
+WhiteRecomp: could not open a window
+	WhiteRecomp：ウィンドウを開けませんでした
+Options
+	オプション
+Features & Mods
+	機能と Mod
+Running…
+	実行中…
+Run
+	実行
+Could not start %s.
+	%s を起動できませんでした。
+The game is running.
+	ゲームを実行中です。
+Starts %s.
+	%s を起動します。
+Rebuild to Run
+	再ビルドして実行
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	ここにあるゲームは別のバージョンのランチャーでビルドされています：キャッシュを消去してゲームを再ビルドし、このバージョンの修正を反映します。
+Discard Movies
+	ムービーを破棄
+Convert Movies
+	ムービーを変換
+Clear Cache
+	キャッシュを消去
+Close the game first: it cannot be rebuilt while it runs.
+	先にゲームを終了してください：実行中は再ビルドできません。
+Needs the game: choose its folder.
+	ゲームが必要です：フォルダーを選択してください。
+Needs a C compiler.
+	C コンパイラーが必要です。
+Builds the game with the options of the Options tab.
+	「オプション」タブの設定でゲームをビルドします。
+Needs the game.
+	ゲームが必要です。
+Every movie is converted.
+	すべてのムービーが変換済みです。
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	まだ MP4 がない %d 本のカットシーンを変換します（キャンセルして後で続きから再開できます）。
+Close the game first.
+	先にゲームを終了してください。
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	以前のビルドがデータフォルダーに残したもの（展開したソース、コンパイル済みオブジェクト、ツール）を削除し、次回のビルドで最初からすべてをコンパイルします。セーブと設定は残ります。
+Nothing to discard: no Bink movie has its MP4 yet.
+	破棄するものはありません：MP4 化された Bink ムービーはまだありません。
+Frees %.1f GB: the Bink movies that have their MP4.
+	%.1f GB を解放します：MP4 化済みの Bink ムービー。
+Browse…
+	参照…
+Game folder
+	ゲームフォルダー
+The North America / Europe edition of the game.
+	北米／欧州版のゲームです。
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	アジア版のゲームです：メニューの決定は Space キー（Enter ではありません）で、音声は日本語のみです。
+Requirements
+	必要なもの
+Check again
+	再確認
+Activity
+	アクティビティ
+The options can be changed once the current task has finished.
+	現在の処理が終わるとオプションを変更できます。
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	ほとんどは次回のビルドで、グラフィックとメモリは次回のゲーム起動時に適用されます。
+Display
+	ディスプレイ
+Aspect Ratio:
+	アスペクト比：
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10：画面全体を使用し、16:9 より縦に広い視野（ムービーには細い帯が残ります）
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 と 32:9：3D を横幅いっぱいに描画
+The game's own shape
+	ゲーム本来の比率
+Resolution:
+	解像度：
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	ウルトラワイド：ゲーム中に F5 / F6 で視野を広げる／狭める、F7 でリセット。ビルド不要
+What the game renders at; the window can be resized; no Build needed
+	ゲームの描画解像度。ウィンドウはサイズ変更可能。ビルド不要
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	低いほど GPU 負荷が軽く、画質は粗くなります。ウィンドウはサイズ変更可能。ビルド不要
+Higher costs GPU time; the window can be resized; no Build needed
+	GPU 負荷が増えます。ウィンドウはサイズ変更可能。ビルド不要
+Window Scaling:
+	ウィンドウのスケーリング：
+Fit (Default)
+	フィット（既定）
+Stretch
+	引き伸ばし
+Fills the window; the picture is squeezed if the window is another shape
+	ウィンドウ全体に表示。ウィンドウの比率が異なると画像が歪みます
+Keeps the picture's shape: black bars in a window of another shape
+	画像の比率を維持：比率が異なるウィンドウでは黒帯が入ります
+Graphics Driver:
+	グラフィックドライバー：
+The port's Vulkan renderer
+	移植版の Vulkan レンダラー
+Graphics
+	グラフィック
+Graphics:
+	グラフィック：
+No shadows, no anti-aliasing: the fastest
+	影なし、アンチエイリアスなし：最速
+Low-resolution shadows, 2x FXAA
+	低解像度の影、2x FXAA
+The game's shadows, 4x FXAA
+	ゲーム本来の影、4x FXAA
+The sharpest shadows, 8x FXAA: costly on the GPU
+	最も鮮明な影、8x FXAA：GPU 負荷大
+Shadows and anti-aliasing as set below
+	影とアンチエイリアスは下の設定に従う
+Shadow Resolution:
+	影の解像度：
+Off (No Shadows)
+	オフ（影なし）
+1024 x 1024 (Default)
+	1024 x 1024（既定）
+Sharper shadows cost GPU time; Off is the fastest
+	影が鮮明なほど GPU 負荷が増えます。オフが最速です
+Anti-alias Method:
+	アンチエイリアス方式：
+FXAA (Default)
+	FXAA（既定）
+A cheap filter on the 3D image (not the HUD)
+	3D 画像（HUD を除く）にかける軽量なフィルター
+Multisampling: costly on integrated GPUs
+	マルチサンプリング：内蔵 GPU では負荷大
+Anti-alias Quality:
+	アンチエイリアス品質：
+1x (Off)
+	1x（オフ）
+4x (Default)
+	4x（既定）
+FXAA strength: higher smooths longer edges
+	FXAA の強さ：高いほど長いエッジも滑らかに
+Samples per pixel (up to what the GPU has)
+	ピクセルあたりのサンプル数（GPU の対応上限まで）
+Effects Resolution:
+	エフェクト解像度：
+Half (Default)
+	半分（既定）
+Full
+	フル
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	エフェクトも他と同じ鮮明さ。内蔵 GPU では戦闘時の負荷大
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	戦闘エフェクトの GPU 負荷が 4 分の 1 に、やや柔らかい表示。ビルド不要
+Anisotropic Filtering:
+	異方性フィルタリング：
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x：遠くの地面や壁も鮮明。ビルド不要
+The game's own texture filtering (blurrier at a distance); no Build needed
+	ゲーム本来のテクスチャフィルタリング（遠くがぼやける）。ビルド不要
+Audio & Controls
+	オーディオと操作
+Audio:
+	オーディオ：
+Music, sound and voices
+	音楽、効果音、音声
+No audio work at all (play your own music)
+	オーディオ処理なし（自分の音楽を流す場合など）
+Gamepad Scanning:
+	ゲームパッドの検出：
+Every 2 seconds (Default)
+	2 秒ごと（既定）
+Once
+	1 回のみ
+Only the controllers there at the start (plug one in: restart the game)
+	起動時に接続されているコントローラーのみ（接続した場合はゲームを再起動）
+A controller plugged in while playing is found within 2 seconds
+	プレイ中に接続したコントローラーを 2 秒以内に検出
+Cutscene Files:
+	カットシーンファイル：
+None found
+	見つかりません
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	カットシーンファイルがありません：カットシーンを再生するには、Steam からゲームをクリーンに再インストールしてください
+The game's own Bink 2 videos, no conversion; no Build needed
+	ゲーム本来の Bink 2 動画、変換なし。ビルド不要
+The MP4s Convert Movies made; no Build needed
+	「ムービーを変換」で作成した MP4。ビルド不要
+Cutscenes:
+	カットシーン：
+Play
+	再生
+Play if converted
+	変換済みなら再生
+Auto-skip
+	自動スキップ
+No cutscene files to play
+	再生できるカットシーンファイルがありません
+Hover for how cutscenes work
+	カーソルを合わせるとカットシーンの仕組みを表示
+Steam Integration:
+	Steam 連携：
+No achievements or cloud saves; Steam does not show the game as running
+	実績もクラウドセーブもなし。Steam ではゲームが実行中として表示されません
+Performance
+	パフォーマンス
+Pipeline Build Threads:
+	パイプライン構築スレッド：
+Threads preparing new graphics effects in the background; no Build needed
+	新しいグラフィックエフェクトをバックグラウンドで準備するスレッド。ビルド不要
+Memory:
+	メモリ：
+4GB (Recommended)
+	4GB（推奨）
+The 2 GB the original exe gets; no Build needed
+	元の exe に割り当てられる 2 GB。ビルド不要
+The address space a 4 GB-patched exe gets; no Build needed
+	4 GB パッチ適用済み exe と同じアドレス空間。ビルド不要
+No C compiler found
+	C コンパイラーが見つかりません
+Where to get one
+	入手方法
+Optimization Level:
+	最適化レベル：
+Higher: a slower build, a faster game
+	高いほどビルドは遅く、ゲームは速くなります
+Profile-Guided Optimization:
+	プロファイルに基づく最適化：
+Off: the game built without the profile
+	オフ：プロファイルなしでビルド
+On: optimized for how the game runs (a faster game)
+	オン：ゲームの実際の動作に合わせて最適化（ゲームが高速化）
+Link-Time Optimization:
+	リンク時最適化：
+Off: a faster Build
+	オフ：ビルドが速い
+On: optimizes across files (a much slower Build)
+	オン：ファイル間で最適化（ビルドがかなり遅くなる）
+Needs LLVM's linker (lld) beside Clang: not found
+	Clang の隣に LLVM のリンカー（lld）が必要です：見つかりません
+Experimental Optimizations:
+	実験的な最適化：
+On: less-tested speed-ups that may break things
+	オン：テスト不十分な高速化。不具合が出る可能性があります
+Off: only the tested ones
+	オフ：テスト済みのもののみ
+Debug & Profile Tools:
+	デバッグ・プロファイルツール：
+Logs, tracing, the profiler and an FPS counter (console window)
+	ログ、トレース、プロファイラー、FPS カウンター（コンソールウィンドウ）
+Off: no console window, nothing printed
+	オフ：コンソールウィンドウなし、出力なし
+As AppImage:
+	AppImage として：
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	オン：「ビルド」で、プログラムと .cfg の代わりに、ゲームと設定を内包した 1 つのファイル WhiteRecomp-<CPU>.AppImage を作成します。オフ：従来どおりプログラムを作成します。
+Discard the old movies?
+	古いムービーを破棄しますか？
+The launcher was updated
+	ランチャーが更新されました
+Clear Cache and Build
+	キャッシュを消去してビルド
+Later
+	後で
+A C compiler is needed
+	C コンパイラーが必要です
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	ランチャーはお使いのコンピューターでゲームをビルドするため、C コンパイラーが必要です：Clang（最適：ゲームが高速）または GCC。見つかりませんでした。いずれかをインストールしてから「再確認」を押してください。
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	ランチャーはお使いのコンピューターでゲームをビルドするため、Clang が必要です（ゲームは Clang のみでビルドされ、GCC は使用しません）。見つかりませんでした。インストールしてから「再確認」を押してください。インストール済みなのに見つからない場合は、「選択」で指定してください。
+LLVM-MinGW (Clang)
+	LLVM-MinGW（Clang）
+MSYS2 (its clang64 Clang)
+	MSYS2（clang64 の Clang）
+Tried: %s
+	試行：%s
+Install it for me
+	自動でインストール
+Choose clang.exe…
+	clang.exe を選択…
+Close
+	閉じる
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Steam 起動中は実績とクラウドセーブを利用（先に Steam を起動）。ビルド不要
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Steam 起動中は実績とオーバーレイ（Shift+Tab）を利用。ビルド不要
+Every movie already has its MP4s.
+	すべてのムービーに MP4 があります。
+Nothing to convert
+	変換するものはありません
+Converting through %s
+	%s 経由で変換中
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	%d 本のカットシーンを変換中（全部：英語と日本語で約 7 時間の動画。キャンセルして後で続きから再開できます）
+Converting: 0 of %d
+	変換中：0 / %d
+Converting with %s threads
+	%s スレッドで変換中
+Converting %s: cutscene %d of %d
+	%s を変換中：カットシーン %d / %d
+Converting %s: cutscene %d of %d, frame %d of %d
+	%s を変換中：カットシーン %d / %d、フレーム %d / %d
+The converter failed.
+	変換に失敗しました。
+Converted %d cutscenes
+	%d 本のカットシーンを変換しました
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	%s を保持：%d / %d 本のカットシーンにまだ MP4 がありません
+Discarding %s
+	%s を破棄中
+Could not write %s.heads: %s kept
+	%s.heads を書き込めませんでした：%s は保持されます
+Could not cut down %s: %v
+	%s を縮小できませんでした：%v
+Discarded %d old movies: %.1f GB freed%s
+	古いムービー %d 本を破棄しました：%.1f GB を解放%s
+0 (Fastest)
+	0（最速）
+1 (Recommended)
+	1（推奨）
+3 (Slowest)
+	3（最も遅い）
+Needs Clang (GCC cannot read the profile)
+	Clang が必要です（GCC はプロファイルを読み込めません）
+Ultrawide
+	ウルトラワイド
+Ultrafast (Worst Quality)
+	超高速（最低画質）
+Fast
+	高速
+Fancy (Default)
+	高品質（既定）
+Ultrafancy
+	最高品質
+Custom
+	カスタム
+Cancelled.
+	キャンセルしました。
+Could not start %s
+	%s を起動できませんでした
+On
+	オン
+Off
+	オフ
+Setting up Wine's folder for the converter (only the first time)
+	変換ツール用に Wine のフォルダーをセットアップ中（初回のみ）
+Wine could not set up its folder (%s; code %d).
+	Wine がフォルダーをセットアップできませんでした（%s、コード %d）。
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine で変換ツール（32 ビット Windows プログラム）を実行できません。
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	32 ビットプログラムを実行できる Wine を使用してください（Wine 9 以降、例：Homebrew の wine-stable）。Apple シリコン搭載 Mac では Rosetta 2 も必要です（softwareupdate --install-rosetta）。
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	これは Proton の Wine です（Steam 内で検出）。Steam で別の Proton をインストールして（ライブラリ > Proton を検索。例：Proton 9.0 や Proton - Experimental）「再確認」を押すか、Wine 本体をインストールしてください。
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	Wine の 32 ビットサポートをインストールしてください：Debian / Ubuntu は wine32（sudo dpkg --add-architecture i386; sudo apt install wine32:i386）、Fedora は wine（これに含まれます）、Arch は wine。
+Wine said: %s
+	Wine の出力：%s
+Needs FFmpeg with its H.264 encoder (install it above).
+	H.264 エンコーダー付きの FFmpeg が必要です（上でインストールしてください）。
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	このランチャーにはムービー変換用の Windows 版 FFmpeg が含まれていません（含まれているのは x86-64 Linux 版と macOS 版のランチャーのみ）：別の PC で変換してください。
+Needs Wine (install it above): the converter is a Windows program.
+	Wine が必要です（上でインストールしてください）：変換ツールは Windows プログラムです。
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	キャッシュを消去しました（%d 項目を削除。セーブ、設定、Android の署名鍵は保持されます）。
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	キャッシュを消去しました（%d 項目を削除。セーブと Android の署名鍵は保持されます）。
+The settings were not this launcher version's own: they are back to the defaults.
+	設定はこのバージョンのランチャーのものではなかったため、初期値に戻しました。
+The cache could not be cleared completely: close any program using its files and try again.
+	キャッシュを完全には消去できませんでした。ファイルを使用しているプログラムを閉じてから、もう一度お試しください。
+Clearing: %s
+	消去中: %s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	お使いのゲームは以前のバージョンのランチャーでビルドされています。このバージョンの修正を反映するため、キャッシュを消去してゲームを最初からビルドし直します（数分かかります）。セーブは保持されます。設定も、このバージョンがすべての項目に対応していれば保持されます。
+Profiler:
+	プロファイラー:
+Off: F12 does nothing
+	オフ: F12 は何もしません
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	オン: ゲーム中に F12 で計測を開始・停止します。レポートはゲームと同じフォルダーに保存されます

@@ -13,6 +13,7 @@ package launcher
 import "core:fmt"
 import "core:os"
 import "core:path/filepath"
+import "core:slice"
 import "core:strconv"
 import "core:strings"
 
@@ -86,6 +87,7 @@ Settings :: struct {
 	opt_level:       int, // -O0 .. -O3
 	audio:           bool,
 	tools:           bool, // the debugging and profiling switches (XRC_PROFILE, XRC_TRACE_*, ...)
+	profiler:        bool, // Profiler (with the tools only): XRC_PROF=1 in the .cfg -- F12 in the game starts / stops a capture (src/runtime/xrc_prof.c)
 	fps:             int, // 30 or 60
 	vulkan:          bool, // Graphics Driver: Vulkan, the default (else Direct3D 9, Windows only)
 	skip_movies:     bool, // Cutscenes: Auto-skip
@@ -135,7 +137,12 @@ settings := Settings {
 	aniso           = true,
 }
 
+// the settings before any file: the defaults (Clear Cache: settings_file_exact, settings_reset)
+settings_default: Settings
+settings_default_kept: bool
+
 load_settings :: proc() {
+	if !settings_default_kept {settings_default = settings; settings_default.save_dirs = nil; settings_default_kept = true}
 	d, err := os.read_entire_file(data_path("settings.txt"), context.temp_allocator)
 	if err != nil {return}
 	version := 1 // (settings_version: 2 since Vulkan became the default; a version 1 file's "vulkan 0" was the old default; 4 since Graphics)
@@ -158,6 +165,8 @@ load_settings :: proc() {
 			settings.audio = v != "0"
 		case "tools":
 			settings.tools = v == "1"
+		case "profiler":
+			settings.profiler = v == "1"
 		case "fps":
 			if n_ok && (n == 30 || n == 60) {settings.fps = n}
 		case "vulkan":
@@ -231,7 +240,10 @@ load_settings :: proc() {
 	graphics_apply()
 }
 
-save_settings :: proc() {
+save_settings :: proc() {_ = os.write_entire_file(data_path("settings.txt"), transmute([]u8)settings_text())}
+
+// the settings as settings.txt holds them (in the temp allocator)
+settings_text :: proc() -> string {
 	b := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&b, "settings_version 4\n")
 	fmt.sbprintf(&b, "game_dir %s\n", settings.game_dir)
@@ -239,6 +251,7 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "opt_level %d\n", settings.opt_level)
 	fmt.sbprintf(&b, "audio %d\n", settings.audio ? 1 : 0)
 	fmt.sbprintf(&b, "tools %d\n", settings.tools ? 1 : 0)
+	fmt.sbprintf(&b, "profiler %d\n", settings.profiler ? 1 : 0)
 	fmt.sbprintf(&b, "fps %d\n", settings.fps)
 	fmt.sbprintf(&b, "vulkan %d\n", settings.vulkan ? 1 : 0)
 	fmt.sbprintf(&b, "skip_movies %d\n", settings.skip_movies ? 1 : 0)
@@ -273,5 +286,48 @@ save_settings :: proc() {
 	fmt.sbprintf(&b, "cross_cpu %s\n", settings.cross_cpu)
 	fmt.sbprintf(&b, "appimage %d\n", settings.appimage ? 1 : 0)
 	fmt.sbprintf(&b, "cross_appimage %d\n", settings.cross_appimage ? 1 : 0)
-	_ = os.write_entire_file(data_path("settings.txt"), b.buf[:])
+	return strings.to_string(b)
+}
+
+// settings.txt is exactly what this launcher would write for what it says: read into the defaults and written out
+// again, every line of the file is one of those lines (in any order, each once; a key it lacks -- an option newer
+// than the file -- takes the default). Anything else -- a key no option has any more, a value out of range or of a
+// kind it does not take (parsed as another or ignored), a key twice, an older settings_version -- is not: Clear
+// Cache then deletes the file (wipe_data_dir). The settings in use are left as they were.
+settings_file_exact :: proc() -> bool {
+	d, err := os.read_entire_file(data_path("settings.txt"), context.temp_allocator)
+	if err != nil {return false}
+	keep := settings
+	settings = settings_default
+	settings.save_dirs = make([dynamic]string, context.temp_allocator)
+	load_settings()
+	again := settings_text()
+	settings = keep
+	lines :: proc(s: string) -> [dynamic]string {
+		out := make([dynamic]string, context.temp_allocator)
+		for l in strings.split_lines(s, context.temp_allocator) {
+			t := strings.trim_space(l)
+			if t != "" {append(&out, t)}
+		}
+		slice.sort(out[:])
+		return out
+	}
+	a, b := lines(string(d)), lines(again)
+	// (its version line has to be there: a file without one is version 1's)
+	if !slice.contains(a[:], strings.trim_space(strings.split_lines(again, context.temp_allocator)[0])) {return false}
+	// (each of the file's lines one of those, once: a key it lacks -- an option newer than the file -- is the default)
+	j := 0
+	for l in a {
+		for j < len(b) && b[j] < l {j += 1}
+		if j == len(b) || b[j] != l {return false}
+		j += 1
+	}
+	return true
+}
+
+// every setting back to its default (Clear Cache, when settings.txt was not exact: nothing of it is kept)
+settings_reset :: proc() {
+	settings = settings_default
+	settings.save_dirs = make([dynamic]string)
+	graphics_apply()
 }

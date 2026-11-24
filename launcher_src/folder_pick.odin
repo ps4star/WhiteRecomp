@@ -219,7 +219,7 @@ draw_browser :: proc(g: ^Gui, wheel: int) {
 	defer g.in_modal = false
 	box := dialog_box(g, min(px(g, 640), g.screen.w - px(g, 40)), min(px(g, 520), g.screen.h - px(g, 40)))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 20))
-	ren.draw_text(g.dl, g.big, pick_title(), {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, tr(pick_title()), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 10)
 
 	// the shortcuts
@@ -243,7 +243,7 @@ draw_browser :: proc(g: ^Gui, wheel: int) {
 	// the folders here
 	btns := dialog_buttons(g, box)
 	list := ui.Rect{in_.x, y, in_.w, btns.y - px(g, 24) - y}
-	round_box(g, list, px(g, 4), LOG_BG, CARD_BORDER)
+	panel(g, list, px(g, 4), LOG_BG)
 	rh := px(g, 30)
 	rows := max(1, (list.h - px(g, 8)) / rh)
 	if inside(list, g.mouse) {browser.scroll = clamp(browser.scroll - wheel, 0, max(0, len(browser.entries) - rows))}

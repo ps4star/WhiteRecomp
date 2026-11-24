@@ -1,0 +1,935 @@
+# The launcher in zh-Hant (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages zh-Hant
+Cannot make the APK's signing key (no random numbers from the system).
+	無法產生 APK 的簽署金鑰（系統未提供亂數）。
+Cannot make the APK's certificate.
+	無法產生 APK 的憑證。
+Cannot sign the APK's certificate.
+	無法簽署 APK 的憑證。
+Cannot keep the APK's signing key in %s.
+	無法將 APK 的簽署金鑰保存在 %s。
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	你的 APK 的新簽署金鑰：%s（請妥善保存：只有以同一金鑰簽署，更新才能覆蓋安裝此應用程式）
+Cannot sign the APK.
+	無法簽署 APK。
+Cannot write %s.
+	無法寫入 %s。
+This launcher carries no APK files for %s (%s).
+	此啟動器未附帶 %s（%s）的 APK 檔案。
+Cannot read %s.
+	無法讀取 %s。
+Writing the APK
+	正在寫入 APK
+As AppImage
+	打包為 AppImage
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp：遊戲不在 $XRC_GAME_DIR
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	請將「FINAL FANTASY XIII」資料夾（內含 white_data 的那個）複製到 AppImage 旁邊，或設定 XRC_GAME_DIR。
+Packing the AppImage
+	正在打包 AppImage
+This launcher carries no AppImage runtime for %s.
+	此啟動器未附帶 %s 的 AppImage 執行環境。
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	未壓縮：安裝 squashfs-tools（mksquashfs）可得到較小的檔案
+AppImage: %s (%.0f MB, %s)
+	AppImage：%s（%.0f MB，%s）
+Checking the game
+	正在檢查遊戲
+No C compiler that can build the game: install one first.
+	沒有可建置遊戲的 C 編譯器：請先安裝一個。
+Game: %s
+	遊戲：%s
+Compiler: %s
+	編譯器：%s
+Deleted %d old source files
+	已刪除 %d 個舊原始碼檔案
+Sources: %s (%d files changed)
+	原始碼：%s（%d 個檔案有變更）
+This launcher carries no files for %s.
+	此啟動器未附帶 %s 的檔案。
+FFmpeg: your own build in %s
+	FFmpeg：你自己的版本，位於 %s
+Options: %v
+	選項：%v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	此次建置已關閉連結時最佳化：Clang 的此功能需要旁邊有 LLVM 的連結器（ld.lld），但找不到。
+Compiling %d of %d files on %d cores
+	正在編譯 %d / %d 個檔案（%d 個核心）
+Compiling: %d of %d (%s)
+	編譯中：%d / %d（%s）
+Linking
+	正在連結
+Linking failed.
+	連結失敗。
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	（若 WhiteRecomp 正在執行，請關閉它並再按一次「建置」：Windows 無法取代執行中的程式。）
+Cannot write the output in %s.
+	無法在 %s 中寫入輸出。
+Built %s: copy it to the %s computer with %s (it says how).
+	已建置 %s：請將它複製到 %s 電腦，方法見 %s（其中有說明）。
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	已建置 %s：請將它安裝到 %s 裝置；%s 說明了安裝方法及遊戲檔案的存放位置。
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	已建置 %s：請將資料夾 %s 複製到 %s 電腦（方法見其中的 README.txt）。
+Built
+	已建置
+Built %s
+	已建置 %s
+Cannot write %s in %s.
+	無法寫入 %s（位於 %s）。
+Profile-Guided Optimization is off for this build: %s.
+	此次建置已關閉效能剖析導向最佳化：%s。
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	此次建置已關閉效能剖析導向最佳化：套件中沒有剖析資料。
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	此次建置已關閉效能剖析導向最佳化：此 Clang 無法讀取剖析資料（版本較舊？）。
+Profile-Guided Optimization: %s
+	效能剖析導向最佳化：%s
+Could not read the data folder %s: %v
+	無法讀取資料資料夾 %s：%v
+Clearing the data folder: %s
+	正在清除資料資料夾：%s
+Could not delete %s: %v
+	無法刪除 %s：%v
+Any ARM64 CPU (Default)
+	任何 ARM64 CPU（預設）
+Raspberry Pi 4 (Cortex-A72)
+	Raspberry Pi 4（Cortex-A72）
+Raspberry Pi 5 (Cortex-A76)
+	Raspberry Pi 5（Cortex-A76）
+Apple M1 / M2 (Asahi Linux)
+	Apple M1 / M2（Asahi Linux）
+Ampere / Graviton 2 servers
+	Ampere / Graviton 2 伺服器
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	64 位元 ARM Linux（glibc 2.34 或更新版本：Debian 12、Ubuntu 22.04、Raspberry Pi OS 12 及更新版本）
+Any ARM64 phone (Default)
+	任何 ARM64 手機（預設）
+2019 and later flagships (Cortex-A76)
+	2019 年及之後的旗艦機（Cortex-A76）
+2021 and later flagships (Cortex-X1)
+	2021 年及之後的旗艦機（Cortex-X1）
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 或更新版本、64 位元 ARM、Vulkan：可安裝的 APK（尚不支援過場動畫）
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	需要 Clang（GCC 只能為其所在的電腦編譯）：請安裝 Clang，然後在「首頁」分頁按「重新檢查」。
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	需要 Clang 旁邊有 LLVM 的連結器（ld.lld.exe）：LLVM-MinGW 與 MSYS2 的 Clang 都有。
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	需要 LLVM 的連結器 lld（例如 sudo apt install lld）。
+Target: %s, CPU %s
+	目標：%s，CPU %s
+Linker: %s
+	連結器：%s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	使用「選項」分頁的選項，為另一種電腦建置遊戲。遊戲將在那台電腦上執行，而非這台。
+Target:
+	目標：
+Runs on every 64-bit ARM phone
+	可在所有 64 位元 ARM 手機上執行
+Runs on every ARM64 CPU
+	可在所有 ARM64 CPU 上執行
+Faster there, but only that CPU and newer ones
+	在該 CPU 上較快，但僅限該 CPU 及更新的 CPU
+Settings:
+	設定：
+Use Android Preset
+	使用 Android 預設設定
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	將「選項」分頁設為適合手機：960x540、60 fps、512 陰影、關閉反鋸齒、半解析度特效、4 GB 記憶體、-O1、2 個管線執行緒。為這台電腦建置時也會使用這些設定。
+Sets the Options tab: 960x540, 60 fps, light graphics
+	設定「選項」分頁：960x540、60 fps、輕量畫面
+Compiler:
+	編譯器：
+Looking for compilers…
+	正在尋找編譯器…
+No Clang found
+	找不到 Clang
+Linker:
+	連結器：
+No lld found
+	找不到 lld
+Output:
+	輸出：
+Not built yet
+	尚未建置
+Build for %s
+	為 %s 建置
+Wait for the current task to finish.
+	請等待目前的工作完成。
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	需要遊戲（建置時會讀取其 exe）：請在「首頁」分頁選擇其資料夾。
+Builds the game for %s into %s.
+	為 %s 建置遊戲，輸出至 %s。
+Cancel
+	取消
+Clang (Best)
+	Clang（最佳）
+Choose clang
+	選擇 clang
+cannot write in the launcher's folder
+	無法寫入啟動器的資料夾
+it does not start
+	無法啟動
+not found
+	找不到
+No such file
+	沒有此檔案
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	缺少 C 函式庫的標頭檔（pthread.h）-- SteamOS 會移除它們；「幫我安裝」可將其補回
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	缺少 C 函式庫的標頭檔（pthread.h）：請安裝 glibc 的開發檔案（幫我安裝）
+it cannot build the game (%s)
+	無法建置遊戲（%s）
+the programs it makes do not run here (%s)
+	它產生的程式無法在此執行（%s）
+the programs it makes do not run here
+	它產生的程式無法在此執行
+C compiler
+	C 編譯器
+builds the game from the bundled sources
+	以附帶的原始碼建置遊戲
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	已安裝 Visual C++（cl），但目前還無法建置遊戲（需要 clang）
+none found
+	找不到
+Install LLVM-MinGW (winget)
+	安裝 LLVM-MinGW（winget）
+Install Apple's command line tools
+	安裝 Apple 的命令列工具
+Install Clang and the C headers (%s)
+	安裝 Clang 與 C 標頭檔（%s）
+Install Clang (%s)
+	安裝 Clang（%s）
+Links
+	相關連結
+converts the movies (the game plays them without it)
+	轉換影片（遊戲沒有它也能播放影片）
+included with the launcher
+	已隨附於啟動器
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	已隨附於啟動器（Windows 版 FFmpeg：「轉換影片」會透過 Wine 執行它）
+Install FFmpeg (winget)
+	安裝 FFmpeg（winget）
+Install FFmpeg (Homebrew)
+	安裝 FFmpeg（Homebrew）
+Install Homebrew (brew.sh) first, then FFmpeg
+	請先安裝 Homebrew（brew.sh），再安裝 FFmpeg
+Install FFmpeg (%s)
+	安裝 FFmpeg（%s）
+Looking for C compilers
+	正在尋找 C 編譯器
+Looking for FFmpeg
+	正在尋找 FFmpeg
+Looking for Wine
+	正在尋找 Wine
+Checked what is installed
+	已檢查安裝項目
+The install ended with code %d.
+	安裝結束，代碼 %d。
+Finish the installer Apple opened, then press Check again.
+	請完成 Apple 開啟的安裝程式，然後按「重新檢查」。
+Choose clang…
+	選擇 clang…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	選擇 clang.exe（例如 LLVM-MinGW 的 bin\clang.exe）
+Checking
+	檢查中
+runs the movie converter (a Windows program) for Convert Movies
+	為「轉換影片」執行影片轉換器（一個 Windows 程式）
+not found (only Convert Movies needs it)
+	找不到（只有「轉換影片」需要它）
+Install Wine (Homebrew)
+	安裝 Wine（Homebrew）
+Install Homebrew (brew.sh) first, then Wine
+	請先安裝 Homebrew（brew.sh），再安裝 Wine
+not found: install Proton in Steam (only Convert Movies needs it)
+	找不到：請在 Steam 中安裝 Proton（只有「轉換影片」需要它）
+In Steam: Library > search Proton > install one, then Check again
+	在 Steam 中：收藏庫 > 搜尋 Proton > 安裝一個，然後按「重新檢查」
+Install Wine (%s)
+	安裝 Wine（%s）
+English
+	英文
+Japanese
+	日文
+French
+	法文
+German
+	德文
+Italian
+	義大利文
+Spanish
+	西班牙文
+Korean
+	韓文
+Traditional Chinese
+	繁體中文
+These can be changed once the current task has finished.
+	目前的工作完成後即可變更這些設定。
+These apply the next time the game starts; no Build needed.
+	這些設定會在下次啟動遊戲時套用；不需要「建置」。
+Language
+	語言
+Voice:
+	語音：
+The spoken language, cutscenes included
+	語音的語言，包括過場動畫
+Subtitles & UI:
+	字幕與介面：
+The language of subtitles, menus and all other text
+	字幕、選單及所有其他文字的語言
+Cutscenes
+	過場動畫
+Cutscene Colors:
+	過場動畫色彩：
+Corrected
+	已校正
+Original
+	原始
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	與 PC 版的呈現相同：暗場景被壓成全黑，亮場景過曝
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	過場動畫編碼時的完整色彩範圍：保留暗部與亮部細節
+Brightness:
+	亮度：
+Cutscene brightness (a gain: black stays black)
+	過場動畫亮度（增益：黑色仍為黑色）
+Contrast:
+	對比：
+Cutscene contrast, about mid-gray
+	過場動畫對比，以中灰為基準
+Saturation:
+	飽和度：
+Cutscene color strength (0%: black and white)
+	過場動畫色彩強度（0%：黑白）
+Reset
+	重設
+Save Folders
+	存檔資料夾
+Not found
+	找不到
+1 .dat file
+	1 個 .dat 檔案
+Remove
+	移除
+No folders added
+	尚未新增資料夾
+Add Folder…
+	新增資料夾…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	除了 Steam 的存檔外，遊戲也會讀取這些含有存檔（.dat）的資料夾；每個存檔以最新的副本為準
+HD Textures
+	高解析度材質
+FF XIII HD Project:
+	FF XIII HD Project：
+Import ZIP Again…
+	重新匯入 ZIP…
+Import ZIP…
+	匯入 ZIP…
+Get
+	取得
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	「取得」會下載此模組的 ZIP（Nexus Mods）；「匯入 ZIP…」會將其材質放在遊戲材質旁邊（執行期間需要約 25 GB 可用空間）
+Importing: %s
+	正在匯入：%s
+Imported from %s (%s voices); the game's own files are unchanged
+	已從 %s 匯入（%s 語音）；遊戲本身的檔案未變更
+HD Fonts & GUI:
+	HD Fonts & GUI：
+Import Archive Again…
+	重新匯入封存檔…
+Import Archive…
+	匯入封存檔…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	「取得」會下載此模組（Nexus Mods：獨立版本）；「匯入封存檔…」會將其材質（約 3.5 GB）解壓縮到遊戲材質旁邊
+Imported from %s (%s files): sharper fonts, menus and maps
+	已從 %s 匯入（%s 個檔案）：更清晰的字型、選單與地圖
+HD Textures:
+	高解析度材質：
+Import an HD mod first
+	請先匯入高解析度模組
+the HD Project's and the HD Fonts & GUI textures
+	HD Project 與 HD Fonts & GUI 的材質
+the HD Project's textures
+	HD Project 的材質
+the HD Fonts & GUI textures
+	HD Fonts & GUI 的材質
+The game uses %s
+	遊戲使用 %s
+The game's own textures
+	遊戲本身的材質
+The game's original archives were discarded: the HD textures are always used
+	遊戲的原始封存檔已捨棄：一律使用高解析度材質
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	已為 %s 語音匯入：使用這些語音時，遊戲會使用其本身的材質（請重新匯入）
+Old Assets:
+	舊資源：
+Discard Old Assets
+	捨棄舊資源
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	匯入之後：刪除模組的 ZIP，以及被高解析度副本取代的遊戲封存檔
+Discarded (Steam's Verify integrity of game files restores them)
+	已捨棄（Steam 的「驗證遊戲檔案完整性」可將其還原）
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	可釋放約 %.1f GB（模組的 ZIP 與遊戲被取代的封存檔）
+Choose a folder with save files (.dat)
+	選擇含有存檔（.dat）的資料夾
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	選擇高解析度模組的封存檔（HD Project 的 .zip、HD Fonts and GUI 的 .rar）
+Choose the FINAL FANTASY XIII folder
+	選擇 FINAL FANTASY XIII 資料夾
+Mod archives (.zip, .rar)
+	模組封存檔（.zip、.rar）
+` : `choose folder with prompt 
+	` : `choose folder with prompt
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|模組封存檔
+Up
+	上一層
+Home
+	首頁
+(no folders or ZIP files here)
+	（此處沒有資料夾或 ZIP 檔案）
+(no folders here)
+	（此處沒有資料夾）
+Click the FF XIII HD Project's ZIP file to import it.
+	按一下 FF XIII HD Project 的 ZIP 檔案以匯入。
+FINAL FANTASY XIII is in this folder.
+	FINAL FANTASY XIII 位於此資料夾。
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	請開啟安裝 FINAL FANTASY XIII 的資料夾（內含 white_data 的那個）。
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	此資料夾中沒有 .dat 檔案（只會查看此資料夾本身的檔案，不含子資料夾）。
+Choose this folder
+	選擇此資料夾
+the launcher's sources are damaged (no dispatch table)
+	啟動器的原始碼已損毀（沒有分派表）
+the launcher's sources are damaged (no exe check)
+	啟動器的原始碼已損毀（沒有 exe 檢查）
+it cannot be read
+	無法讀取
+it is not a Windows program
+	不是 Windows 程式
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	這是遊戲的另一個地區版本（Steam depot %s；此啟動器的程式碼來自北美 / 歐洲版，depot 292122）：目前尚不支援，重新安裝也會得到相同版本
+Steam's DRM wrapper removed
+	已移除 Steam 的 DRM 包裝
+a modified copy of the game (%s)
+	遊戲的修改版本（%s）
+a different version of the game or a modified copy
+	遊戲的其他版本或修改版本
+Cannot run %s.
+	無法執行 %s。
+Cannot copy %s to %s (is there room?).
+	無法將 %s 複製到 %s（空間是否足夠？）。
+Choose the FINAL FANTASY XIII folder first (Home).
+	請先選擇 FINAL FANTASY XIII 資料夾（首頁）。
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	遊戲的原始封存檔已被捨棄（捨棄舊資源）：匯入需要它們。請讓 Steam 還原它們（內容 > 已安裝的檔案 > 驗證遊戲檔案完整性），然後重新匯入。
+Checking the ZIP
+	正在檢查 ZIP
+Cannot open %s.
+	無法開啟 %s。
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	遊戲中沒有 white_data/sys/%s%s.win32.bin（%s 語音）。
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	此模組的工具是 Windows 程式：請安裝 Wine（「首頁」分頁：檢查），然後重新匯入。
+Setting up Wine (the first time: about a minute)
+	正在設定 Wine（第一次約需一分鐘）
+Wine could not set up its folder (%s).
+	Wine 無法設定其資料夾（%s）。
+Cannot make %s.
+	無法建立 %s。
+Importing %s (%d textures) for %s voices into %s
+	正在匯入 %s（%d 個材質），用於 %s 語音，匯入至 %s
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	這需要一段時間，執行期間需要約 25 GB 可用空間（完成後約佔用 8 GB）。遊戲本身的檔案不會變更。
+FF XIII HD Project import: %s -> %s (region %s)
+	FF XIII HD Project 匯入：%s -> %s（地區 %s）
+Unpacking the ZIP: %d of about %d files
+	正在解壓縮 ZIP：%d / 約 %d 個檔案
+Cannot unpack %s from the ZIP (is there room?).
+	無法從 ZIP 解壓縮 %s（空間是否足夠？）。
+The mod's ff13tool.exe does not run here.
+	此模組的 ff13tool.exe 無法在此執行。
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	Wine 需要 32 位元支援才能執行它（請參閱「首頁」分頁的 Wine 一行）。
+Copying the game's archives
+	正在複製遊戲的封存檔
+Unpacking white_img%s
+	正在解壓縮 white_img%s
+Unpacking zone %s
+	正在解壓縮區域 %s
+zone %s: no %s / %s
+	區域 %s：沒有 %s / %s
+Unpacking white_scr%s
+	正在解壓縮 white_scr%s
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool 未解壓縮 white_scr（請參閱匯入記錄）。
+Log: %s
+	記錄：%s
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	主要角色的模型不是原始模型（來自其他模組？）：將保持原樣。
+Putting in the HD textures: %d of %d (%s %s)
+	正在放入高解析度材質：%d / %d（%s %s）
+Packing white_scr%s again
+	正在重新打包 white_scr%s
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool 無法重新打包 white_scr（請參閱匯入記錄）。
+No texture could be put in (see the import log): nothing was changed.
+	無法放入任何材質（請參閱匯入記錄）：未做任何變更。
+Finishing
+	正在完成
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	無法保留 HD Fonts and GUI 材質：請重新匯入該模組的封存檔。
+Cannot move the new archives to %s.
+	無法將新的封存檔移至 %s。
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	已匯入高解析度材質：%d 個區域與 %d 個模型，位於 %s。「高解析度材質」已開啟。
+Imported
+	已匯入
+There is no finished HD Textures import.
+	沒有已完成的高解析度材質匯入。
+Cannot write in %s.
+	無法在 %s 中寫入。
+Deleting %s
+	正在刪除 %s
+Could not delete %s.
+	無法刪除 %s。
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	已捨棄遊戲的 %d 個原始封存檔%s：釋放了 %.1f GB。「高解析度材質」保持開啟；Steam 的「驗證遊戲檔案完整性」可還原原始檔案。
+Discard the old assets?
+	要捨棄舊資源嗎？
+, and the mod's ZIP (%s)
+	，以及模組的 ZIP（%s）
+Discard
+	捨棄
+Keep them
+	保留
+Checking %s
+	正在檢查 %s
+Importing %s (%d files, %.1f GB) into %s
+	正在匯入 %s（%d 個檔案，%.1f GB）至 %s
+Unpacking: %d of %d files
+	正在解壓縮：%d / %d 個檔案
+Cannot unpack %s (%s).
+	無法解壓縮 %s（%s）。
+Cannot write %s (is there room?).
+	無法寫入 %s（空間是否足夠？）。
+Cannot move the textures to %s.
+	無法將材質移至 %s。
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	已匯入 HD Fonts and GUI：%d 個檔案，位於 %s。「高解析度材質」已開啟。
+Could not make %s: start the game with Run.
+	無法建立 %s：請用「執行」啟動遊戲。
+no game built yet
+	尚未建置遊戲
+Could not write %s: start the game with Run.
+	無法寫入 %s：請用「執行」啟動遊戲。
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	遊戲也在「應用程式」中（%s）：可從該處、Launchpad 或 Spotlight 啟動，無需啟動器。
+Looking for FINAL FANTASY XIII
+	正在尋找 FINAL FANTASY XIII
+not found: choose its folder
+	找不到：請選擇其資料夾
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	該資料夾中沒有 white_data/prog/win/bin/ffxiiiimg.exe
+Game: %s (%s)
+	遊戲：%s（%s）
+Rebuild
+	重新建置
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp：附帶的原始碼遺失或損毀
+Build
+	建置
+Cross-Compile
+	交叉編譯
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	遊戲正常 %v，%d 個過場動畫待轉換，%d 個可捨棄（%.1f GB），%d 個保留
+compiler: %s (%s)%s
+	編譯器：%s（%s）%s
+options: %v
+	選項：%v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp：無法開啟視窗：%s
+WhiteRecomp: could not open a window
+	WhiteRecomp：無法開啟視窗
+Options
+	選項
+Features & Mods
+	功能與模組
+Running…
+	執行中…
+Run
+	執行
+Could not start %s.
+	無法啟動 %s。
+The game is running.
+	遊戲正在執行。
+Starts %s.
+	啟動 %s。
+Rebuild to Run
+	重新建置以執行
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	此處的遊戲是由其他版本的啟動器建置的：將清除其快取並重新建置遊戲，以納入此版本的修正。
+Discard Movies
+	捨棄影片
+Convert Movies
+	轉換影片
+Clear Cache
+	清除快取
+Close the game first: it cannot be rebuilt while it runs.
+	請先關閉遊戲：遊戲執行時無法重新建置。
+Needs the game: choose its folder.
+	需要遊戲：請選擇其資料夾。
+Needs a C compiler.
+	需要 C 編譯器。
+Builds the game with the options of the Options tab.
+	使用「選項」分頁的選項建置遊戲。
+Needs the game.
+	需要遊戲。
+Every movie is converted.
+	所有影片皆已轉換。
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	轉換尚無 MP4 的 %d 個過場動畫（可取消，之後再繼續）。
+Close the game first.
+	請先關閉遊戲。
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	刪除先前建置留在資料資料夾中的內容（解壓縮的原始碼、編譯後的目的檔、工具），讓下次「建置」從頭編譯所有內容。存檔與設定會保留。
+Nothing to discard: no Bink movie has its MP4 yet.
+	沒有可捨棄的項目：尚無任何 Bink 影片有對應的 MP4。
+Frees %.1f GB: the Bink movies that have their MP4.
+	可釋放 %.1f GB：已有 MP4 的 Bink 影片。
+Browse…
+	瀏覽…
+Game folder
+	遊戲資料夾
+The North America / Europe edition of the game.
+	遊戲的北美 / 歐洲版。
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	遊戲的亞洲版：在選單中以 Space 確認（Enter 無效），且僅有日文語音。
+Requirements
+	需求
+Check again
+	重新檢查
+Activity
+	活動
+The options can be changed once the current task has finished.
+	目前的工作完成後即可變更選項。
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	大多數選項在下次「建置」時套用；「圖形」與「記憶體」在下次啟動遊戲時套用。
+Display
+	顯示
+Aspect Ratio:
+	長寬比：
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10：全螢幕，畫面比 16:9 時更高（影片保留細黑邊）
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 與 32:9：3D 畫面橫跨整個寬度
+The game's own shape
+	遊戲原本的比例
+Resolution:
+	解析度：
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	超寬螢幕：在遊戲中，F5 / F6 加寬 / 縮窄視野，F7 重設；不需要「建置」
+What the game renders at; the window can be resized; no Build needed
+	遊戲的算繪解析度；視窗可調整大小；不需要「建置」
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	較低：GPU 負擔較輕，但較不清晰；視窗可調整大小；不需要「建置」
+Higher costs GPU time; the window can be resized; no Build needed
+	較高：耗用更多 GPU 時間；視窗可調整大小；不需要「建置」
+Window Scaling:
+	視窗縮放：
+Fit (Default)
+	符合（預設）
+Stretch
+	延展
+Fills the window; the picture is squeezed if the window is another shape
+	填滿視窗；若視窗比例不同，畫面會被擠壓
+Keeps the picture's shape: black bars in a window of another shape
+	保持畫面比例：視窗比例不同時會有黑邊
+Graphics Driver:
+	圖形驅動程式：
+The port's Vulkan renderer
+	移植版的 Vulkan 算繪器
+Graphics
+	圖形
+Graphics:
+	圖形：
+No shadows, no anti-aliasing: the fastest
+	無陰影、無反鋸齒：最快
+Low-resolution shadows, 2x FXAA
+	低解析度陰影、2x FXAA
+The game's shadows, 4x FXAA
+	遊戲原本的陰影、4x FXAA
+The sharpest shadows, 8x FXAA: costly on the GPU
+	最清晰的陰影、8x FXAA：GPU 負擔大
+Shadows and anti-aliasing as set below
+	陰影與反鋸齒依下方設定
+Shadow Resolution:
+	陰影解析度：
+Off (No Shadows)
+	關閉（無陰影）
+1024 x 1024 (Default)
+	1024 x 1024（預設）
+Sharper shadows cost GPU time; Off is the fastest
+	陰影越清晰越耗 GPU 時間；「關閉」最快
+Anti-alias Method:
+	反鋸齒方式：
+FXAA (Default)
+	FXAA（預設）
+A cheap filter on the 3D image (not the HUD)
+	套用在 3D 畫面上的低成本濾鏡（不含 HUD）
+Multisampling: costly on integrated GPUs
+	多重取樣：在內顯上負擔大
+Anti-alias Quality:
+	反鋸齒品質：
+1x (Off)
+	1x（關閉）
+4x (Default)
+	4x（預設）
+FXAA strength: higher smooths longer edges
+	FXAA 強度：越高可平滑越長的邊緣
+Samples per pixel (up to what the GPU has)
+	每像素取樣數（最高至 GPU 支援的數量）
+Effects Resolution:
+	特效解析度：
+Half (Default)
+	一半（預設）
+Full
+	完整
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	特效與其他畫面一樣清晰；在內顯上戰鬥時負擔大
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	戰鬥特效只需四分之一的 GPU 時間，略為柔和；不需要「建置」
+Anisotropic Filtering:
+	非等向性過濾：
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x：地面與牆壁在遠處仍保持清晰；不需要「建置」
+The game's own texture filtering (blurrier at a distance); no Build needed
+	遊戲原本的材質過濾（遠處較模糊）；不需要「建置」
+Audio & Controls
+	音訊與控制
+Audio:
+	音訊：
+Music, sound and voices
+	音樂、音效與語音
+No audio work at all (play your own music)
+	完全不處理音訊（可播放你自己的音樂）
+Gamepad Scanning:
+	控制器掃描：
+Every 2 seconds (Default)
+	每 2 秒（預設）
+Once
+	一次
+Only the controllers there at the start (plug one in: restart the game)
+	僅偵測啟動時已連接的控制器（要插入新控制器：需重新啟動遊戲）
+A controller plugged in while playing is found within 2 seconds
+	遊戲中插入的控制器會在 2 秒內被偵測到
+Cutscene Files:
+	過場動畫檔案：
+None found
+	找不到
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	沒有過場動畫檔案：請從 Steam 全新重新安裝遊戲，過場動畫才能正常運作
+The game's own Bink 2 videos, no conversion; no Build needed
+	遊戲原本的 Bink 2 影片，無需轉換；不需要「建置」
+The MP4s Convert Movies made; no Build needed
+	由「轉換影片」產生的 MP4；不需要「建置」
+Cutscenes:
+	過場動畫：
+Play
+	播放
+Play if converted
+	已轉換才播放
+Auto-skip
+	自動略過
+No cutscene files to play
+	沒有可播放的過場動畫檔案
+Hover for how cutscenes work
+	將游標停在此處，了解過場動畫的運作方式
+Steam Integration:
+	Steam 整合：
+No achievements or cloud saves; Steam does not show the game as running
+	無成就與雲端存檔；Steam 不會顯示遊戲正在執行
+Performance
+	效能
+Pipeline Build Threads:
+	管線建置執行緒：
+Threads preparing new graphics effects in the background; no Build needed
+	在背景準備新圖形效果的執行緒；不需要「建置」
+Memory:
+	記憶體：
+4GB (Recommended)
+	4GB（建議）
+The 2 GB the original exe gets; no Build needed
+	原始 exe 可用的 2 GB；不需要「建置」
+The address space a 4 GB-patched exe gets; no Build needed
+	套用 4 GB 修補的 exe 可用的位址空間；不需要「建置」
+No C compiler found
+	找不到 C 編譯器
+Where to get one
+	取得方式
+Optimization Level:
+	最佳化等級：
+Higher: a slower build, a faster game
+	越高：建置越慢，遊戲越快
+Profile-Guided Optimization:
+	效能剖析導向最佳化：
+Off: the game built without the profile
+	關閉：不使用剖析資料建置遊戲
+On: optimized for how the game runs (a faster game)
+	開啟：依遊戲的執行方式最佳化（遊戲更快）
+Link-Time Optimization:
+	連結時最佳化：
+Off: a faster Build
+	關閉：「建置」較快
+On: optimizes across files (a much slower Build)
+	開啟：跨檔案最佳化（「建置」慢很多）
+Needs LLVM's linker (lld) beside Clang: not found
+	需要 Clang 旁邊有 LLVM 的連結器（lld）：找不到
+Experimental Optimizations:
+	實驗性最佳化：
+On: less-tested speed-ups that may break things
+	開啟：測試較少、可能造成問題的加速
+Off: only the tested ones
+	關閉：僅使用已測試的最佳化
+Debug & Profile Tools:
+	偵錯與剖析工具：
+Logs, tracing, the profiler and an FPS counter (console window)
+	記錄、追蹤、剖析器與 FPS 計數器（主控台視窗）
+Off: no console window, nothing printed
+	關閉：無主控台視窗，不輸出任何內容
+As AppImage:
+	打包為 AppImage：
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	開啟：「建置」會產生單一檔案 WhiteRecomp-<CPU>.AppImage，內含遊戲及其設定，而非程式與其 .cfg。關閉：與以往相同，產生程式。
+Discard the old movies?
+	要捨棄舊影片嗎？
+The launcher was updated
+	啟動器已更新
+Clear Cache and Build
+	清除快取並建置
+Later
+	稍後
+A C compiler is needed
+	需要 C 編譯器
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	啟動器會在你的電腦上建置遊戲，因此需要 C 編譯器：Clang（最佳：遊戲更快）或 GCC。目前找不到。請安裝一個，然後按「重新檢查」。
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	啟動器會在你的電腦上建置遊戲，因此需要 Clang（遊戲只用 Clang 建置，不使用 GCC）。目前找不到。請安裝一個，然後按「重新檢查」-- 若已安裝但找不到，請按「選擇」。
+MSYS2 (its clang64 Clang)
+	MSYS2（其 clang64 Clang）
+Tried: %s
+	已嘗試：%s
+Install it for me
+	幫我安裝
+Choose clang.exe…
+	選擇 clang.exe…
+Close
+	關閉
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Steam 執行時提供成就與雲端存檔（請先啟動 Steam）；不需要「建置」
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Steam 執行時提供成就與遊戲內介面（Shift+Tab）；不需要「建置」
+Every movie already has its MP4s.
+	所有影片都已有 MP4。
+Nothing to convert
+	沒有需要轉換的項目
+Converting through %s
+	正在透過 %s 轉換
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	正在轉換 %d 個過場動畫（全部：約 7 小時的影片，含英文與日文；可取消，之後再繼續）
+Converting: 0 of %d
+	轉換中：0 / %d
+Converting with %s threads
+	正在以 %s 個執行緒轉換
+Converting %s: cutscene %d of %d
+	正在轉換 %s：過場動畫 %d / %d
+frame 
+	frame
+Converting %s: cutscene %d of %d, frame %d of %d
+	正在轉換 %s：過場動畫 %d / %d，影格 %d / %d
+The converter failed.
+	轉換器失敗。
+Converted %d cutscenes
+	已轉換 %d 個過場動畫
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	已保留 %s：其中 %d 個（共 %d 個）過場動畫尚無 MP4
+Discarding %s
+	正在捨棄 %s
+Could not write %s.heads: %s kept
+	無法寫入 %s.heads：已保留 %s
+Could not cut down %s: %v
+	無法縮減 %s：%v
+Discarded %d old movies: %.1f GB freed%s
+	已捨棄 %d 部舊影片：釋放了 %.1f GB%s
+0 (Fastest)
+	0（最快）
+1 (Recommended)
+	1（建議）
+3 (Slowest)
+	3（最慢）
+Needs Clang (GCC cannot read the profile)
+	需要 Clang（GCC 無法讀取剖析資料）
+Ultrawide
+	超寬螢幕
+Ultrafast (Worst Quality)
+	極速（最差畫質）
+Fast
+	快速
+Fancy (Default)
+	精緻（預設）
+Ultrafancy
+	極致精緻
+Custom
+	自訂
+Cancelled.
+	已取消。
+Could not start %s
+	無法啟動 %s
+On
+	開啟
+Off
+	關閉
+Setting up Wine's folder for the converter (only the first time)
+	正在為轉換器設定 Wine 的資料夾（僅第一次）
+Wine could not set up its folder (%s; code %d).
+	Wine 無法設定其資料夾（%s；代碼 %d）。
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine 無法執行轉換器（一個 32 位元 Windows 程式）。
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	請使用可執行 32 位元程式的 Wine（Wine 9 或更新版本，例如 Homebrew 的 wine-stable）；在 Apple 晶片的 Mac 上還需要 Rosetta 2（softwareupdate --install-rosetta）。
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	這是 Proton 的 Wine（在 Steam 中找到）。請在 Steam 中安裝另一個 Proton（收藏庫 > 搜尋 Proton；例如 Proton 9.0 或 Proton - Experimental），然後按「重新檢查」，或直接安裝 Wine。
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	請安裝 Wine 的 32 位元支援：Debian / Ubuntu 用 wine32（sudo dpkg --add-architecture i386; sudo apt install wine32:i386），Fedora 用 wine（已包含），Arch 用 wine。
+Wine said: %s
+	Wine 回報：%s
+Needs FFmpeg with its H.264 encoder (install it above).
+	需要含 H.264 編碼器的 FFmpeg（請在上方安裝）。
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	此啟動器沒有可用來轉換影片的 Windows 版 FFmpeg（只有 x86-64 Linux 與 macOS 版啟動器才有）：請在其他電腦上轉換。
+Needs Wine (install it above): the converter is a Windows program.
+	需要 Wine（請在上方安裝）：轉換器是 Windows 程式。
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	已清除快取（刪除了 %d 項；存檔、設定與 Android 金鑰會保留）。
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	已清除快取（刪除了 %d 項；存檔與 Android 金鑰會保留）。
+The settings were not this launcher version's own: they are back to the defaults.
+	這些設定不是此版本啟動器的：已恢復為預設值。
+The cache could not be cleared completely: close any program using its files and try again.
+	無法完全清除快取：請關閉正在使用其檔案的程式，然後再試一次。
+Clearing: %s
+	正在清除：%s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	你的遊戲是由較早版本的啟動器建置的。為了納入此版本的修正，將清除其快取並從頭重新建置遊戲（需要幾分鐘）。你的存檔會保留；如果此版本仍支援你的全部設定，設定也會保留。
+Profiler:
+	效能分析器：
+Off: F12 does nothing
+	關：F12 沒有作用
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	開：在遊戲中按 F12 開始和停止擷取；報告會儲存在遊戲旁邊

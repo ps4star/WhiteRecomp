@@ -1,0 +1,935 @@
+# The launcher in zh-Hans (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages zh-Hans
+Cannot make the APK's signing key (no random numbers from the system).
+	无法生成 APK 的签名密钥（系统未提供随机数）。
+Cannot make the APK's certificate.
+	无法生成 APK 的证书。
+Cannot sign the APK's certificate.
+	无法签名 APK 的证书。
+Cannot keep the APK's signing key in %s.
+	无法将 APK 的签名密钥保存到 %s。
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	你的 APK 的新签名密钥：%s（请妥善保存：只有使用同一密钥签名，更新才能覆盖安装此应用）
+Cannot sign the APK.
+	无法签名 APK。
+Cannot write %s.
+	无法写入 %s。
+This launcher carries no APK files for %s (%s).
+	此启动器未附带 %s（%s）的 APK 文件。
+Cannot read %s.
+	无法读取 %s。
+Writing the APK
+	正在写入 APK
+As AppImage
+	打包为 AppImage
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp：游戏不在 $XRC_GAME_DIR
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	请将“FINAL FANTASY XIII”文件夹（包含 white_data 的那个）复制到 AppImage 旁边，或设置 XRC_GAME_DIR。
+Packing the AppImage
+	正在打包 AppImage
+This launcher carries no AppImage runtime for %s.
+	此启动器未附带 %s 的 AppImage 运行时。
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	未压缩：安装 squashfs-tools（mksquashfs）可得到更小的文件
+AppImage: %s (%.0f MB, %s)
+	AppImage：%s（%.0f MB，%s）
+Checking the game
+	正在检查游戏
+No C compiler that can build the game: install one first.
+	没有可构建游戏的 C 编译器：请先安装一个。
+Game: %s
+	游戏：%s
+Compiler: %s
+	编译器：%s
+Deleted %d old source files
+	已删除 %d 个旧源文件
+Sources: %s (%d files changed)
+	源文件：%s（%d 个文件有更改）
+This launcher carries no files for %s.
+	此启动器未附带 %s 的文件。
+FFmpeg: your own build in %s
+	FFmpeg：你自己的版本，位于 %s
+Options: %v
+	选项：%v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	本次构建已关闭链接时优化：Clang 的此功能需要旁边有 LLVM 的链接器（ld.lld），但未找到。
+Compiling %d of %d files on %d cores
+	正在编译 %d / %d 个文件（%d 个核心）
+Compiling: %d of %d (%s)
+	编译中：%d / %d（%s）
+Linking
+	正在链接
+Linking failed.
+	链接失败。
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	（如果 WhiteRecomp 正在运行，请关闭它并再次点击“构建”：Windows 无法替换正在运行的程序。）
+Cannot write the output in %s.
+	无法在 %s 中写入输出。
+Built %s: copy it to the %s computer with %s (it says how).
+	已构建 %s：请将它复制到 %s 电脑，方法见 %s（其中有说明）。
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	已构建 %s：请将它安装到 %s 设备；%s 说明了安装方法及游戏文件的存放位置。
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	已构建 %s：请将文件夹 %s 复制到 %s 电脑（方法见其中的 README.txt）。
+Built
+	已构建
+Built %s
+	已构建 %s
+Cannot write %s in %s.
+	无法写入 %s（位于 %s）。
+Profile-Guided Optimization is off for this build: %s.
+	本次构建已关闭配置文件引导优化：%s。
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	本次构建已关闭配置文件引导优化：包中没有配置文件。
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	本次构建已关闭配置文件引导优化：此 Clang 无法读取配置文件（版本较旧？）。
+Profile-Guided Optimization: %s
+	配置文件引导优化：%s
+Could not read the data folder %s: %v
+	无法读取数据文件夹 %s：%v
+Clearing the data folder: %s
+	正在清理数据文件夹：%s
+Could not delete %s: %v
+	无法删除 %s：%v
+Any ARM64 CPU (Default)
+	任意 ARM64 CPU（默认）
+Raspberry Pi 4 (Cortex-A72)
+	Raspberry Pi 4（Cortex-A72）
+Raspberry Pi 5 (Cortex-A76)
+	Raspberry Pi 5（Cortex-A76）
+Apple M1 / M2 (Asahi Linux)
+	Apple M1 / M2（Asahi Linux）
+Ampere / Graviton 2 servers
+	Ampere / Graviton 2 服务器
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	64 位 ARM Linux（glibc 2.34 或更高版本：Debian 12、Ubuntu 22.04、Raspberry Pi OS 12 及更高版本）
+Any ARM64 phone (Default)
+	任意 ARM64 手机（默认）
+2019 and later flagships (Cortex-A76)
+	2019 年及之后的旗舰机（Cortex-A76）
+2021 and later flagships (Cortex-X1)
+	2021 年及之后的旗舰机（Cortex-X1）
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 或更高版本、64 位 ARM、Vulkan：可安装的 APK（暂不支持过场动画）
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	需要 Clang（GCC 只能为其所在的电脑编译）：请安装 Clang，然后在“主页”选项卡点击“重新检查”。
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	需要 Clang 旁边有 LLVM 的链接器（ld.lld.exe）：LLVM-MinGW 和 MSYS2 的 Clang 都带有。
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	需要 LLVM 的链接器 lld（例如 sudo apt install lld）。
+Target: %s, CPU %s
+	目标：%s，CPU %s
+Linker: %s
+	链接器：%s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	使用“选项”选项卡中的选项，为另一种电脑构建游戏。游戏将在那台电脑上运行，而不是这台。
+Target:
+	目标：
+Runs on every 64-bit ARM phone
+	可在所有 64 位 ARM 手机上运行
+Runs on every ARM64 CPU
+	可在所有 ARM64 CPU 上运行
+Faster there, but only that CPU and newer ones
+	在该 CPU 上更快，但仅限该 CPU 及更新的 CPU
+Settings:
+	设置：
+Use Android Preset
+	使用 Android 预设
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	将“选项”选项卡设为适合手机：960x540、60 fps、512 阴影、关闭抗锯齿、半分辨率特效、4 GB 内存、-O1、2 个管线线程。为这台电脑构建时也会使用这些设置。
+Sets the Options tab: 960x540, 60 fps, light graphics
+	设置“选项”选项卡：960x540、60 fps、轻量画面
+Compiler:
+	编译器：
+Looking for compilers…
+	正在查找编译器…
+No Clang found
+	未找到 Clang
+Linker:
+	链接器：
+No lld found
+	未找到 lld
+Output:
+	输出：
+Not built yet
+	尚未构建
+Build for %s
+	为 %s 构建
+Wait for the current task to finish.
+	请等待当前任务完成。
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	需要游戏（构建时会读取其 exe）：请在“主页”选项卡选择其文件夹。
+Builds the game for %s into %s.
+	为 %s 构建游戏，输出到 %s。
+Cancel
+	取消
+Clang (Best)
+	Clang（最佳）
+Choose clang
+	选择 clang
+cannot write in the launcher's folder
+	无法写入启动器所在的文件夹
+it does not start
+	无法启动
+not found
+	未找到
+No such file
+	没有此文件
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	缺少 C 库的头文件（pthread.h）-- SteamOS 会删除它们；“帮我安装”可将其补回
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	缺少 C 库的头文件（pthread.h）：请安装 glibc 的开发文件（帮我安装）
+it cannot build the game (%s)
+	无法构建游戏（%s）
+the programs it makes do not run here (%s)
+	它生成的程序无法在此运行（%s）
+the programs it makes do not run here
+	它生成的程序无法在此运行
+C compiler
+	C 编译器
+builds the game from the bundled sources
+	用附带的源代码构建游戏
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	已安装 Visual C++（cl），但目前还无法构建游戏（需要 clang）
+none found
+	未找到
+Install LLVM-MinGW (winget)
+	安装 LLVM-MinGW（winget）
+Install Apple's command line tools
+	安装 Apple 的命令行工具
+Install Clang and the C headers (%s)
+	安装 Clang 和 C 头文件（%s）
+Install Clang (%s)
+	安装 Clang（%s）
+Links
+	相关链接
+converts the movies (the game plays them without it)
+	转换视频（没有它游戏也能播放视频）
+included with the launcher
+	已随启动器附带
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	已随启动器附带（Windows 版 FFmpeg：“转换视频”会通过 Wine 运行它）
+Install FFmpeg (winget)
+	安装 FFmpeg（winget）
+Install FFmpeg (Homebrew)
+	安装 FFmpeg（Homebrew）
+Install Homebrew (brew.sh) first, then FFmpeg
+	请先安装 Homebrew（brew.sh），再安装 FFmpeg
+Install FFmpeg (%s)
+	安装 FFmpeg（%s）
+Looking for C compilers
+	正在查找 C 编译器
+Looking for FFmpeg
+	正在查找 FFmpeg
+Looking for Wine
+	正在查找 Wine
+Checked what is installed
+	已检查安装项
+The install ended with code %d.
+	安装结束，退出代码 %d。
+Finish the installer Apple opened, then press Check again.
+	请完成 Apple 打开的安装程序，然后点击“重新检查”。
+Choose clang…
+	选择 clang…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	选择 clang.exe（例如 LLVM-MinGW 的 bin\clang.exe）
+Checking
+	检查中
+runs the movie converter (a Windows program) for Convert Movies
+	为“转换视频”运行视频转换器（一个 Windows 程序）
+not found (only Convert Movies needs it)
+	未找到（只有“转换视频”需要它）
+Install Wine (Homebrew)
+	安装 Wine（Homebrew）
+Install Homebrew (brew.sh) first, then Wine
+	请先安装 Homebrew（brew.sh），再安装 Wine
+not found: install Proton in Steam (only Convert Movies needs it)
+	未找到：请在 Steam 中安装 Proton（只有“转换视频”需要它）
+In Steam: Library > search Proton > install one, then Check again
+	在 Steam 中：库 > 搜索 Proton > 安装一个，然后点击“重新检查”
+Install Wine (%s)
+	安装 Wine（%s）
+English
+	英语
+Japanese
+	日语
+French
+	法语
+German
+	德语
+Italian
+	意大利语
+Spanish
+	西班牙语
+Korean
+	韩语
+Traditional Chinese
+	繁体中文
+These can be changed once the current task has finished.
+	当前任务完成后即可更改这些设置。
+These apply the next time the game starts; no Build needed.
+	这些设置将在下次启动游戏时生效；无需“构建”。
+Language
+	语言
+Voice:
+	语音：
+The spoken language, cutscenes included
+	语音的语言，包括过场动画
+Subtitles & UI:
+	字幕与界面：
+The language of subtitles, menus and all other text
+	字幕、菜单及所有其他文字的语言
+Cutscenes
+	过场动画
+Cutscene Colors:
+	过场动画色彩：
+Corrected
+	已校正
+Original
+	原始
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	与 PC 版的显示相同：暗场景被压成全黑，亮场景过曝
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	过场动画编码时的完整色彩范围：保留暗部和亮部细节
+Brightness:
+	亮度：
+Cutscene brightness (a gain: black stays black)
+	过场动画亮度（增益：黑色仍为黑色）
+Contrast:
+	对比度：
+Cutscene contrast, about mid-gray
+	过场动画对比度，以中灰为基准
+Saturation:
+	饱和度：
+Cutscene color strength (0%: black and white)
+	过场动画色彩强度（0%：黑白）
+Reset
+	重置
+Save Folders
+	存档文件夹
+Not found
+	未找到
+1 .dat file
+	1 个 .dat 文件
+Remove
+	移除
+No folders added
+	未添加文件夹
+Add Folder…
+	添加文件夹…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	除了 Steam 的存档外，游戏也会读取这些包含存档（.dat）的文件夹；每个存档以最新的副本为准
+HD Textures
+	高清纹理
+FF XIII HD Project:
+	FF XIII HD Project：
+Import ZIP Again…
+	重新导入 ZIP…
+Import ZIP…
+	导入 ZIP…
+Get
+	获取
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	“获取”会下载此模组的 ZIP（Nexus Mods）；“导入 ZIP…”会将其纹理放在游戏纹理旁边（运行期间需要约 25 GB 可用空间）
+Importing: %s
+	正在导入：%s
+Imported from %s (%s voices); the game's own files are unchanged
+	已从 %s 导入（%s 语音）；游戏自身的文件未更改
+HD Fonts & GUI:
+	HD Fonts & GUI：
+Import Archive Again…
+	重新导入压缩包…
+Import Archive…
+	导入压缩包…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	“获取”会下载此模组（Nexus Mods：独立版本）；“导入压缩包…”会将其纹理（约 3.5 GB）解压到游戏纹理旁边
+Imported from %s (%s files): sharper fonts, menus and maps
+	已从 %s 导入（%s 个文件）：更清晰的字体、菜单和地图
+HD Textures:
+	高清纹理：
+Import an HD mod first
+	请先导入高清模组
+the HD Project's and the HD Fonts & GUI textures
+	HD Project 与 HD Fonts & GUI 的纹理
+the HD Project's textures
+	HD Project 的纹理
+the HD Fonts & GUI textures
+	HD Fonts & GUI 的纹理
+The game uses %s
+	游戏使用 %s
+The game's own textures
+	游戏自身的纹理
+The game's original archives were discarded: the HD textures are always used
+	游戏的原始压缩包已丢弃：始终使用高清纹理
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	已为 %s 语音导入：使用这些语音时，游戏会使用自身的纹理（请重新导入）
+Old Assets:
+	旧资源：
+Discard Old Assets
+	丢弃旧资源
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	导入之后：删除模组的 ZIP，以及被高清副本替换的游戏压缩包
+Discarded (Steam's Verify integrity of game files restores them)
+	已丢弃（Steam 的“验证游戏文件的完整性”可将其恢复）
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	可释放约 %.1f GB（模组的 ZIP 和游戏被替换的压缩包）
+Choose a folder with save files (.dat)
+	选择包含存档（.dat）的文件夹
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	选择高清模组的压缩包（HD Project 的 .zip、HD Fonts and GUI 的 .rar）
+Choose the FINAL FANTASY XIII folder
+	选择 FINAL FANTASY XIII 文件夹
+Mod archives (.zip, .rar)
+	模组压缩包（.zip、.rar）
+` : `choose folder with prompt 
+	` : `choose folder with prompt
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|模组压缩包
+Up
+	上一级
+Home
+	主页
+(no folders or ZIP files here)
+	（此处没有文件夹或 ZIP 文件）
+(no folders here)
+	（此处没有文件夹）
+Click the FF XIII HD Project's ZIP file to import it.
+	点击 FF XIII HD Project 的 ZIP 文件以导入。
+FINAL FANTASY XIII is in this folder.
+	FINAL FANTASY XIII 位于此文件夹。
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	请打开安装 FINAL FANTASY XIII 的文件夹（包含 white_data 的那个）。
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	此文件夹中没有 .dat 文件（只查看此文件夹自身的文件，不含子文件夹）。
+Choose this folder
+	选择此文件夹
+the launcher's sources are damaged (no dispatch table)
+	启动器的源代码已损坏（没有分派表）
+the launcher's sources are damaged (no exe check)
+	启动器的源代码已损坏（没有 exe 校验）
+it cannot be read
+	无法读取
+it is not a Windows program
+	不是 Windows 程序
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	这是游戏的另一个地区版本（Steam depot %s；此启动器的代码来自北美 / 欧洲版，depot 292122）：目前尚不支持，重新安装也会得到相同的版本
+Steam's DRM wrapper removed
+	已移除 Steam 的 DRM 外壳
+a modified copy of the game (%s)
+	游戏的修改版本（%s）
+a different version of the game or a modified copy
+	游戏的其他版本或修改版本
+Cannot run %s.
+	无法运行 %s。
+Cannot copy %s to %s (is there room?).
+	无法将 %s 复制到 %s（空间是否足够？）。
+Choose the FINAL FANTASY XIII folder first (Home).
+	请先选择 FINAL FANTASY XIII 文件夹（主页）。
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	游戏的原始压缩包已被丢弃（丢弃旧资源）：导入需要它们。请让 Steam 恢复它们（属性 > 已安装文件 > 验证游戏文件的完整性），然后重新导入。
+Checking the ZIP
+	正在检查 ZIP
+Cannot open %s.
+	无法打开 %s。
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	游戏中没有 white_data/sys/%s%s.win32.bin（%s 语音）。
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	此模组的工具是 Windows 程序：请安装 Wine（“主页”选项卡：检查），然后重新导入。
+Setting up Wine (the first time: about a minute)
+	正在设置 Wine（首次约需一分钟）
+Wine could not set up its folder (%s).
+	Wine 无法设置其文件夹（%s）。
+Cannot make %s.
+	无法创建 %s。
+Importing %s (%d textures) for %s voices into %s
+	正在导入 %s（%d 个纹理），用于 %s 语音，导入到 %s
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	这需要一段时间，运行期间需要约 25 GB 可用空间（完成后约占用 8 GB）。游戏自身的文件不会更改。
+FF XIII HD Project import: %s -> %s (region %s)
+	FF XIII HD Project 导入：%s -> %s（地区 %s）
+Unpacking the ZIP: %d of about %d files
+	正在解压 ZIP：%d / 约 %d 个文件
+Cannot unpack %s from the ZIP (is there room?).
+	无法从 ZIP 解压 %s（空间是否足够？）。
+The mod's ff13tool.exe does not run here.
+	此模组的 ff13tool.exe 无法在此运行。
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	Wine 需要 32 位支持才能运行它（请参阅“主页”选项卡中的 Wine 一行）。
+Copying the game's archives
+	正在复制游戏的压缩包
+Unpacking white_img%s
+	正在解压 white_img%s
+Unpacking zone %s
+	正在解压区域 %s
+zone %s: no %s / %s
+	区域 %s：没有 %s / %s
+Unpacking white_scr%s
+	正在解压 white_scr%s
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool 未能解压 white_scr（请参阅导入日志）。
+Log: %s
+	日志：%s
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	主要角色的模型不是原始模型（来自其他模组？）：将保持原样。
+Putting in the HD textures: %d of %d (%s %s)
+	正在放入高清纹理：%d / %d（%s %s）
+Packing white_scr%s again
+	正在重新打包 white_scr%s
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool 无法重新打包 white_scr（请参阅导入日志）。
+No texture could be put in (see the import log): nothing was changed.
+	未能放入任何纹理（请参阅导入日志）：未做任何更改。
+Finishing
+	正在完成
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	无法保留 HD Fonts and GUI 纹理：请重新导入该模组的压缩包。
+Cannot move the new archives to %s.
+	无法将新的压缩包移动到 %s。
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	已导入高清纹理：%d 个区域和 %d 个模型，位于 %s。“高清纹理”已开启。
+Imported
+	已导入
+There is no finished HD Textures import.
+	没有已完成的高清纹理导入。
+Cannot write in %s.
+	无法在 %s 中写入。
+Deleting %s
+	正在删除 %s
+Could not delete %s.
+	无法删除 %s。
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	已丢弃游戏的 %d 个原始压缩包%s：释放了 %.1f GB。“高清纹理”保持开启；Steam 的“验证游戏文件的完整性”可恢复原始文件。
+Discard the old assets?
+	要丢弃旧资源吗？
+, and the mod's ZIP (%s)
+	，以及模组的 ZIP（%s）
+Discard
+	丢弃
+Keep them
+	保留
+Checking %s
+	正在检查 %s
+Importing %s (%d files, %.1f GB) into %s
+	正在导入 %s（%d 个文件，%.1f GB）到 %s
+Unpacking: %d of %d files
+	正在解压：%d / %d 个文件
+Cannot unpack %s (%s).
+	无法解压 %s（%s）。
+Cannot write %s (is there room?).
+	无法写入 %s（空间是否足够？）。
+Cannot move the textures to %s.
+	无法将纹理移动到 %s。
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	已导入 HD Fonts and GUI：%d 个文件，位于 %s。“高清纹理”已开启。
+Could not make %s: start the game with Run.
+	无法创建 %s：请用“运行”启动游戏。
+no game built yet
+	尚未构建游戏
+Could not write %s: start the game with Run.
+	无法写入 %s：请用“运行”启动游戏。
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	游戏也在“应用程序”中（%s）：可从那里、Launchpad 或 Spotlight 启动，无需启动器。
+Looking for FINAL FANTASY XIII
+	正在查找 FINAL FANTASY XIII
+not found: choose its folder
+	未找到：请选择其文件夹
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	该文件夹中没有 white_data/prog/win/bin/ffxiiiimg.exe
+Game: %s (%s)
+	游戏：%s（%s）
+Rebuild
+	重新构建
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp：附带的源代码缺失或已损坏
+Build
+	构建
+Cross-Compile
+	交叉编译
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	游戏正常 %v，%d 个过场动画待转换，%d 个可丢弃（%.1f GB），%d 个保留
+compiler: %s (%s)%s
+	编译器：%s（%s）%s
+options: %v
+	选项：%v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp：无法打开窗口：%s
+WhiteRecomp: could not open a window
+	WhiteRecomp：无法打开窗口
+Options
+	选项
+Features & Mods
+	功能与模组
+Running…
+	运行中…
+Run
+	运行
+Could not start %s.
+	无法启动 %s。
+The game is running.
+	游戏正在运行。
+Starts %s.
+	启动 %s。
+Rebuild to Run
+	重新构建以运行
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	此处的游戏是由其他版本的启动器构建的：将清除其缓存并重新构建游戏，以包含此版本的修复。
+Discard Movies
+	丢弃视频
+Convert Movies
+	转换视频
+Clear Cache
+	清除缓存
+Close the game first: it cannot be rebuilt while it runs.
+	请先关闭游戏：游戏运行时无法重新构建。
+Needs the game: choose its folder.
+	需要游戏：请选择其文件夹。
+Needs a C compiler.
+	需要 C 编译器。
+Builds the game with the options of the Options tab.
+	使用“选项”选项卡中的选项构建游戏。
+Needs the game.
+	需要游戏。
+Every movie is converted.
+	所有视频均已转换。
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	转换尚无 MP4 的 %d 个过场动画（可取消，之后再继续）。
+Close the game first.
+	请先关闭游戏。
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	删除之前构建留在数据文件夹中的内容（解压的源代码、编译后的目标文件、工具），让下次“构建”从头编译所有内容。存档和设置会保留。
+Nothing to discard: no Bink movie has its MP4 yet.
+	没有可丢弃的内容：尚无任何 Bink 视频有对应的 MP4。
+Frees %.1f GB: the Bink movies that have their MP4.
+	可释放 %.1f GB：已有 MP4 的 Bink 视频。
+Browse…
+	浏览…
+Game folder
+	游戏文件夹
+The North America / Europe edition of the game.
+	游戏的北美 / 欧洲版。
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	游戏的亚洲版：在菜单中用 Space 确认（Enter 无效），且只有日语语音。
+Requirements
+	需求
+Check again
+	重新检查
+Activity
+	活动
+The options can be changed once the current task has finished.
+	当前任务完成后即可更改选项。
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	大多数选项在下次“构建”时生效；“图形”和“内存”在下次启动游戏时生效。
+Display
+	显示
+Aspect Ratio:
+	宽高比：
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10：全屏，画面比 16:9 时更高（视频保留细黑边）
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 和 32:9：3D 画面横跨整个宽度
+The game's own shape
+	游戏原本的比例
+Resolution:
+	分辨率：
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	超宽屏：在游戏中，F5 / F6 加宽 / 缩窄视野，F7 重置；无需“构建”
+What the game renders at; the window can be resized; no Build needed
+	游戏的渲染分辨率；窗口可调整大小；无需“构建”
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	较低：GPU 负担更轻，但不够清晰；窗口可调整大小；无需“构建”
+Higher costs GPU time; the window can be resized; no Build needed
+	较高：占用更多 GPU 时间；窗口可调整大小；无需“构建”
+Window Scaling:
+	窗口缩放：
+Fit (Default)
+	适应（默认）
+Stretch
+	拉伸
+Fills the window; the picture is squeezed if the window is another shape
+	填满窗口；若窗口比例不同，画面会被挤压
+Keeps the picture's shape: black bars in a window of another shape
+	保持画面比例：窗口比例不同时会有黑边
+Graphics Driver:
+	图形驱动：
+The port's Vulkan renderer
+	移植版的 Vulkan 渲染器
+Graphics
+	图形
+Graphics:
+	图形：
+No shadows, no anti-aliasing: the fastest
+	无阴影、无抗锯齿：最快
+Low-resolution shadows, 2x FXAA
+	低分辨率阴影、2x FXAA
+The game's shadows, 4x FXAA
+	游戏原本的阴影、4x FXAA
+The sharpest shadows, 8x FXAA: costly on the GPU
+	最清晰的阴影、8x FXAA：GPU 负担大
+Shadows and anti-aliasing as set below
+	阴影和抗锯齿按下方设置
+Shadow Resolution:
+	阴影分辨率：
+Off (No Shadows)
+	关闭（无阴影）
+1024 x 1024 (Default)
+	1024 x 1024（默认）
+Sharper shadows cost GPU time; Off is the fastest
+	阴影越清晰越占用 GPU 时间；“关闭”最快
+Anti-alias Method:
+	抗锯齿方式：
+FXAA (Default)
+	FXAA（默认）
+A cheap filter on the 3D image (not the HUD)
+	作用于 3D 画面的低开销滤镜（不含 HUD）
+Multisampling: costly on integrated GPUs
+	多重采样：在集成显卡上负担大
+Anti-alias Quality:
+	抗锯齿质量：
+1x (Off)
+	1x（关闭）
+4x (Default)
+	4x（默认）
+FXAA strength: higher smooths longer edges
+	FXAA 强度：越高可平滑越长的边缘
+Samples per pixel (up to what the GPU has)
+	每像素采样数（最高为 GPU 支持的数量）
+Effects Resolution:
+	特效分辨率：
+Half (Default)
+	一半（默认）
+Full
+	完整
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	特效与其他画面一样清晰；在集成显卡上战斗时负担大
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	战斗特效只需四分之一的 GPU 时间，略为柔和；无需“构建”
+Anisotropic Filtering:
+	各向异性过滤：
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x：地面和墙壁在远处仍保持清晰；无需“构建”
+The game's own texture filtering (blurrier at a distance); no Build needed
+	游戏原本的纹理过滤（远处较模糊）；无需“构建”
+Audio & Controls
+	音频与控制
+Audio:
+	音频：
+Music, sound and voices
+	音乐、音效和语音
+No audio work at all (play your own music)
+	完全不处理音频（可播放你自己的音乐）
+Gamepad Scanning:
+	手柄扫描：
+Every 2 seconds (Default)
+	每 2 秒（默认）
+Once
+	一次
+Only the controllers there at the start (plug one in: restart the game)
+	仅识别启动时已连接的手柄（要接入新手柄：需重启游戏）
+A controller plugged in while playing is found within 2 seconds
+	游戏中接入的手柄会在 2 秒内被识别
+Cutscene Files:
+	过场动画文件：
+None found
+	未找到
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	没有过场动画文件：请从 Steam 全新重新安装游戏，过场动画才能正常工作
+The game's own Bink 2 videos, no conversion; no Build needed
+	游戏原本的 Bink 2 视频，无需转换；无需“构建”
+The MP4s Convert Movies made; no Build needed
+	由“转换视频”生成的 MP4；无需“构建”
+Cutscenes:
+	过场动画：
+Play
+	播放
+Play if converted
+	已转换才播放
+Auto-skip
+	自动跳过
+No cutscene files to play
+	没有可播放的过场动画文件
+Hover for how cutscenes work
+	将鼠标悬停在此处，了解过场动画的工作方式
+Steam Integration:
+	Steam 集成：
+No achievements or cloud saves; Steam does not show the game as running
+	无成就和云存档；Steam 不会显示游戏正在运行
+Performance
+	性能
+Pipeline Build Threads:
+	管线构建线程：
+Threads preparing new graphics effects in the background; no Build needed
+	在后台准备新图形效果的线程；无需“构建”
+Memory:
+	内存：
+4GB (Recommended)
+	4GB（推荐）
+The 2 GB the original exe gets; no Build needed
+	原始 exe 可用的 2 GB；无需“构建”
+The address space a 4 GB-patched exe gets; no Build needed
+	打过 4 GB 补丁的 exe 可用的地址空间；无需“构建”
+No C compiler found
+	未找到 C 编译器
+Where to get one
+	获取方式
+Optimization Level:
+	优化级别：
+Higher: a slower build, a faster game
+	越高：构建越慢，游戏越快
+Profile-Guided Optimization:
+	配置文件引导优化：
+Off: the game built without the profile
+	关闭：不使用配置文件构建游戏
+On: optimized for how the game runs (a faster game)
+	开启：针对游戏的运行方式优化（游戏更快）
+Link-Time Optimization:
+	链接时优化：
+Off: a faster Build
+	关闭：“构建”更快
+On: optimizes across files (a much slower Build)
+	开启：跨文件优化（“构建”慢很多）
+Needs LLVM's linker (lld) beside Clang: not found
+	需要 Clang 旁边有 LLVM 的链接器（lld）：未找到
+Experimental Optimizations:
+	实验性优化：
+On: less-tested speed-ups that may break things
+	开启：测试较少、可能导致问题的加速
+Off: only the tested ones
+	关闭：仅使用已测试的优化
+Debug & Profile Tools:
+	调试与性能分析工具：
+Logs, tracing, the profiler and an FPS counter (console window)
+	日志、跟踪、性能分析器和 FPS 计数器（控制台窗口）
+Off: no console window, nothing printed
+	关闭：无控制台窗口，不输出任何内容
+As AppImage:
+	打包为 AppImage：
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	开启：“构建”会生成单个文件 WhiteRecomp-<CPU>.AppImage，内含游戏及其设置，而不是程序及其 .cfg。关闭：与以前相同，生成程序。
+Discard the old movies?
+	要丢弃旧视频吗？
+The launcher was updated
+	启动器已更新
+Clear Cache and Build
+	清除缓存并构建
+Later
+	稍后
+A C compiler is needed
+	需要 C 编译器
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	启动器会在你的电脑上构建游戏，因此需要 C 编译器：Clang（最佳：游戏更快）或 GCC。目前未找到。请安装一个，然后点击“重新检查”。
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	启动器会在你的电脑上构建游戏，因此需要 Clang（游戏只用 Clang 构建，不使用 GCC）。目前未找到。请安装一个，然后点击“重新检查”-- 如果已安装但未找到，请点击“选择”。
+MSYS2 (its clang64 Clang)
+	MSYS2（其 clang64 Clang）
+Tried: %s
+	已尝试：%s
+Install it for me
+	帮我安装
+Choose clang.exe…
+	选择 clang.exe…
+Close
+	关闭
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Steam 运行时提供成就和云存档（请先启动 Steam）；无需“构建”
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Steam 运行时提供成就和游戏内覆盖界面（Shift+Tab）；无需“构建”
+Every movie already has its MP4s.
+	所有视频都已有 MP4。
+Nothing to convert
+	没有需要转换的内容
+Converting through %s
+	正在通过 %s 转换
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	正在转换 %d 个过场动画（全部：约 7 小时的视频，含英语和日语；可取消，之后再继续）
+Converting: 0 of %d
+	转换中：0 / %d
+Converting with %s threads
+	正在以 %s 个线程转换
+Converting %s: cutscene %d of %d
+	正在转换 %s：过场动画 %d / %d
+frame 
+	frame
+Converting %s: cutscene %d of %d, frame %d of %d
+	正在转换 %s：过场动画 %d / %d，帧 %d / %d
+The converter failed.
+	转换器失败。
+Converted %d cutscenes
+	已转换 %d 个过场动画
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	已保留 %s：其中 %d 个（共 %d 个）过场动画尚无 MP4
+Discarding %s
+	正在丢弃 %s
+Could not write %s.heads: %s kept
+	无法写入 %s.heads：已保留 %s
+Could not cut down %s: %v
+	无法裁减 %s：%v
+Discarded %d old movies: %.1f GB freed%s
+	已丢弃 %d 个旧视频：释放了 %.1f GB%s
+0 (Fastest)
+	0（最快）
+1 (Recommended)
+	1（推荐）
+3 (Slowest)
+	3（最慢）
+Needs Clang (GCC cannot read the profile)
+	需要 Clang（GCC 无法读取配置文件）
+Ultrawide
+	超宽屏
+Ultrafast (Worst Quality)
+	极速（最差画质）
+Fast
+	快速
+Fancy (Default)
+	精美（默认）
+Ultrafancy
+	极致精美
+Custom
+	自定义
+Cancelled.
+	已取消。
+Could not start %s
+	无法启动 %s
+On
+	开启
+Off
+	关闭
+Setting up Wine's folder for the converter (only the first time)
+	正在为转换器设置 Wine 的文件夹（仅首次）
+Wine could not set up its folder (%s; code %d).
+	Wine 无法设置其文件夹（%s；退出代码 %d）。
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine 无法运行转换器（一个 32 位 Windows 程序）。
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	请使用可运行 32 位程序的 Wine（Wine 9 或更高版本，例如 Homebrew 的 wine-stable）；在 Apple 芯片的 Mac 上还需要 Rosetta 2（softwareupdate --install-rosetta）。
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	这是 Proton 自带的 Wine（在 Steam 中找到）。请在 Steam 中安装另一个 Proton（库 > 搜索 Proton；例如 Proton 9.0 或 Proton - Experimental），然后点击“重新检查”，或直接安装 Wine。
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	请安装 Wine 的 32 位支持：Debian / Ubuntu 用 wine32（sudo dpkg --add-architecture i386; sudo apt install wine32:i386），Fedora 用 wine（已包含），Arch 用 wine。
+Wine said: %s
+	Wine 提示：%s
+Needs FFmpeg with its H.264 encoder (install it above).
+	需要带 H.264 编码器的 FFmpeg（请在上方安装）。
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	此启动器没有可用于转换视频的 Windows 版 FFmpeg（只有 x86-64 Linux 和 macOS 版启动器才有）：请在其他电脑上转换。
+Needs Wine (install it above): the converter is a Windows program.
+	需要 Wine（请在上方安装）：转换器是 Windows 程序。
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	已清除缓存（删除了 %d 项；存档、设置和 Android 密钥会保留）。
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	已清除缓存（删除了 %d 项；存档和 Android 密钥会保留）。
+The settings were not this launcher version's own: they are back to the defaults.
+	这些设置不是此版本启动器的：已恢复为默认值。
+The cache could not be cleared completely: close any program using its files and try again.
+	无法完全清除缓存：请关闭正在使用其文件的程序，然后重试。
+Clearing: %s
+	正在清除：%s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	你的游戏是由较早版本的启动器构建的。为了包含此版本的修复，将清除其缓存并从头重新构建游戏（需要几分钟）。你的存档会保留；如果此版本仍支持你的全部设置，设置也会保留。
+Profiler:
+	性能分析器：
+Off: F12 does nothing
+	关：F12 不起作用
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	开：在游戏中按 F12 开始和停止采集；报告保存在游戏旁边

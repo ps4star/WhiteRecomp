@@ -7,6 +7,7 @@ package launcher
 import "core:math"
 import "core:strings"
 import "core:time"
+import "core:unicode/utf8"
 import "shared:iv_system/platform"
 import "shared:iv_system/ren"
 import ui "shared:iv_ui"
@@ -57,6 +58,7 @@ Gui :: struct {
 	dd_open:              string, // its id ("": none)
 	dd_anchor:            ui.Rect,
 	dd_items:             [dynamic]string,
+	dd_raw:               bool, // the open list's items are shown as they are (not translated: the Language list)
 	dd_enabled:           [dynamic]bool,
 	dd_sel:               int,
 	dd_result_id:         string, // a choice made in the list, for that drop-down on the next frame
@@ -135,7 +137,7 @@ round_box :: proc(g: ^Gui, r: ui.Rect, radius: int, fill, border: ren.Color) {
 
 circle :: proc(g: ^Gui, cx, cy, d: int, c: ren.Color) {fill_round(g, {cx - d / 2, cy - d / 2, d, d}, d / 2, c)}
 
-card :: proc(g: ^Gui, r: ui.Rect) {round_box(g, r, px(g, 7), CARD, CARD_BORDER)}
+card :: proc(g: ^Gui, r: ui.Rect) {panel(g, r, px(g, 7))}
 
 // a small downward chevron centered at (cx, cy)
 chevron :: proc(g: ^Gui, cx, cy: int, c: ren.Color) {
@@ -166,28 +168,54 @@ fit :: proc(f: ^ren.Font, s: string, w: int) -> string {
 	return strings.concatenate({s[:lo], "…"}, context.temp_allocator)
 }
 
-label :: proc(g: ^Gui, f: ^ren.Font, s: string, r: ui.Rect, c: ren.Color, center := false) {
-	t := fit(f, s, r.w)
+label :: proc(g: ^Gui, f: ^ren.Font, s: string, r: ui.Rect, c: ren.Color, center := false, raw := false) {
+	t := fit(f, raw ? s : tr(s), r.w) // (raw: as it is, not translated)
 	w := text_w(f, t)
 	x := r.x + (center ? (r.w - w) / 2 : 0)
 	ren.draw_text(g.dl, f, t, {x, r.y + (r.h - f.line_height) / 2}, c)
 }
 
-// the lines of s that fit w pixels (words kept whole; "\n" breaks)
+// the lines of s that fit w pixels (words kept whole; "\n" breaks). Chinese and Japanese, written without spaces, break
+// between any two of their characters (not before closing punctuation, nor after opening).
 wrap :: proc(f: ^ren.Font, s: string, w: int) -> []string {
 	out := make([dynamic]string, context.temp_allocator)
+	s := tr(s) // (the chosen language: i18n.odin)
+	cjk :: proc(c: rune) -> bool {return (c >= 0x2e80 && c < 0xa000 && !(c >= 0x3130 && c < 0x3190)) || (c >= 0xf900 && c < 0xfb00) || (c >= 0xff00 && c < 0xffa0)}
+	no_start :: proc(c: rune) -> bool {return strings.contains_rune("、。，．・：；？！）」』】〕〉》ーぁぃぅぇぉっゃゅょァィゥェォッャュョ%,.:;!?)]}", c)}
+	no_end :: proc(c: rune) -> bool {return strings.contains_rune("（「『【〔〈《([{", c)}
 	for para in strings.split(s, "\n", context.temp_allocator) {
-		line := ""
-		for word in strings.fields(para, context.temp_allocator) {
-			try := line == "" ? word : strings.concatenate({line, " ", word}, context.temp_allocator)
-			if line != "" && text_w(f, try) > w {
-				append(&out, line)
-				line = word
-			} else {
-				line = try
+		// the pieces a line may break between: a word (and the space before it) or one CJK character
+		line_start, line_end, i := 0, 0, 0 // the line so far: [line_start, line_end)
+		for i < len(para) {
+			// the next piece: [i, j)
+			c, n := utf8.decode_rune_in_string(para[i:])
+			j := i + n
+			if c == ' ' {i = j; continue}
+			if !cjk(c) {
+				for j < len(para) {
+					d, m := utf8.decode_rune_in_string(para[j:])
+					if d == ' ' || cjk(d) {break}
+					j += m
+				}
 			}
+			// glue: no break before closing punctuation, nor after opening
+			for j < len(para) {
+				d, m := utf8.decode_rune_in_string(para[j:])
+				if !no_start(d) {break}
+				j += m
+			}
+			if no_end(c) && j < len(para) {
+				d, m := utf8.decode_rune_in_string(para[j:])
+				if d != ' ' {j += m}
+			}
+			if line_end > line_start && text_w(f, para[line_start:j]) > w { // (the piece does not fit: it starts the next line)
+				append(&out, strings.trim_space(para[line_start:line_end]))
+				line_start = i
+			}
+			line_end = j
+			i = j
 		}
-		append(&out, line)
+		append(&out, strings.trim_space(para[line_start:]))
 	}
 	return out[:]
 }
@@ -231,25 +259,26 @@ tabs :: proc(g: ^Gui, r: ui.Rect, names: []string, sel: int) -> int {
 	out := sel
 	x := r.x
 	for name, i in names {
+		name := tr(name)
 		w := text_w(g.bold, name) + px(g, 28)
-		tr := ui.Rect{x, r.y, w, r.h - px(g, 4)}
-		hot := live(g) && inside(tr, g.mouse)
-		if hot && i != sel {fill_round(g, ui.inset_xy(tr, 0, px(g, 3)), px(g, 4), ren.Color{0, 0, 0, 10})}
-		label(g, i == sel ? g.bold : g.font, name, tr, i == sel || hot ? TEXT : DIM, center = true)
+		tab_r := ui.Rect{x, r.y, w, r.h - px(g, 4)}
+		hot := live(g) && inside(tab_r, g.mouse)
+		if hot && i != sel {fill_round(g, ui.inset_xy(tab_r, 0, px(g, 3)), px(g, 4), ren.Color{0, 0, 0, 10})}
+		label(g, i == sel ? g.bold : g.font, name, tab_r, i == sel || hot ? TEXT : DIM, center = true)
 		if i == sel {
 			uw := px(g, 22)
-			fill_round(g, {tr.x + (tr.w - uw) / 2, r.y + r.h - px(g, 6), uw, px(g, 3)}, px(g, 2), ACCENT)
+			fill_round(g, {tab_r.x + (tab_r.w - uw) / 2, r.y + r.h - px(g, 6), uw, px(g, 3)}, px(g, 2), ACCENT)
 		}
 		if hot && g.clicked {out = i}
 		x += w + px(g, 4)
 	}
-	ren.draw_rect(g.dl, {r.x - px(g, 24), r.y + r.h - 1, g.screen.w, 1}, CARD_BORDER)
+	if glass_shader == 0 {ren.draw_rect(g.dl, {r.x - px(g, 24), r.y + r.h - 1, g.screen.w, 1}, CARD_BORDER)} // (the line under the tabs: only on the flat look)
 	return out
 }
 
 // A drop-down list (id: unique per control, a string literal). enabled: per item (nil: all). Returns the selection
 // and whether it changed this frame.
-dropdown :: proc(g: ^Gui, id: string, r: ui.Rect, items: []string, sel: int, enabled: []bool = nil, active := true) -> (int, bool) {
+dropdown :: proc(g: ^Gui, id: string, r: ui.Rect, items: []string, sel: int, enabled: []bool = nil, active := true, raw := false) -> (int, bool) {
 	res, changed := sel, false
 	if g.dd_result_id == id {
 		res = g.dd_result
@@ -267,7 +296,7 @@ dropdown :: proc(g: ^Gui, id: string, r: ui.Rect, items: []string, sel: int, ena
 		ren.draw_rect(g.dl, {r.x + rad, r.y + r.h - 1, r.w - 2 * rad, 1}, BTN_BORDER_BOTTOM)
 	}
 	text := res >= 0 && res < len(items) ? items[res] : ""
-	label(g, g.font, text, {r.x + px(g, 11), r.y, r.w - px(g, 40), r.h}, active ? TEXT : FAINT)
+	label(g, g.font, text, {r.x + px(g, 11), r.y, r.w - px(g, 40), r.h}, active ? TEXT : FAINT, raw = raw)
 	chevron(g, r.x + r.w - px(g, 18), r.y + r.h / 2, active ? DIM : FAINT)
 	if hot && g.clicked {
 		for s in g.dd_items {delete(s)}
@@ -278,6 +307,7 @@ dropdown :: proc(g: ^Gui, id: string, r: ui.Rect, items: []string, sel: int, ena
 			append(&g.dd_enabled, enabled == nil || (i < len(enabled) && enabled[i]))
 		}
 		g.dd_open = id
+		g.dd_raw = raw
 		g.dd_anchor = r
 		g.dd_sel = res
 		g.clicked = false
@@ -308,7 +338,7 @@ draw_dd_list :: proc(g: ^Gui) {
 		hot := ok && inside(ir, g.mouse)
 		if hot || i == g.dd_sel {fill_round(g, ui.inset_xy(ir, 0, px(g, 2)), px(g, 4), hot ? ren.Color{0, 0, 0, 14} : ren.Color{0, 0, 0, 8})}
 		if i == g.dd_sel {fill_round(g, {ir.x, ir.y + ir.h / 2 - px(g, 8), px(g, 3), px(g, 16)}, px(g, 2), ACCENT)}
-		label(g, g.font, s, {ir.x + px(g, 12), ir.y, ir.w - px(g, 16), ir.h}, ok ? TEXT : FAINT)
+		label(g, g.font, s, {ir.x + px(g, 12), ir.y, ir.w - px(g, 16), ir.h}, ok ? TEXT : FAINT, raw = g.dd_raw)
 		if hot {g.cursor = .Default}
 	}
 }
@@ -317,7 +347,7 @@ draw_dd_list :: proc(g: ^Gui) {
 toggle :: proc(g: ^Gui, r: ui.Rect, on: bool, active := true) -> (bool, bool) {
 	tw, th := px(g, 40), px(g, 20)
 	track := ui.Rect{r.x, r.y + (r.h - th) / 2, tw, th}
-	zone := ui.Rect{r.x, r.y, tw + px(g, 12) + text_w(g.font, "Off"), r.h}
+	zone := ui.Rect{r.x, r.y, tw + px(g, 12) + max(text_w(g.font, tr("Off")), text_w(g.font, tr("On"))), r.h}
 	ok := active && live(g)
 	hot := ok && inside(zone, g.mouse)
 	kd := hot ? px(g, 14) : px(g, 12) // (the knob grows under the mouse)
@@ -386,6 +416,7 @@ draw_tooltip :: proc(g: ^Gui) {
 // A link: accent text, underlined under the mouse; opens url when clicked. Returns its width.
 link :: proc(g: ^Gui, x, y: int, text, url: string, f: ^ren.Font = nil) -> int {
 	f := f if f != nil else g.font
+	text := tr(text)
 	w := text_w(f, text)
 	r := ui.Rect{x, y, w, f.line_height}
 	hot := live(g) && inside(r, g.mouse)

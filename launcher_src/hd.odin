@@ -735,7 +735,7 @@ draw_hd_discard_confirm :: proc(g: ^Gui) {
 	defer g.in_modal = false
 	box := dialog_box(g, px(g, 560), px(g, 290))
 	in_ := ui.inset_xy(box, px(g, 24), px(g, 22))
-	ren.draw_text(g.dl, g.big, "Discard the old assets?", {in_.x, in_.y}, TEXT)
+	ren.draw_text(g.dl, g.big, tr("Discard the old assets?"), {in_.x, in_.y}, TEXT)
 	y := in_.y + g.big.line_height + px(g, 12)
 	list, total := hd_old_assets()
 	zip := hd_zip_file()

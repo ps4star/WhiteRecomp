@@ -20,6 +20,14 @@ import stbtt "vendor:stb/truetype"
 import ren ".."
 import ui "../../../iv_ui"
 
+// A font a glyph is taken from when the font itself has none (add_fallback).
+@(private)
+Fallback_Face :: struct {
+	info:  stbtt.fontinfo,
+	data:  []u8,
+	scale: f32,
+}
+
 // What the font needs besides the ren.Font: the stb state and the atlas packing.
 @(private)
 Face :: struct {
@@ -36,6 +44,9 @@ Face :: struct {
 	shelf_h:    int,
 	full:       bool, // the atlas has no room left (reported once)
 	allocator:  runtime.Allocator,
+	// fonts for the characters this one lacks (add_fallback), tried in order; each scaled to the same em as the font
+	fallbacks:  [8]Fallback_Face,
+	n_fallback: int,
 }
 
 PADDING :: 1 // texels round each glyph, so that the edge of one never bleeds into its neighbour
@@ -89,6 +100,32 @@ create :: proc(
 	font.user = face
 	font.on_destroy = on_destroy
 	return font, true
+}
+
+// Adds a font that the characters `font` (made by create or create_em) lacks are taken from, at the same em size and on the
+// same baseline (up to 8, tried in the order they were added; a glyph already made stays as it is). The bytes must stay alive as
+// long as the font does. false: not a font stb_truetype can read, or 8 are there already.
+add_fallback :: proc(font: ^ren.Font, ttf: []u8) -> bool {
+	if font == nil || font.user == nil {
+		return false
+	}
+	face := (^Face)(font.user)
+	if face.n_fallback == len(face.fallbacks) {
+		return false
+	}
+	fb := &face.fallbacks[face.n_fallback]
+	if !stbtt.InitFont(&fb.info, raw_data(ttf), stbtt.GetFontOffsetForIndex(raw_data(ttf), 0)) {
+		return false
+	}
+	fb.data = ttf
+	// the same em in pixels as the font: its scale times its units per em
+	em_px := face.scale * units_per_em(face.data)
+	if em_px <= 0 {
+		return false
+	}
+	fb.scale = stbtt.ScaleForMappingEmToPixels(&fb.info, em_px)
+	face.n_fallback += 1
+	return true
 }
 
 // Frees a font made by create (and its atlas texture, in the renderer it was made for).
@@ -202,6 +239,7 @@ on_destroy :: proc(font: ^ren.Font) {
 @(private)
 kerning :: proc(font: ^ren.Font, a, b: rune) -> f32 {
 	face := (^Face)(font.user)
+	if stbtt.FindGlyphIndex(&face.info, a) == 0 || stbtt.FindGlyphIndex(&face.info, b) == 0 {return 0} // (a fallback's glyph: no pairs across fonts)
 	return f32(stbtt.GetCodepointKernAdvance(&face.info, a, b)) * face.scale
 }
 
@@ -209,18 +247,24 @@ kerning :: proc(font: ^ren.Font, a, b: rune) -> f32 {
 @(private)
 make_glyph :: proc(font: ^ren.Font, c: rune) -> (g: ren.Glyph, ok: bool) {
 	face := (^Face)(font.user)
-	index := stbtt.FindGlyphIndex(&face.info, c)
-	if index == 0 && c != 0 { // the font has no such glyph (0 is .notdef)
+	info, scale := &face.info, face.scale
+	index := stbtt.FindGlyphIndex(info, c)
+	for i in 0 ..< face.n_fallback { // the font has none: the first fallback that has it
+		if index != 0 || c == 0 {break}
+		fb := &face.fallbacks[i]
+		if fi := stbtt.FindGlyphIndex(&fb.info, c); fi != 0 {info, scale, index = &fb.info, fb.scale, fi}
+	}
+	if index == 0 && c != 0 { // no font has such a glyph (0 is .notdef)
 		return {}, false
 	}
 
 	advance, left_bearing: i32
-	stbtt.GetCodepointHMetrics(&face.info, c, &advance, &left_bearing)
+	stbtt.GetCodepointHMetrics(info, c, &advance, &left_bearing)
 	g.codepoint = c
-	g.advance = f32(advance) * face.scale
+	g.advance = f32(advance) * scale
 
 	x0, y0, x1, y1: i32
-	stbtt.GetCodepointBitmapBox(&face.info, c, face.scale, face.scale, &x0, &y0, &x1, &y1)
+	stbtt.GetCodepointBitmapBox(info, c, scale, scale, &x0, &y0, &x1, &y1)
 	w, h := int(x1 - x0), int(y1 - y0)
 	if w <= 0 || h <= 0 { // a space: it moves the pen and has no picture
 		return g, true
@@ -241,7 +285,7 @@ make_glyph :: proc(font: ^ren.Font, c: rune) -> (g: ren.Glyph, ok: bool) {
 	}
 
 	pixels := make([]u8, w * h, context.temp_allocator)
-	stbtt.MakeCodepointBitmap(&face.info, raw_data(pixels), i32(w), i32(h), i32(w), face.scale, face.scale, c)
+	stbtt.MakeCodepointBitmap(info, raw_data(pixels), i32(w), i32(h), i32(w), scale, scale, c)
 	region := ui.Rect{face.shelf_x, face.shelf_y, w, h}
 	if !ren.texture_update(face.renderer, face.atlas, region, pixels) {
 		return {}, false

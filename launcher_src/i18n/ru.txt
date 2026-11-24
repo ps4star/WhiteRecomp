@@ -1,0 +1,917 @@
+# The launcher in ru (launcher/i18n.odin): each English text, and its translation under it after a tab.
+# Made by tools/launcher_i18n.sh merge.
+@languages ru
+Cannot make the APK's signing key (no random numbers from the system).
+	Не удалось создать ключ подписи APK (система не выдаёт случайные числа).
+Cannot make the APK's certificate.
+	Не удалось создать сертификат APK.
+Cannot sign the APK's certificate.
+	Не удалось подписать сертификат APK.
+Cannot keep the APK's signing key in %s.
+	Не удалось сохранить ключ подписи APK в %s.
+A new signing key for your APKs: %s (keep it: an update installs over the app only when signed by the same key)
+	Новый ключ подписи для ваших APK: %s (сохраните его: обновление устанавливается поверх приложения, только если подписано тем же ключом)
+Cannot sign the APK.
+	Не удалось подписать APK.
+Cannot write %s.
+	Не удалось записать %s.
+This launcher carries no APK files for %s (%s).
+	В этом лаунчере нет файлов APK для %s (%s).
+Cannot read %s.
+	Не удалось прочитать %s.
+Writing the APK
+	Запись APK
+As AppImage
+	Как AppImage
+WhiteRecomp: the game is not at $XRC_GAME_DIR
+	WhiteRecomp: игры нет в $XRC_GAME_DIR
+Copy your "FINAL FANTASY XIII" folder (the one with white_data in it) next to the AppImage, or set XRC_GAME_DIR.
+	Скопируйте папку «FINAL FANTASY XIII» (ту, где есть white_data) рядом с AppImage или задайте XRC_GAME_DIR.
+Packing the AppImage
+	Упаковка AppImage
+This launcher carries no AppImage runtime for %s.
+	В этом лаунчере нет среды выполнения AppImage для %s.
+not compressed: install squashfs-tools (mksquashfs) for a smaller file
+	без сжатия: установите squashfs-tools (mksquashfs), чтобы файл был меньше
+AppImage: %s (%.0f MB, %s)
+	AppImage: %s (%.0f МБ, %s)
+Checking the game
+	Проверка игры
+No C compiler that can build the game: install one first.
+	Нет компилятора C, способного собрать игру: сначала установите его.
+Game: %s
+	Игра: %s
+Compiler: %s
+	Компилятор: %s
+Deleted %d old source files
+	Удалено старых исходных файлов: %d
+Sources: %s (%d files changed)
+	Исходники: %s (изменено файлов: %d)
+This launcher carries no files for %s.
+	В этом лаунчере нет файлов для %s.
+FFmpeg: your own build in %s
+	FFmpeg: ваша собственная сборка в %s
+Options: %v
+	Параметры: %v
+Link-Time Optimization is off for this build: Clang's needs LLVM's linker (ld.lld) beside it, and there is none.
+	Оптимизация при компоновке (LTO) отключена для этой сборки: Clang нужен компоновщик LLVM (ld.lld) рядом с ним, а его нет.
+Compiling %d of %d files on %d cores
+	Компиляция %d из %d файлов на %d ядрах
+Compiling: %d of %d (%s)
+	Компиляция: %d из %d (%s)
+Linking
+	Компоновка
+Linking failed.
+	Ошибка компоновки.
+(If WhiteRecomp is running, close it and Build again: Windows cannot replace a running program.)
+	(Если WhiteRecomp запущен, закройте его и снова нажмите «Собрать»: Windows не может заменить запущенную программу.)
+Cannot write the output in %s.
+	Не удалось записать результат в %s.
+Built %s: copy it to the %s computer with %s (it says how).
+	Собрано: %s. Скопируйте на компьютер %s с помощью %s (там описано, как).
+Built %s: install it on the %s device; %s says how, and where the game's files go.
+	Собрано: %s. Установите на устройство %s; в %s описано, как и куда класть файлы игры.
+Built %s: copy the folder %s to the %s computer (its README.txt says how).
+	Собрано: %s. Скопируйте папку %s на компьютер %s (в её README.txt описано, как).
+Built
+	Собрано
+Built %s
+	Собрано: %s
+Cannot write %s in %s.
+	Не удалось записать %s в %s.
+Profile-Guided Optimization is off for this build: %s.
+	Оптимизация по профилю (PGO) отключена для этой сборки: %s.
+Profile-Guided Optimization is off for this build: no profile in the bundle.
+	Оптимизация по профилю (PGO) отключена для этой сборки: в комплекте нет профиля.
+Profile-Guided Optimization is off for this build: this Clang cannot read the profile (an older version?).
+	Оптимизация по профилю (PGO) отключена для этой сборки: этот Clang не может прочитать профиль (старая версия?).
+Profile-Guided Optimization: %s
+	Оптимизация по профилю: %s
+Could not read the data folder %s: %v
+	Не удалось прочитать папку данных %s: %v
+Clearing the data folder: %s
+	Очистка папки данных: %s
+Could not delete %s: %v
+	Не удалось удалить %s: %v
+Any ARM64 CPU (Default)
+	Любой ARM64-процессор (по умолчанию)
+Ampere / Graviton 2 servers
+	Серверы Ampere / Graviton 2
+64-bit ARM Linux (glibc 2.34 or newer: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 and later)
+	64-битный ARM Linux (glibc 2.34 или новее: Debian 12, Ubuntu 22.04, Raspberry Pi OS 12 и новее)
+Any ARM64 phone (Default)
+	Любой ARM64-телефон (по умолчанию)
+2019 and later flagships (Cortex-A76)
+	Флагманы 2019 года и новее (Cortex-A76)
+2021 and later flagships (Cortex-X1)
+	Флагманы 2021 года и новее (Cortex-X1)
+Android 10 or newer, 64-bit ARM, Vulkan: an APK to install (no cutscenes yet)
+	Android 10 или новее, 64-битный ARM, Vulkan: APK для установки (пока без роликов)
+Needs Clang (GCC compiles only for its own computer): install Clang, then Check again on the Home tab.
+	Нужен Clang (GCC компилирует только для своего компьютера): установите Clang, затем нажмите «Проверить снова» на вкладке «Главная».
+Needs LLVM's linker (ld.lld.exe) beside Clang: LLVM-MinGW and MSYS2's Clang have it.
+	Нужен компоновщик LLVM (ld.lld.exe) рядом с Clang: он есть в LLVM-MinGW и в Clang из MSYS2.
+Needs LLVM's linker, lld (e.g. sudo apt install lld).
+	Нужен компоновщик LLVM, lld (например, sudo apt install lld).
+Target: %s, CPU %s
+	Цель: %s, процессор %s
+Linker: %s
+	Компоновщик: %s
+Builds the game for another kind of computer, with the Options tab's options. It runs there, not here.
+	Собирает игру для другого типа компьютера с параметрами вкладки «Параметры». Она запускается там, а не здесь.
+Target:
+	Цель:
+Runs on every 64-bit ARM phone
+	Работает на любом 64-битном ARM-телефоне
+Runs on every ARM64 CPU
+	Работает на любом ARM64-процессоре
+Faster there, but only that CPU and newer ones
+	Там быстрее, но только на этом процессоре и более новых
+Settings:
+	Настройки:
+Use Android Preset
+	Пресет для Android
+Sets the Options tab for a phone: 960x540, 60 fps, 512 shadows, anti-aliasing off, half-resolution effects, 4 GB memory, -O1, 2 pipeline threads. Builds for this computer use them too.
+	Настраивает вкладку «Параметры» для телефона: 960x540, 60 fps, тени 512, сглаживание выкл., эффекты в половинном разрешении, 4 ГБ памяти, -O1, 2 потока конвейеров. Сборки для этого компьютера тоже их используют.
+Sets the Options tab: 960x540, 60 fps, light graphics
+	Настраивает вкладку «Параметры»: 960x540, 60 fps, облегчённая графика
+Compiler:
+	Компилятор:
+Looking for compilers…
+	Поиск компиляторов…
+No Clang found
+	Clang не найден
+Linker:
+	Компоновщик:
+No lld found
+	lld не найден
+Output:
+	Результат:
+Not built yet
+	Ещё не собрано
+Build for %s
+	Собрать для %s
+Wait for the current task to finish.
+	Дождитесь завершения текущей задачи.
+Needs the game (its exe is read for the build): choose its folder on the Home tab.
+	Нужна игра (при сборке читается её exe): выберите её папку на вкладке «Главная».
+Builds the game for %s into %s.
+	Собирает игру для %s в %s.
+Cancel
+	Отмена
+Clang (Best)
+	Clang (лучший)
+Choose clang
+	Выбрать clang
+cannot write in the launcher's folder
+	нельзя записывать в папку лаунчера
+it does not start
+	он не запускается
+not found
+	не найден
+the C library's headers (pthread.h) are missing -- SteamOS removes them; Install it for me puts them back
+	отсутствуют заголовки библиотеки C (pthread.h) -- SteamOS их удаляет; «Установить автоматически» вернёт их
+the C library's headers (pthread.h) are missing: install glibc's development files (Install it for me)
+	отсутствуют заголовки библиотеки C (pthread.h): установите файлы разработки glibc («Установить автоматически»)
+it cannot build the game (%s)
+	он не может собрать игру (%s)
+the programs it makes do not run here (%s)
+	созданные им программы здесь не запускаются (%s)
+the programs it makes do not run here
+	созданные им программы здесь не запускаются
+C compiler
+	Компилятор C
+builds the game from the bundled sources
+	собирает игру из прилагаемых исходников
+Visual C++ (cl) is installed, but it cannot build the game yet (it needs clang)
+	Visual C++ (cl) установлен, но пока не может собрать игру (нужен clang)
+none found
+	ничего не найдено
+Install LLVM-MinGW (winget)
+	Установить LLVM-MinGW (winget)
+Install Apple's command line tools
+	Установить инструменты командной строки Apple
+Install Clang and the C headers (%s)
+	Установить Clang и заголовки C (%s)
+Install Clang (%s)
+	Установить Clang (%s)
+Links
+	Ссылки
+converts the movies (the game plays them without it)
+	конвертирует видео (игра воспроизводит их и без него)
+included with the launcher
+	входит в состав лаунчера
+included with the launcher (the Windows FFmpeg: Convert Movies runs it through Wine)
+	входит в состав лаунчера (FFmpeg для Windows: «Конвертировать видео» запускает его через Wine)
+Install FFmpeg (winget)
+	Установить FFmpeg (winget)
+Install FFmpeg (Homebrew)
+	Установить FFmpeg (Homebrew)
+Install Homebrew (brew.sh) first, then FFmpeg
+	Сначала установите Homebrew (brew.sh), затем FFmpeg
+Install FFmpeg (%s)
+	Установить FFmpeg (%s)
+Looking for C compilers
+	Поиск компиляторов C
+Looking for FFmpeg
+	Поиск FFmpeg
+Looking for Wine
+	Поиск Wine
+Checked what is installed
+	Проверено, что установлено
+The install ended with code %d.
+	Установка завершилась с кодом %d.
+Finish the installer Apple opened, then press Check again.
+	Завершите работу установщика, открытого Apple, затем нажмите «Проверить снова».
+Choose clang…
+	Выбрать clang…
+Choose clang.exe (e.g. LLVM-MinGW's bin\clang.exe)
+	Выберите clang.exe (например, bin\clang.exe из LLVM-MinGW)
+Checking
+	Проверка
+runs the movie converter (a Windows program) for Convert Movies
+	запускает конвертер видео (программу для Windows) для «Конвертировать видео»
+not found (only Convert Movies needs it)
+	не найден (нужен только для «Конвертировать видео»)
+Install Wine (Homebrew)
+	Установить Wine (Homebrew)
+Install Homebrew (brew.sh) first, then Wine
+	Сначала установите Homebrew (brew.sh), затем Wine
+not found: install Proton in Steam (only Convert Movies needs it)
+	не найден: установите Proton в Steam (нужен только для «Конвертировать видео»)
+In Steam: Library > search Proton > install one, then Check again
+	В Steam: Библиотека > найдите Proton > установите любой, затем «Проверить снова»
+Install Wine (%s)
+	Установить Wine (%s)
+English
+	Английский
+Japanese
+	Японский
+French
+	Французский
+German
+	Немецкий
+Italian
+	Итальянский
+Spanish
+	Испанский
+Korean
+	Корейский
+Traditional Chinese
+	Традиционный китайский
+These can be changed once the current task has finished.
+	Их можно изменить после завершения текущей задачи.
+These apply the next time the game starts; no Build needed.
+	Применяются при следующем запуске игры; сборка не нужна.
+Language
+	Язык
+Voice:
+	Озвучка:
+The spoken language, cutscenes included
+	Язык речи, включая ролики
+Subtitles & UI:
+	Субтитры и интерфейс:
+The language of subtitles, menus and all other text
+	Язык субтитров, меню и всего остального текста
+Cutscenes
+	Ролики
+Cutscene Colors:
+	Цвета роликов:
+Corrected
+	Исправленные
+Original
+	Оригинальные
+As the PC release shows them: dark scenes crushed to black, bright ones blown out
+	Как в PC-версии: тёмные сцены проваливаются в чёрное, яркие пересвечены
+The cutscenes' full color range, as encoded: detail kept in dark and bright scenes
+	Полный цветовой диапазон роликов, как закодирован: детали сохранены в тёмных и ярких сценах
+Brightness:
+	Яркость:
+Cutscene brightness (a gain: black stays black)
+	Яркость роликов (усиление: чёрный остаётся чёрным)
+Contrast:
+	Контраст:
+Cutscene contrast, about mid-gray
+	Контраст роликов относительно среднего серого
+Saturation:
+	Насыщенность:
+Cutscene color strength (0%: black and white)
+	Насыщенность цвета роликов (0%: чёрно-белое)
+Reset
+	Сбросить
+Save Folders
+	Папки сохранений
+Not found
+	Не найдено
+1 .dat file
+	1 файл .dat
+Remove
+	Убрать
+No folders added
+	Папки не добавлены
+Add Folder…
+	Добавить папку…
+Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins
+	Папки с файлами сохранений (.dat), которые игра подхватит помимо папки Steam; побеждает самая новая копия каждого сохранения
+HD Textures
+	HD-текстуры
+Import ZIP Again…
+	Импортировать ZIP снова…
+Import ZIP…
+	Импортировать ZIP…
+Get
+	Скачать
+Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)
+	«Скачать» загружает ZIP мода (Nexus Mods); «Импортировать ZIP…» размещает его текстуры рядом с файлами игры (на время работы нужно около 25 ГБ свободного места)
+Importing: %s
+	Импорт: %s
+Imported from %s (%s voices); the game's own files are unchanged
+	Импортировано из %s (озвучка: %s); собственные файлы игры не изменены
+Import Archive Again…
+	Импортировать архив снова…
+Import Archive…
+	Импортировать архив…
+Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's
+	«Скачать» загружает мод (Nexus Mods: автономная версия); «Импортировать архив…» распаковывает его текстуры (около 3,5 ГБ) рядом с файлами игры
+Imported from %s (%s files): sharper fonts, menus and maps
+	Импортировано из %s (файлов: %s): более чёткие шрифты, меню и карты
+HD Textures:
+	HD-текстуры:
+Import an HD mod first
+	Сначала импортируйте HD-мод
+the HD Project's and the HD Fonts & GUI textures
+	текстуры HD Project и HD Fonts & GUI
+the HD Project's textures
+	текстуры HD Project
+the HD Fonts & GUI textures
+	текстуры HD Fonts & GUI
+The game uses %s
+	Игра использует %s
+The game's own textures
+	Собственные текстуры игры
+The game's original archives were discarded: the HD textures are always used
+	Оригинальные архивы игры удалены: HD-текстуры используются всегда
+Imported for %s voices: with these voices the game's own textures are used (Import again)
+	Импортировано для озвучки %s: с этой озвучкой используются собственные текстуры игры (импортируйте снова)
+Old Assets:
+	Старые ресурсы:
+Discard Old Assets
+	Удалить старые ресурсы
+After an import: deletes the mod's ZIP and the game's archives the HD copies replace
+	После импорта: удаляет ZIP мода и архивы игры, которые заменяют HD-копии
+Discarded (Steam's Verify integrity of game files restores them)
+	Удалено (функция Steam «Проверить целостность файлов игры» восстановит их)
+Frees about %.1f GB (the mod's ZIP and the game's replaced archives)
+	Освобождает около %.1f ГБ (ZIP мода и заменённые архивы игры)
+Choose a folder with save files (.dat)
+	Выберите папку с файлами сохранений (.dat)
+Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)
+	Выберите архив HD-мода (.zip от HD Project, .rar от HD Fonts and GUI)
+Choose the FINAL FANTASY XIII folder
+	Выберите папку FINAL FANTASY XIII
+Mod archives (.zip, .rar)
+	Архивы модов (.zip, .rar)
+*.zip *.ZIP *.rar *.RAR|Mod archives
+	*.zip *.ZIP *.rar *.RAR|Архивы модов
+Up
+	Вверх
+Home
+	Главная
+(no folders or ZIP files here)
+	(здесь нет папок и ZIP-файлов)
+(no folders here)
+	(здесь нет папок)
+Click the FF XIII HD Project's ZIP file to import it.
+	Щёлкните ZIP-файл FF XIII HD Project, чтобы импортировать его.
+FINAL FANTASY XIII is in this folder.
+	FINAL FANTASY XIII находится в этой папке.
+Open the folder FINAL FANTASY XIII is installed in (the one with white_data).
+	Откройте папку, где установлена FINAL FANTASY XIII (ту, где есть white_data).
+No .dat files in this folder (only its own files are looked at, not its subfolders').
+	В этой папке нет файлов .dat (просматриваются только её собственные файлы, без подпапок).
+Choose this folder
+	Выбрать эту папку
+the launcher's sources are damaged (no dispatch table)
+	исходники лаунчера повреждены (нет таблицы диспетчеризации)
+the launcher's sources are damaged (no exe check)
+	исходники лаунчера повреждены (нет проверки exe)
+it cannot be read
+	его не удаётся прочитать
+it is not a Windows program
+	это не программа для Windows
+it is another regional edition of the game (Steam depot %s; this launcher's code is from the North America / Europe edition, depot 292122): it is not supported yet, and re-installing gets the same one
+	это другое региональное издание игры (депо Steam %s; код этого лаунчера взят из издания для Северной Америки / Европы, депо 292122): оно пока не поддерживается, а переустановка даст то же самое
+Steam's DRM wrapper removed
+	обёртка DRM Steam удалена
+a modified copy of the game (%s)
+	изменённая копия игры (%s)
+a different version of the game or a modified copy
+	другая версия игры или изменённая копия
+Cannot run %s.
+	Не удалось запустить %s.
+Cannot copy %s to %s (is there room?).
+	Не удалось скопировать %s в %s (достаточно ли места?).
+Choose the FINAL FANTASY XIII folder first (Home).
+	Сначала выберите папку FINAL FANTASY XIII («Главная»).
+The game's original archives were discarded (Discard Old Assets): an import needs them. Have Steam restore them (Properties > Installed Files > Verify integrity of game files), then Import again.
+	Оригинальные архивы игры удалены («Удалить старые ресурсы»): для импорта они нужны. Восстановите их через Steam (Свойства > Установленные файлы > Проверить целостность файлов игры), затем импортируйте снова.
+Checking the ZIP
+	Проверка ZIP
+Cannot open %s.
+	Не удалось открыть %s.
+The game has no white_data/sys/%s%s.win32.bin (%s voices).
+	В игре нет white_data/sys/%s%s.win32.bin (озвучка: %s).
+The mod's tools are Windows programs: install Wine (Home tab: Check) and Import again.
+	Инструменты мода — программы для Windows: установите Wine (вкладка «Главная»: «Проверить») и импортируйте снова.
+Setting up Wine (the first time: about a minute)
+	Настройка Wine (в первый раз: около минуты)
+Wine could not set up its folder (%s).
+	Wine не смог настроить свою папку (%s).
+Cannot make %s.
+	Не удалось создать %s.
+Importing %s (%d textures) for %s voices into %s
+	Импорт %s (текстур: %d) для озвучки %s в %s
+This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.
+	Это займёт время; на время работы нужно около 25 ГБ свободного места (останется около 8 ГБ). Собственные файлы игры не изменяются.
+FF XIII HD Project import: %s -> %s (region %s)
+	Импорт FF XIII HD Project: %s -> %s (регион %s)
+Unpacking the ZIP: %d of about %d files
+	Распаковка ZIP: %d из примерно %d файлов
+Cannot unpack %s from the ZIP (is there room?).
+	Не удалось распаковать %s из ZIP (достаточно ли места?).
+The mod's ff13tool.exe does not run here.
+	ff13tool.exe из мода здесь не запускается.
+Wine needs its 32-bit support for it (see the Home tab's Wine line).
+	Для него Wine нужна 32-битная поддержка (см. строку Wine на вкладке «Главная»).
+Copying the game's archives
+	Копирование архивов игры
+Unpacking white_img%s
+	Распаковка white_img%s
+Unpacking zone %s
+	Распаковка зоны %s
+zone %s: no %s / %s
+	зона %s: нет %s / %s
+Unpacking white_scr%s
+	Распаковка white_scr%s
+ff13tool did not unpack white_scr (see the import log).
+	ff13tool не распаковал white_scr (см. журнал импорта).
+Log: %s
+	Журнал: %s
+The main characters' models are not the original ones (another mod's?): they are left as they are.
+	Модели главных героев не оригинальные (от другого мода?): они оставлены как есть.
+Putting in the HD textures: %d of %d (%s %s)
+	Добавление HD-текстур: %d из %d (%s %s)
+Packing white_scr%s again
+	Повторная упаковка white_scr%s
+ff13tool could not pack white_scr again (see the import log).
+	ff13tool не смог снова упаковать white_scr (см. журнал импорта).
+No texture could be put in (see the import log): nothing was changed.
+	Не удалось добавить ни одной текстуры (см. журнал импорта): ничего не изменено.
+Finishing
+	Завершение
+Could not keep the HD Fonts and GUI textures: import that mod's archive again.
+	Не удалось сохранить текстуры HD Fonts and GUI: импортируйте архив этого мода снова.
+Cannot move the new archives to %s.
+	Не удалось переместить новые архивы в %s.
+HD Textures imported: %d zones and %d models, in %s. HD Textures is On.
+	HD-текстуры импортированы: зон — %d, моделей — %d, в %s. HD-текстуры: «Вкл.».
+Imported
+	Импортировано
+There is no finished HD Textures import.
+	Нет завершённого импорта HD-текстур.
+Cannot write in %s.
+	Не удалось записать в %s.
+Deleting %s
+	Удаление %s
+Could not delete %s.
+	Не удалось удалить %s.
+Discarded %d of the game's original archives%s: %.1f GB freed. HD Textures stays On; Steam's Verify integrity of game files brings the originals back.
+	Удалено оригинальных архивов игры: %d%s; освобождено %.1f ГБ. HD-текстуры остаются «Вкл.»; функция Steam «Проверить целостность файлов игры» вернёт оригиналы.
+Discard the old assets?
+	Удалить старые ресурсы?
+, and the mod's ZIP (%s)
+	, а также ZIP мода (%s)
+Discard
+	Удалить
+Keep them
+	Оставить
+Checking %s
+	Проверка %s
+Importing %s (%d files, %.1f GB) into %s
+	Импорт %s (файлов: %d, %.1f ГБ) в %s
+Unpacking: %d of %d files
+	Распаковка: %d из %d файлов
+Cannot unpack %s (%s).
+	Не удалось распаковать %s (%s).
+Cannot write %s (is there room?).
+	Не удалось записать %s (достаточно ли места?).
+Cannot move the textures to %s.
+	Не удалось переместить текстуры в %s.
+HD Fonts and GUI imported: %d files in %s. HD Textures is On.
+	HD Fonts and GUI импортирован: файлов — %d, в %s. HD-текстуры: «Вкл.».
+Could not make %s: start the game with Run.
+	Не удалось создать %s: запускайте игру кнопкой «Запустить».
+no game built yet
+	игра ещё не собрана
+Could not write %s: start the game with Run.
+	Не удалось записать %s: запускайте игру кнопкой «Запустить».
+The game is in Applications too (%s): start it from there, Launchpad or Spotlight, without the launcher.
+	Игра есть и в «Программах» (%s): запускайте её оттуда, из Launchpad или Spotlight, без лаунчера.
+Looking for FINAL FANTASY XIII
+	Поиск FINAL FANTASY XIII
+not found: choose its folder
+	не найдена: выберите её папку
+that folder has no white_data/prog/win/bin/ffxiiiimg.exe
+	в этой папке нет white_data/prog/win/bin/ffxiiiimg.exe
+Game: %s (%s)
+	Игра: %s (%s)
+Rebuild
+	Пересобрать
+WhiteRecomp: its bundled sources are missing or damaged
+	WhiteRecomp: прилагаемые исходники отсутствуют или повреждены
+Build
+	Собрать
+Cross-Compile
+	Кросс-компиляция
+game ok %v, %d cutscenes to convert, %d discardable (%.1f GB), %d kept
+	игра в порядке: %v, роликов для конвертации: %d, можно удалить: %d (%.1f ГБ), оставлено: %d
+compiler: %s (%s)%s
+	компилятор: %s (%s)%s
+options: %v
+	параметры: %v
+WhiteRecomp: could not open a window: %s
+	WhiteRecomp: не удалось открыть окно: %s
+WhiteRecomp: could not open a window
+	WhiteRecomp: не удалось открыть окно
+Options
+	Параметры
+Features & Mods
+	Функции и моды
+Running…
+	Запущено…
+Run
+	Запустить
+Could not start %s.
+	Не удалось запустить %s.
+The game is running.
+	Игра запущена.
+Starts %s.
+	Запускает %s.
+Rebuild to Run
+	Пересобрать и запустить
+The game here was built by another version of this launcher: its cache is cleared and the game built again, so this version's fixes are in it.
+	Игра здесь собрана другой версией лаунчера: её кэш будет очищен, а игра собрана заново, чтобы в неё вошли исправления этой версии.
+Discard Movies
+	Удалить видео
+Convert Movies
+	Конвертировать видео
+Clear Cache
+	Очистить кэш
+Close the game first: it cannot be rebuilt while it runs.
+	Сначала закройте игру: её нельзя пересобрать, пока она запущена.
+Needs the game: choose its folder.
+	Нужна игра: выберите её папку.
+Needs a C compiler.
+	Нужен компилятор C.
+Builds the game with the options of the Options tab.
+	Собирает игру с параметрами вкладки «Параметры».
+Needs the game.
+	Нужна игра.
+Every movie is converted.
+	Все видео сконвертированы.
+Converts the %d cutscenes that have no MP4 yet (it can be cancelled and continued later).
+	Конвертирует ролики без MP4 (%d шт.; можно отменить и продолжить позже).
+Close the game first.
+	Сначала закройте игру.
+Deletes what earlier Builds left in the data folder (unpacked sources, compiled objects, tools), so the next Build starts over and compiles everything. Saves and settings stay.
+	Удаляет то, что прежние сборки оставили в папке данных (распакованные исходники, объектные файлы, инструменты), чтобы следующая сборка началась с нуля и скомпилировала всё. Сохранения и настройки остаются.
+Nothing to discard: no Bink movie has its MP4 yet.
+	Нечего удалять: ни у одного видео Bink ещё нет MP4.
+Frees %.1f GB: the Bink movies that have their MP4.
+	Освобождает %.1f ГБ: видео Bink, у которых уже есть MP4.
+Browse…
+	Обзор…
+Game folder
+	Папка игры
+The North America / Europe edition of the game.
+	Издание игры для Северной Америки / Европы.
+The Asian edition of the game: Space confirms in menus (Enter does not), and it has Japanese voices only.
+	Азиатское издание игры: в меню подтверждение — Space (не Enter), озвучка только японская.
+Requirements
+	Требования
+Check again
+	Проверить снова
+Activity
+	Активность
+The options can be changed once the current task has finished.
+	Параметры можно изменить после завершения текущей задачи.
+Most apply at the next Build; Graphics and Memory the next time the game starts.
+	Большинство применяется при следующей сборке; «Графика» и «Память» — при следующем запуске игры.
+Display
+	Экран
+Aspect Ratio:
+	Соотношение сторон:
+16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)
+	16:10: весь экран, обзор выше, чем при 16:9 (у видео остаются тонкие полосы)
+21:9 and 32:9: the 3D drawn across the whole width
+	21:9 и 32:9: 3D отрисовывается на всю ширину
+The game's own shape
+	Собственные пропорции игры
+Resolution:
+	Разрешение:
+Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed
+	Ultrawide: в игре F5 / F6 расширяют / сужают поле зрения, F7 сбрасывает его; сборка не нужна
+What the game renders at; the window can be resized; no Build needed
+	Разрешение рендеринга игры; размер окна можно менять; сборка не нужна
+Lower is faster on the GPU, less sharp; the window can be resized; no Build needed
+	Ниже — быстрее для GPU, но менее чётко; размер окна можно менять; сборка не нужна
+Higher costs GPU time; the window can be resized; no Build needed
+	Выше — больше нагрузка на GPU; размер окна можно менять; сборка не нужна
+Window Scaling:
+	Масштабирование окна:
+Fit (Default)
+	Вписать (по умолчанию)
+Stretch
+	Растянуть
+Fills the window; the picture is squeezed if the window is another shape
+	Заполняет окно; изображение искажается, если у окна другие пропорции
+Keeps the picture's shape: black bars in a window of another shape
+	Сохраняет пропорции изображения: чёрные полосы в окне других пропорций
+Graphics Driver:
+	Графический драйвер:
+The port's Vulkan renderer
+	Vulkan-рендерер порта
+Graphics
+	Графика
+Graphics:
+	Графика:
+No shadows, no anti-aliasing: the fastest
+	Без теней и сглаживания: максимальная скорость
+Low-resolution shadows, 2x FXAA
+	Тени низкого разрешения, FXAA 2x
+The game's shadows, 4x FXAA
+	Тени как в игре, FXAA 4x
+The sharpest shadows, 8x FXAA: costly on the GPU
+	Самые чёткие тени, FXAA 8x: высокая нагрузка на GPU
+Shadows and anti-aliasing as set below
+	Тени и сглаживание задаются ниже
+Shadow Resolution:
+	Разрешение теней:
+Off (No Shadows)
+	Выкл. (без теней)
+1024 x 1024 (Default)
+	1024 x 1024 (по умолчанию)
+Sharper shadows cost GPU time; Off is the fastest
+	Более чёткие тени нагружают GPU; «Выкл.» — самый быстрый вариант
+Anti-alias Method:
+	Метод сглаживания:
+FXAA (Default)
+	FXAA (по умолчанию)
+A cheap filter on the 3D image (not the HUD)
+	Недорогой фильтр для 3D-изображения (не для HUD)
+Multisampling: costly on integrated GPUs
+	Мультисэмплинг: дорого для встроенных GPU
+Anti-alias Quality:
+	Качество сглаживания:
+1x (Off)
+	1x (выкл.)
+4x (Default)
+	4x (по умолчанию)
+FXAA strength: higher smooths longer edges
+	Сила FXAA: чем выше, тем длиннее сглаживаемые края
+Samples per pixel (up to what the GPU has)
+	Выборок на пиксель (сколько поддерживает GPU)
+Effects Resolution:
+	Разрешение эффектов:
+Half (Default)
+	Половинное (по умолчанию)
+Full
+	Полное
+Effects as sharp as the rest; costly in battle on integrated GPUs
+	Эффекты так же чётки, как всё остальное; дорого в бою на встроенных GPU
+Battle effects cost a quarter of the GPU time, a little softer; no Build needed
+	Боевые эффекты занимают вчетверо меньше времени GPU, чуть мягче; сборка не нужна
+Anisotropic Filtering:
+	Анизотропная фильтрация:
+16x: ground and walls stay sharp at a distance; no Build needed
+	16x: земля и стены остаются чёткими вдали; сборка не нужна
+The game's own texture filtering (blurrier at a distance); no Build needed
+	Собственная фильтрация текстур игры (размытее вдали); сборка не нужна
+Audio & Controls
+	Звук и управление
+Audio:
+	Звук:
+Music, sound and voices
+	Музыка, звуки и голоса
+No audio work at all (play your own music)
+	Звук полностью отключён (включите свою музыку)
+Gamepad Scanning:
+	Опрос геймпадов:
+Every 2 seconds (Default)
+	Каждые 2 секунды (по умолчанию)
+Once
+	Один раз
+Only the controllers there at the start (plug one in: restart the game)
+	Только контроллеры, подключённые при запуске (подключили новый — перезапустите игру)
+A controller plugged in while playing is found within 2 seconds
+	Контроллер, подключённый во время игры, обнаруживается в течение 2 секунд
+Cutscene Files:
+	Файлы роликов:
+None found
+	Не найдено
+No cutscene files: re-install the game fresh from Steam for cutscenes to work
+	Нет файлов роликов: переустановите игру из Steam начисто, чтобы ролики работали
+The game's own Bink 2 videos, no conversion; no Build needed
+	Собственные видео Bink 2 игры, без конвертации; сборка не нужна
+The MP4s Convert Movies made; no Build needed
+	MP4, созданные «Конвертировать видео»; сборка не нужна
+Cutscenes:
+	Ролики:
+Play
+	Показывать
+Play if converted
+	Показывать, если сконвертированы
+Auto-skip
+	Пропускать
+No cutscene files to play
+	Нет файлов роликов для воспроизведения
+Hover for how cutscenes work
+	Наведите курсор, чтобы узнать, как работают ролики
+Steam Integration:
+	Интеграция со Steam:
+No achievements or cloud saves; Steam does not show the game as running
+	Без достижений и облачных сохранений; Steam не показывает, что игра запущена
+Performance
+	Производительность
+Pipeline Build Threads:
+	Потоки сборки конвейеров:
+Threads preparing new graphics effects in the background; no Build needed
+	Потоки, готовящие новые графические эффекты в фоне; сборка не нужна
+Memory:
+	Память:
+4GB (Recommended)
+	4 ГБ (рекомендуется)
+The 2 GB the original exe gets; no Build needed
+	2 ГБ, как у оригинального exe; сборка не нужна
+The address space a 4 GB-patched exe gets; no Build needed
+	Адресное пространство exe с патчем на 4 ГБ; сборка не нужна
+No C compiler found
+	Компилятор C не найден
+Where to get one
+	Где его взять
+Optimization Level:
+	Уровень оптимизации:
+Higher: a slower build, a faster game
+	Выше: сборка медленнее, игра быстрее
+Profile-Guided Optimization:
+	Оптимизация по профилю (PGO):
+Off: the game built without the profile
+	Выкл.: игра собрана без профиля
+On: optimized for how the game runs (a faster game)
+	Вкл.: оптимизация под реальную работу игры (игра быстрее)
+Link-Time Optimization:
+	Оптимизация при компоновке (LTO):
+Off: a faster Build
+	Выкл.: сборка быстрее
+On: optimizes across files (a much slower Build)
+	Вкл.: оптимизация между файлами (сборка намного медленнее)
+Needs LLVM's linker (lld) beside Clang: not found
+	Нужен компоновщик LLVM (lld) рядом с Clang: не найден
+Experimental Optimizations:
+	Экспериментальные оптимизации:
+On: less-tested speed-ups that may break things
+	Вкл.: менее проверенные ускорения, которые могут что-то сломать
+Off: only the tested ones
+	Выкл.: только проверенные
+Debug & Profile Tools:
+	Отладка и профилирование:
+Logs, tracing, the profiler and an FPS counter (console window)
+	Журналы, трассировка, профайлер и счётчик FPS (окно консоли)
+Off: no console window, nothing printed
+	Выкл.: без окна консоли, ничего не выводится
+As AppImage:
+	Как AppImage:
+On: Build makes one file, WhiteRecomp-<CPU>.AppImage, with the game and its settings inside, instead of the program and its .cfg. Off: the program, as before.
+	Вкл.: «Собрать» создаёт один файл WhiteRecomp-<CPU>.AppImage с игрой и её настройками внутри вместо программы и её .cfg. Выкл.: программа, как раньше.
+Discard the old movies?
+	Удалить старые видео?
+The launcher was updated
+	Лаунчер обновлён
+Clear Cache and Build
+	Очистить кэш и собрать
+Later
+	Позже
+A C compiler is needed
+	Нужен компилятор C
+The launcher builds the game on your computer, and that needs a C compiler: Clang (the best: a faster game) or GCC. None was found. Install one, then press Check again.
+	Лаунчер собирает игру на вашем компьютере, и для этого нужен компилятор C: Clang (лучший: игра быстрее) или GCC. Ни один не найден. Установите его, затем нажмите «Проверить снова».
+The launcher builds the game on your computer, and that needs Clang (the game is built with Clang only: GCC is not used). None was found. Install one, then press Check again -- or, if it is installed but not found, Choose it.
+	Лаунчер собирает игру на вашем компьютере, и для этого нужен Clang (игра собирается только с Clang: GCC не используется). Он не найден. Установите его, затем нажмите «Проверить снова» -- или, если он установлен, но не найден, укажите его кнопкой «Выбрать».
+MSYS2 (its clang64 Clang)
+	MSYS2 (Clang из clang64)
+Tried: %s
+	Проверено: %s
+Install it for me
+	Установить автоматически
+Choose clang.exe…
+	Выбрать clang.exe…
+Close
+	Закрыть
+Achievements and cloud saves while Steam runs (start it first); no Build needed
+	Достижения и облачные сохранения, пока запущен Steam (запустите его заранее); сборка не нужна
+Achievements and the overlay (Shift+Tab) while Steam runs; no Build needed
+	Достижения и оверлей (Shift+Tab), пока запущен Steam; сборка не нужна
+Every movie already has its MP4s.
+	У всех видео уже есть MP4.
+Nothing to convert
+	Нечего конвертировать
+Converting through %s
+	Конвертация через %s
+Converting %d cutscenes (all of them: about 7 hours of video, English and Japanese; it can be cancelled and continued later)
+	Конвертация роликов: %d (все: около 7 часов видео, на английском и японском; можно отменить и продолжить позже)
+Converting: 0 of %d
+	Конвертация: 0 из %d
+Converting with %s threads
+	Конвертация, потоков: %s
+Converting %s: cutscene %d of %d
+	Конвертация %s: ролик %d из %d
+Converting %s: cutscene %d of %d, frame %d of %d
+	Конвертация %s: ролик %d из %d, кадр %d из %d
+The converter failed.
+	Ошибка конвертера.
+Converted %d cutscenes
+	Сконвертировано роликов: %d
+Kept %s: %d of its %d cutscenes have no MP4 yet
+	%s оставлен: у %d из %d его роликов ещё нет MP4
+Discarding %s
+	Удаление %s
+Could not write %s.heads: %s kept
+	Не удалось записать %s.heads: %s оставлен
+Could not cut down %s: %v
+	Не удалось сократить %s: %v
+Discarded %d old movies: %.1f GB freed%s
+	Удалено старых видео: %d; освобождено %.1f ГБ%s
+0 (Fastest)
+	0 (самый быстрый)
+1 (Recommended)
+	1 (рекомендуется)
+3 (Slowest)
+	3 (самый медленный)
+Needs Clang (GCC cannot read the profile)
+	Нужен Clang (GCC не может прочитать профиль)
+Ultrafast (Worst Quality)
+	Сверхбыстро (худшее качество)
+Fast
+	Быстро
+Fancy (Default)
+	Красиво (по умолчанию)
+Ultrafancy
+	Сверхкрасиво
+Custom
+	Свой
+Cancelled.
+	Отменено.
+Could not start %s
+	Не удалось запустить %s
+On
+	Вкл.
+Off
+	Выкл.
+Setting up Wine's folder for the converter (only the first time)
+	Настройка папки Wine для конвертера (только в первый раз)
+Wine could not set up its folder (%s; code %d).
+	Wine не смог настроить свою папку (%s; код %d).
+Wine cannot run the converter, a 32-bit Windows program.
+	Wine не может запустить конвертер — 32-битную программу для Windows.
+Use a Wine that runs 32-bit programs (Wine 9 or later, e.g. Homebrew's wine-stable); on an Apple silicon Mac it also needs Rosetta 2 (softwareupdate --install-rosetta).
+	Используйте Wine, запускающий 32-битные программы (Wine 9 или новее, например wine-stable из Homebrew); на Mac с Apple silicon также нужен Rosetta 2 (softwareupdate --install-rosetta).
+This is a Proton's Wine (found in Steam). Install another Proton in Steam (Library > search Proton; e.g. Proton 9.0 or Proton - Experimental) and Check again, or install Wine itself.
+	Это Wine из Proton (найден в Steam). Установите другой Proton в Steam (Библиотека > найдите Proton; например, Proton 9.0 или Proton - Experimental) и нажмите «Проверить снова» или установите сам Wine.
+Install Wine's 32-bit support: Debian / Ubuntu wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora wine (it brings it), Arch wine.
+	Установите 32-битную поддержку Wine: Debian / Ubuntu — wine32 (sudo dpkg --add-architecture i386; sudo apt install wine32:i386), Fedora — wine (она входит в него), Arch — wine.
+Wine said: %s
+	Ответ Wine: %s
+Needs FFmpeg with its H.264 encoder (install it above).
+	Нужен FFmpeg с кодировщиком H.264 (установите его выше).
+This launcher has no Windows FFmpeg to convert the movies with (only the x86-64 Linux and the macOS launchers do): convert them on another PC.
+	В этом лаунчере нет FFmpeg для Windows для конвертации видео (он есть только в лаунчерах для x86-64 Linux и macOS): сконвертируйте их на другом ПК.
+Needs Wine (install it above): the converter is a Windows program.
+	Нужен Wine (установите его выше): конвертер — программа для Windows.
+Cleared the cache (%d items deleted; the saves, settings and the Android key stay).
+	Кэш очищен (удалено элементов: %d; сохранения, настройки и ключ Android остаются).
+Cleared the cache (%d items deleted; the saves and the Android key stay).
+	Кэш очищен (удалено элементов: %d; сохранения и ключ Android остаются).
+The settings were not this launcher version's own: they are back to the defaults.
+	Настройки были не от этой версии лаунчера: восстановлены значения по умолчанию.
+The cache could not be cleared completely: close any program using its files and try again.
+	Не удалось полностью очистить кэш: закройте программы, использующие его файлы, и повторите попытку.
+Clearing: %s
+	Очистка: %s
+Your game was built by an earlier version of this launcher. To get this version's fixes, its cache is cleared and the game is built again from scratch (a few minutes). Your saves are kept, and your settings if this version still has all of them.
+	Ваша игра собрана более ранней версией лаунчера. Чтобы получить исправления этой версии, её кэш будет очищен, а игра собрана заново с нуля (несколько минут). Сохранения останутся, а настройки — если эта версия всё ещё поддерживает их все.
+Profiler:
+	Профилировщик:
+Off: F12 does nothing
+	Выкл.: F12 ничего не делает
+On: F12 in the game starts and stops a capture; the report is saved beside the game
+	Вкл.: F12 в игре запускает и останавливает запись; отчёт сохраняется рядом с игрой

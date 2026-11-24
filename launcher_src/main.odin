@@ -588,23 +588,38 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 
 	// ---- Display
 	section(g, oi, &row, "Display")
-	// Resolution: the game's -Width= / -Height= (in its .cfg: no Build needed)
+	// Aspect Ratio: which group of RESOLUTIONS the Resolution dropdown below shows (not saved: the resolution's own;
+	// picking one moves the resolution into that group -- res_for_aspect)
+	{
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Aspect Ratio:")
+		asp := res_aspect(clamp(settings.resolution, 0, len(RESOLUTIONS) - 1))
+		an := ASPECT_NAMES
+		if n, ch := dropdown(g, "aspect", ctrl, an[:], asp, active = active); ch && n != asp {settings.resolution = res_for_aspect(n, settings.resolution); changed = true; game_changed = true}
+		note_text(g, asp == ASPECT_16_10 ? "16:10: the game's 16:9 picture with thin black bars above and below" : asp == ASPECT_ULTRAWIDE ? "21:9 and 32:9: the 3D drawn across the whole width" : "The game's own shape", note, DIM)
+	}
+	// Resolution: the game's -Width= / -Height= (in its .cfg: no Build needed) -- those of the aspect ratio above
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Resolution:")
 		res := RESOLUTIONS
-		names := make([]string, len(res), context.temp_allocator)
+		cur := clamp(settings.resolution, 0, len(res) - 1)
+		asp := res_aspect(cur)
+		names := make([dynamic]string, 0, len(res), context.temp_allocator)
+		idx := make([dynamic]int, 0, len(res), context.temp_allocator)
+		sel := 0
 		for r, i in res {
-			names[i] = i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : i >= RES_ULTRAWIDE ? fmt.tprintf("%d x %d (Ultrawide)", r.w, r.h) : fmt.tprintf("%d x %d", r.w, r.h)
+			if res_aspect(i) != asp {continue}
+			if i == cur {sel = len(idx)}
+			append(&idx, i)
+			append(&names, i == RES_DEFAULT ? fmt.tprintf("%d x %d (Default)", r.w, r.h) : fmt.tprintf("%d x %d", r.w, r.h))
 		}
-		sel := clamp(settings.resolution, 0, len(res) - 1)
-		if n, ch := dropdown(g, "resolution", ctrl, names, sel, active = active); ch {settings.resolution = n; changed = true; game_changed = true}
-		note_text(g, sel >= RES_ULTRAWIDE ? "Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed" : sel == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : sel < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
+		if n, ch := dropdown(g, "resolution", ctrl, names[:], sel, active = active); ch {settings.resolution = idx[n]; changed = true; game_changed = true}
+		note_text(g, asp == ASPECT_ULTRAWIDE ? "Ultrawide: in the game, F5 / F6 widen / narrow the field of view, F7 resets it; no Build needed" : cur == RES_DEFAULT ? "What the game renders at; the window can be resized; no Build needed" : cur < RES_DEFAULT ? "Lower is faster on the GPU, less sharp; the window can be resized; no Build needed" : "Higher costs GPU time; the window can be resized; no Build needed", note, DIM)
 	}
 	// Window Scaling: the picture in a window of another shape than 16:9 (XRC_STRETCH in its .cfg: no Build needed)
 	{
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Window Scaling:")
 		if n, ch := dropdown(g, "scaling", ctrl, {"Fit (Default)", "Stretch"}, settings.stretch ? 1 : 0, active = active); ch {settings.stretch = n == 1; changed = true; game_changed = true}
-		note_text(g, settings.stretch ? "Fills the window; the picture is squeezed if it isn't 16:9" : "Keeps the 16:9 shape: black bars in a window of another shape", note, DIM)
+		note_text(g, settings.stretch ? "Fills the window; the picture is squeezed if the window is another shape" : "Keeps the picture's shape: black bars in a window of another shape", note, DIM)
 	}
 	// FPS
 	{

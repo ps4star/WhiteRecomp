@@ -40,7 +40,7 @@ Browser :: struct {
 browser: Browser
 
 // what the picker chooses: the game's folder (Home's Browse…), a folder of saves (Features & Mods > Save Folders) or
-// the FF XIII HD Project's ZIP (Features & Mods > HD Textures: a file, not a folder)
+// an HD mod's archive (Features & Mods > HD Textures: a .zip or .rar file, not a folder)
 @(private = "file")
 Pick_Kind :: enum {
 	Game,
@@ -57,7 +57,7 @@ pick_title :: proc() -> string {
 	case .Saves:
 		return "Choose a folder with save files (.dat)"
 	case .Zip:
-		return "Choose the FF XIII HD Project's ZIP file"
+		return "Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)"
 	case .Game:
 	}
 	return "Choose the FINAL FANTASY XIII folder"
@@ -78,7 +78,7 @@ zip_start_dir :: proc() -> string {
 browse :: proc(w: ^platform.Window) {
 	when ODIN_OS == .Windows {
 		if pick_kind == .Zip {
-			if p, picked := platform.pick_open_file(w, pick_title(), zip_start_dir(), "ZIP archives", "*.zip"); picked {use_picked(p)}
+			if p, picked := platform.pick_open_file(w, pick_title(), zip_start_dir(), "Mod archives (.zip, .rar)", "*.zip;*.rar"); picked {use_picked(p)}
 			return
 		}
 		if p, picked := platform.pick_folder(w, pick_title()); picked {use_picked(p)}
@@ -125,7 +125,7 @@ desktop_folder_dialog :: proc() -> (path: string, has_tool: bool) {
 	when ODIN_OS == .Darwin { 	// (macOS: Finder's own folder / file dialog, through AppleScript)
 		q, _ := strings.replace_all(start, `\`, `\\`, context.temp_allocator) // (inside an AppleScript string)
 		q, _ = strings.replace_all(q, `"`, `\"`, context.temp_allocator)
-		what := zip ? `choose file of type {"zip", "public.zip-archive"} with prompt "` : `choose folder with prompt "`
+		what := zip ? `choose file of type {"zip", "public.zip-archive", "rar", "com.rarlab.rar-archive"} with prompt "` : `choose folder with prompt "`
 		script := strings.concatenate({`POSIX path of (`, what, title, `" default location POSIX file "`, q, `")`}, context.temp_allocator)
 		tools := [][]string{{"/usr/bin/osascript", "-e", script}}
 	} else {
@@ -136,9 +136,9 @@ desktop_folder_dialog :: proc() -> (path: string, has_tool: bool) {
 		}
 		if zip {
 			tools = [][]string {
-			{"zenity", "--file-selection", "--file-filter=ZIP archives | *.zip *.ZIP", strings.concatenate({"--title=", title}, context.temp_allocator), strings.concatenate({"--filename=", start, "/"}, context.temp_allocator)},
-			{"kdialog", "--getopenfilename", start, "*.zip *.ZIP|ZIP archives", "--title", title},
-			{"yad", "--file", "--file-filter=ZIP archives | *.zip *.ZIP", strings.concatenate({"--title=", title}, context.temp_allocator)},
+			{"zenity", "--file-selection", "--file-filter=Mod archives | *.zip *.ZIP *.rar *.RAR", strings.concatenate({"--title=", title}, context.temp_allocator), strings.concatenate({"--filename=", start, "/"}, context.temp_allocator)},
+			{"kdialog", "--getopenfilename", start, "*.zip *.ZIP *.rar *.RAR|Mod archives", "--title", title},
+			{"yad", "--file", "--file-filter=Mod archives | *.zip *.ZIP *.rar *.RAR", strings.concatenate({"--title=", title}, context.temp_allocator)},
 			}
 		}
 	}
@@ -206,7 +206,7 @@ browser_go :: proc(dir: string) {
 	if pick_kind == .Zip {
 		if list, err := os.read_all_directory_by_path(browser.dir, context.temp_allocator); err == nil {
 			for e in list {
-				if e.type != .Directory && strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), ".zip") {append(&browser.entries, strings.clone(e.name))}
+				if e.type != .Directory && (strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), ".zip") || strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), ".rar")) {append(&browser.entries, strings.clone(e.name))}
 			}
 		}
 		slice.sort_by(browser.entries[browser.nfolders:], proc(a, b: string) -> bool {return strings.to_lower(a, context.temp_allocator) < strings.to_lower(b, context.temp_allocator)})

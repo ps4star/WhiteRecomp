@@ -49,7 +49,7 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	_, rest = ui.cut_top(rest, px(g, 8))
 	row_h := px(g, 50)
 	label_w, ctrl_w := px(g, 230), px(g, 270)
-	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 3 // (Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 3)
+	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 // (Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
 	// the card as tall as its rows; taller than the tab, it fills the tab and scrolls (the wheel over it, or its scroll
 	// bar), as the Options tab does
 	total := px(g, 4) + 4 * px(g, 34) + 3 * px(g, 18) + nrows * row_h + px(g, 16)
@@ -172,38 +172,49 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		note_text(g, "Folders with save files (.dat) for the game to take in, besides Steam's; the newest copy of each save wins", note, DIM)
 	}
 	section(g, oi, &row, &first, "HD Textures")
-	{ // (the FF XIII HD Project: its ZIP imported into white_data_hd/ beside the game's white_data -- hd.odin)
+	{ // (the FF XIII HD Project's ZIP and the HD Fonts and GUI mod's archive, imported into white_data_hd/ beside the game's white_data; one switch for both -- hd.odin)
 		ready := hd_ready()
+		proj := hd_project_ready()
+		gui := hd_gui_ready()
 		importing := running && task.name == "HD Textures"
 		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "FF XIII HD Project:")
 		gw := px(g, 80)
-		if button(g, {ctrl.x, ctrl.y, ctrl.w - gw - px(g, 8), ctrl.h}, ready ? "Import ZIP Again…" : "Import ZIP…", active) {browse_for_hd_zip(w)}
+		if button(g, {ctrl.x, ctrl.y, ctrl.w - gw - px(g, 8), ctrl.h}, proj ? "Import ZIP Again…" : "Import ZIP…", active) {browse_for_hd_zip(w)}
 		if button(g, {ctrl.x + ctrl.w - gw, ctrl.y, gw, ctrl.h}, "Get") {hd_open_page()}
 		msg := "Get downloads the mod's ZIP (Nexus Mods); Import ZIP… puts its textures beside the game's (about 25 GB free needed while it runs)"
 		if importing {
 			sync.mutex_lock(&task.mutex)
 			msg = fmt.tprintf("Importing: %s", task.status)
 			sync.mutex_unlock(&task.mutex)
-		} else if ready {
+		} else if proj {
 			msg = fmt.tprintf("Imported from %s (%s voices); the game's own files are unchanged", hd_info("zip"), hd_info("region") == "c" ? "Japanese" : "English")
 		}
 		note_text(g, msg, note, importing ? ACCENT : DIM)
 
+		// the HD Fonts and GUI mod (its .rar, or a .zip of it: the same picker -- the import tells the mods apart)
+		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "HD Fonts & GUI:")
+		if button(g, {ctrl.x, ctrl.y, ctrl.w - gw - px(g, 8), ctrl.h}, gui ? "Import Archive Again…" : "Import Archive…", active) {browse_for_hd_zip(w)}
+		if button(g, {ctrl.x + ctrl.w - gw, ctrl.y, gw, ctrl.h}, "Get") {hd_gui_open_page()}
+		gmsg := "Get downloads the mod (Nexus Mods: the standalone version); Import Archive… unpacks its textures (about 3.5 GB) beside the game's"
+		if gui {gmsg = fmt.tprintf("Imported from %s (%s files): sharper fonts, menus and maps", hd_info("archive", gui = true), hd_info("files", gui = true))}
+		note_text(g, gmsg, note, DIM)
+
 		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "HD Textures:")
 		if on, ch := toggle(g, ctrl, ready && (settings.hd_on || hd_discarded()), active && ready && !hd_discarded()); ch && ready && !hd_discarded() {settings.hd_on = on; changed = true}
-		hint := "Import the mod's ZIP first"
+		hint := "Import an HD mod first"
 		if ready {
-			hint = settings.hd_on ? "The game uses the HD Project's textures" : "The game's own textures"
+			packs := proj && gui ? "the HD Project's and the HD Fonts & GUI textures" : proj ? "the HD Project's textures" : "the HD Fonts & GUI textures"
+			hint = settings.hd_on ? fmt.tprintf("The game uses %s", packs) : "The game's own textures"
 			if hd_discarded() {hint = "The game's original archives were discarded: the HD textures are always used"}
-			if settings.hd_on && hd_info("region") != (settings.voice_jp ? "c" : "u") {hint = fmt.tprintf("Imported for %s voices: with these voices the game's own textures are used (Import again)", hd_info("region") == "c" ? "Japanese" : "English")}
+			if proj && settings.hd_on && hd_info("region") != (settings.voice_jp ? "c" : "u") {hint = fmt.tprintf("Imported for %s voices: with these voices the game's own textures are used (Import again)", hd_info("region") == "c" ? "Japanese" : "English")}
 		}
 		note_text(g, hint, note, DIM)
 
 		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Old Assets:")
-		can_discard := active && ready && !hd_discarded()
+		can_discard := active && proj && !hd_discarded()
 		if button(g, ctrl, "Discard Old Assets", can_discard) {confirm_hd_discard = true}
 		dnote := "After an import: deletes the mod's ZIP and the game's archives the HD copies replace"
-		if hd_discarded() {dnote = "Discarded (Steam's Verify integrity of game files restores them)"} else if ready {
+		if hd_discarded() {dnote = "Discarded (Steam's Verify integrity of game files restores them)"} else if proj {
 			_, total := hd_old_assets()
 			dnote = fmt.tprintf("Frees about %.1f GB (the mod's ZIP and the game's replaced archives)", f64(total) / 1e9)
 		}

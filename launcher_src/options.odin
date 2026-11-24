@@ -14,6 +14,8 @@
 //   Gamepad Scanning          Once: -DXRC_PAD_ONCE -- the game controllers looked for once, at the start (else every 2
 //                             seconds, the default: the game asks that often; src/runtime/hle_dinput.c)
 //   Cutscenes                 Auto-skip: -DXRC_SKIP_MOVIES (every movie skipped)
+//   Aspect Ratio              16:9, 16:10 or Ultrawide: which resolutions the Resolution dropdown shows (not saved
+//                             itself: the resolution's; RESOLUTIONS)
 //   Pipeline Build Threads    XRC_VK_PIPE_THREADS=N in WhiteRecomp.cfg (no Build needed): the threads that make the
 //                             renderer's pipelines in the background (vk_d3d9.c pj_threads); Best (0, the default):
 //                             none written, the game's own default (half the CPU threads, 1 to 8)
@@ -119,6 +121,10 @@ common_flags :: proc(spec: Build_Spec = {}) -> []string {
 		when ODIN_ARCH == .amd64 {append(&f, "-march=native")} else when ODIN_OS == .Darwin {append(&f, "-mcpu=apple-m1")} else {append(&f, "-mcpu=native")}
 	}
 	append(&f, "-ffast-math", "-fno-associative-math") // (reassociation folds the game's own rounding tricks: a broken title menu)
+	// (signed zeros and NaNs kept: fast math folds the guest's 0 - x into a negation, -0 for +0, and assumes no NaN in
+	// compares -- 2026-11-24, measured not slower; tools/xrc_build.sh)
+	// (and no FMA contraction: a fused mulps + addps rounds once, x86 twice -- 1-ulp differences)
+	append(&f, "-fsigned-zeros", "-fno-finite-math-only", "-ffp-contract=off")
 	// (x86: no reciprocal estimates -- fast math would compute every packed divide as rcpps and a Newton step, a few
 	// ulp off and the CPU's own, x / 0 a NaN; tools/xrc_build.sh)
 	if spec.cross == nil && ODIN_ARCH == .amd64 {append(&f, "-mrecip=none")}
@@ -230,12 +236,39 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 // 960x540 below it for slow GPUs. Then the ultrawide ones (21:9, 32:9; RES_ULTRAWIDE on): the runtime draws the 3D across
 // the whole width instead of the game's 16:9 pillarbox (xrc_widescreen, hle_d3d9.c: the 13UW mod's patches, Hor+, the HUD
 // centred; F5 / F6 / F7 the field of view). 1280x540 first: an ultrawide picture with fewer pixels than 720p (691,200), for
-// trying ultrawide on a slow machine.
+// trying ultrawide on a slow machine. Then 16:10 (RES_16_10 on): the game draws its 16:9 picture letterboxed in them
+// (black bars above and below, the window keeping the 16:10 shape -- xrc_view_rect), as the retail game does; no
+// 1280x800 (the game falls back to 1280x720 for a size 1280 wide): 1200x750 instead, fewer pixels than 720p (900,000). The Aspect Ratio dropdown (Display) shows one
+// group: res_aspect.
 Resolution :: struct {w, h: int}
-RESOLUTIONS :: [15]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
-	{1280, 540}, {2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440}}
+RESOLUTIONS :: [22]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
+	{1280, 540}, {2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440},
+	{1200, 750}, {1440, 900}, {1680, 1050}, {1920, 1200}, {2560, 1600}, {2880, 1800}, {3840, 2400}}
 RES_ULTRAWIDE :: 8 // (the first ultrawide one)
+RES_16_10 :: 15 // (the first 16:10 one)
 RES_DEFAULT :: 2 // (1280x720)
+
+// Aspect Ratio: the groups of RESOLUTIONS (not saved: the resolution decides it)
+ASPECT_16_9 :: 0
+ASPECT_16_10 :: 1
+ASPECT_ULTRAWIDE :: 2
+ASPECT_NAMES :: [3]string{"16:9", "16:10", "Ultrawide"}
+res_aspect :: proc(i: int) -> int {return i >= RES_16_10 ? ASPECT_16_10 : i >= RES_ULTRAWIDE ? ASPECT_ULTRAWIDE : ASPECT_16_9}
+
+// an aspect ratio picked: the resolution of that group nearest in height to the current one (16:9 from another: the
+// default, 1280x720, unless the current one is taller)
+res_for_aspect :: proc(a, cur: int) -> int {
+	res := RESOLUTIONS
+	c := res[clamp(cur, 0, len(res) - 1)]
+	best, bd := -1, max(int)
+	for r, i in res {
+		if res_aspect(i) != a {continue}
+		d := abs(r.h - c.h)
+		if d < bd {best, bd = i, d}
+	}
+	if a == ASPECT_16_9 && res[best].h < res[RES_DEFAULT].h {best = RES_DEFAULT}
+	return best < 0 ? RES_DEFAULT : best
+}
 SHADOW_CHOICES :: [6]int{0, 512, 1024, 2048, 4096, 8192} // (8192: the most the retail launcher offers)
 AA_QUALITIES :: [4]int{1, 2, 4, 8}
 

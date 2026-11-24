@@ -81,15 +81,28 @@ The options are grouped as on the tab: Display, Graphics, Audio & Controls, Cuts
 
 ### Display
 
+#### Aspect Ratio
+
+The picture's shape, which chooses the resolutions **Resolution** offers: **16:9** (default), **16:10** or **Ultrawide** (21:9 and 32:9). It is not a setting of its own: it follows the resolution chosen.
+
+- **16:10** renders at a 16:10 screen's own resolution (sharp, no scaling). The game itself draws a 16:9 picture, so it has thin black bars above and below (about 60 pixels each at 1920 x 1200).
+- **Ultrawide** widens the view with the Ultrawide Fix's patches (see Thanks): the menus stay 16:9 in the middle.
+
 #### Resolution
 
-The resolution the game renders at, passed to the game as `-Width=W -Height=H`: 854 x 480, 960 x 540, **1280 x 720** (default), 1600 x 900, 1920 x 1080, 2560 x 1440, 3200 x 1800 or 3840 x 2160. Higher is sharper and costs more GPU time; 480 and 540 are for slow GPUs. Takes effect the next time the game starts, with no Build needed.
+The resolution the game renders at, passed to the game as `-Width=W -Height=H`, from the list for the chosen **Aspect Ratio**:
+
+- **16:9:** 854 x 480, 960 x 540, **1280 x 720** (default), 1600 x 900, 1920 x 1080, 2560 x 1440, 3200 x 1800 or 3840 x 2160. 480 and 540 are for slow GPUs.
+- **16:10:** 1200 x 750 (about as many pixels as 1280 x 720), 1440 x 900, 1680 x 1050, 1920 x 1200, 2560 x 1600, 2880 x 1800 or 3840 x 2400.
+- **Ultrawide:** 1280 x 540, 2560 x 1080, 3440 x 1440, 3840 x 1600 or 5120 x 2160 (21:9); 3840 x 1080 or 5120 x 1440 (32:9).
+
+Higher is sharper and costs more GPU time. Takes effect the next time the game starts, with no Build needed.
 
 The game's window opens at this size. You can resize or maximize it, and **F11** switches fullscreen on and off. The picture is scaled to fit the window with its shape kept, so a window of another shape gets black bars (a maximized window too: the title bar and taskbar take some of its height).
 
 #### Window Scaling
 
-**Fit** (default) keeps the picture's 16:9 shape, with black bars in a window of another shape. **Stretch** fills the whole window, squeezing the picture to the window's shape. Takes effect the next time the game starts, with no Build needed.
+**Fit** (default) keeps the picture's shape (its Aspect Ratio), with black bars in a window of another shape. **Stretch** fills the whole window, squeezing the picture to the window's shape. Takes effect the next time the game starts, with no Build needed.
 
 #### FPS
 
@@ -298,14 +311,24 @@ The idea comes from the L'Cienema mod by cyanea-bt. The port does it its own way
 
 More folders to look for saves in, each time the game starts: the `.dat` save files directly in each folder (not its subfolders) are copied in when they are newer than yours, as Steam's are (see Steam Cloud saves). **Add Folder…** adds one; each has a remove button.
 
+If the game's own save folder can't be used (it can't be opened or written, or a save can't be copied into it), the game reads each save where it was found instead: the newest copy of each, from Steam's folders, these folders and the original game's folder (any that don't exist are skipped). New saves then go into the original game's save folder (`%LOCALAPPDATA%\SquareEnix\FinalFantasyXIII\save` on Windows), or else the first of these folders that isn't one of Steam's. The game's log says when this happens.
+
 ### HD Textures
 
-The [FF XIII HD Project](https://www.nexusmods.com/finalfantasy13/mods/17) mod's textures, imported from its ZIP file:
+Two HD mods can be imported, and one switch turns them on or off together: with **HD Textures** on, the game uses every HD pack that is installed (one or both); with it off, the game's own textures. Both go in `white_data_hd`, next to the game's `white_data` (or in the launcher's data folder when the game's folder can't be written). Your game files are not changed.
+
+**FF XIII HD Project:** the [FF XIII HD Project](https://www.nexusmods.com/finalfantasy13/mods/17) mod's textures, imported from its ZIP file:
 
 - **Get** opens the mod's page on Nexus Mods to download the ZIP.
-- **Import ZIP…** picks the ZIP. The launcher checks it, then runs the mod's own installer steps on copies of the game's archives (the mod's Windows tools; through Wine on Linux and macOS) and puts the results in `white_data_hd`, next to the game's `white_data` (or in the launcher's data folder when the game's folder can't be written). Your game files are not changed. It takes a while (about half an hour or more), needs about 25 GB free while it runs, and keeps about 12 GB. It is made for the voice language set at the time (English or Japanese voices use different archives).
-- **HD Textures On/Off:** off until a ZIP has been imported, on by itself after an import. With it on, the game reads the HD archives instead of its own. No rebuild needed.
+- **Import ZIP…** picks the ZIP. The launcher checks it, then runs the mod's own installer steps on copies of the game's archives (the mod's Windows tools; through Wine on Linux and macOS) and puts the results in `white_data_hd`. It takes a while (about half an hour or more), needs about 25 GB free while it runs, and keeps about 12 GB. It is made for the voice language set at the time (English or Japanese voices use different archives).
+- **HD Textures On/Off:** off until an HD mod has been imported, on by itself after an import. No rebuild needed.
 - **Discard Old Assets** (after a finished import): deletes the mod's ZIP and the game's original archives that the HD copies replace, to free space. HD Textures then stays on, and the original game can't start without those archives: Steam's **Verify integrity of game files** brings them back.
+
+**HD Fonts & GUI:** the [HD Font & GUI](https://www.nexusmods.com/finalfantasy13/mods/67) mod's sharper fonts, menus, cursor and map tiles, imported from its archive (the standalone version's `.rar`, or a `.zip` of its `hd_textures` folder):
+
+- **Get** opens the mod's page on Nexus Mods.
+- **Import Archive…** picks the archive and unpacks its `hd_textures` folder (about 3.5 GB) into `white_data_hd`. It takes under a minute. The mod's own `version.dll` isn't used or needed: the port swaps the textures itself, the same way the DLL does (by their contents, as the game loads them). HD Textures turns on by itself after an import.
+- Importing the HD Project again keeps this pack.
 
 ## What the download contains
 
@@ -327,3 +350,4 @@ The launcher's sources are in [`launcher_src/`](launcher_src/). It's written in 
 
 - **[Steamless](https://github.com/atom0s/Steamless)** by atom0s
 - **killer-m** (on Nexus Mods), the creator of the FINAL FANTASY XIII Ultrawide Fix. The ultrawide support (21:9, 32:9 and wider) re-implements that mod's patches.
+- **Dendonflo** (on Nexus Mods), the creator of the HD Font & GUI mod (with **MorningSpice**), whose textures **HD Fonts & GUI** imports.

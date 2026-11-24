@@ -22,28 +22,48 @@ import "core:path/filepath"
 import "core:slice"
 import "core:strings"
 import "core:sync"
+import "rar5"
 import "shared:iv_system/ren"
 import ui "shared:iv_ui"
 
 HD_URL :: "https://www.nexusmods.com/finalfantasy13/mods/17"
 HD_DIR_NAME :: "white_data_hd"
 HD_MARKER :: "whiterecomp_hd.txt"
+// the "HD Fonts and GUI" mod (Dendonflo's, Nexus Mods 67): its hd_textures/ folder (hash_database.txt and the .dds files)
+// unpacked into the same HD folder; the runtime swaps textures by their contents as the mod's version.dll does
+// (hle_d3d9.c hdt_*). One switch: HD Textures On uses every HD pack installed.
+HD_GUI_URL :: "https://www.nexusmods.com/finalfantasy13/mods/67"
+HD_GUI_MARKER :: "whiterecomp_hd_gui.txt"
 
-// the HD folder made by an import ("" if none: no valid ZIP imported)
+// the HD folder made by an import ("" if none: nothing imported) -- the HD Project's archives and/or the GUI mod's
+// hd_textures/, each with its marker
 hd_dir :: proc() -> string {
+	has :: proc(d: string) -> bool {return file_exists(pjoin({d, HD_MARKER}, context.temp_allocator)) || file_exists(pjoin({d, HD_GUI_MARKER}, context.temp_allocator))}
 	if settings.game_dir != "" {
-		if d := pjoin({settings.game_dir, HD_DIR_NAME}, context.temp_allocator); file_exists(pjoin({d, HD_MARKER}, context.temp_allocator)) {return d}
+		if d := pjoin({settings.game_dir, HD_DIR_NAME}, context.temp_allocator); has(d) {return d}
 	}
-	if d := data_path("hd"); file_exists(pjoin({d, HD_MARKER}, context.temp_allocator)) {return d}
+	if d := data_path("hd"); has(d) {return d}
 	return ""
 }
-hd_ready :: proc() -> bool {return hd_dir() != ""}
+hd_ready :: proc() -> bool {return hd_dir() != ""} // (any HD pack: the switch can be On)
+hd_project_ready :: proc() -> bool {d := hd_dir(); return d != "" && file_exists(pjoin({d, HD_MARKER}, context.temp_allocator))}
+hd_gui_ready :: proc() -> bool {d := hd_dir(); return d != "" && file_exists(pjoin({d, HD_GUI_MARKER}, context.temp_allocator))}
 
-// what the marker says (key=value lines): "region", "zip"
-hd_info :: proc(key: string) -> string {
+// where a new HD folder goes: beside white_data (else the launcher's data folder, the game's folder not writable)
+hd_place :: proc() -> (parent, final: string) {
+	parent = settings.game_dir
+	probe := pjoin({parent, "whiterecomp_hd_probe.tmp"}, context.temp_allocator)
+	if os.write_entire_file(probe, transmute([]u8)string("x")) != nil {parent = data_dir}
+	_ = os.remove(probe)
+	final = parent == settings.game_dir ? pjoin({parent, HD_DIR_NAME}, context.temp_allocator) : data_path("hd")
+	return
+}
+
+// what the HD Project's marker says (key=value lines): "region", "zip"; gui: the GUI mod's marker ("archive", "files")
+hd_info :: proc(key: string, gui := false) -> string {
 	d := hd_dir()
 	if d == "" {return ""}
-	data, err := os.read_entire_file(pjoin({d, HD_MARKER}, context.temp_allocator), context.temp_allocator)
+	data, err := os.read_entire_file(pjoin({d, gui ? HD_GUI_MARKER : HD_MARKER}, context.temp_allocator), context.temp_allocator)
 	if err != nil {return ""}
 	text := string(data)
 	for line in strings.split_lines_iterator(&text) {
@@ -60,6 +80,7 @@ hd_cfg_line :: proc(b: ^strings.Builder) {
 }
 
 hd_open_page :: proc() {open_url(HD_URL)}
+hd_gui_open_page :: proc() {open_url(HD_GUI_URL)}
 
 // Import (the ZIP chosen: folder_pick.odin)
 @(private = "file")
@@ -67,7 +88,7 @@ hd_zip_path: string
 hd_import_start :: proc(zip: string) {
 	delete(hd_zip_path)
 	hd_zip_path = strings.clone(zip)
-	if task_start("HD Textures", proc(t: ^Task) {hd_import_task(t, hd_zip_path)}) {tab = .Home} // (its progress and log: on Home, as a Build's)
+	if task_start("HD Textures", proc(t: ^Task) {hd_import_any(t, hd_zip_path)}) {tab = .Home} // (its progress and log: on Home, as a Build's)
 }
 
 // ---------------------------------------------------------------------------------------------- ZIP reading
@@ -377,11 +398,7 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 	}
 
 	// ---- where: beside white_data (else the launcher's data folder), and the mod's working folder beside that
-	parent := game
-	probe := pjoin({game, "whiterecomp_hd_probe.tmp"}, context.temp_allocator)
-	if os.write_entire_file(probe, transmute([]u8)string("x")) != nil {parent = data_dir}
-	_ = os.remove(probe)
-	final := parent == game ? pjoin({game, HD_DIR_NAME}, context.temp_allocator) : data_path("hd")
+	parent, final := hd_place()
 	h.work = pjoin({parent, parent == game ? "white_data_hd_work" : "hd_work"}, context.temp_allocator)
 	h.out = pjoin({h.work, "out"}, context.temp_allocator)
 	_ = os.remove_all(h.work)
@@ -604,7 +621,17 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 	set_status(t, 0.97, "Finishing")
 	marker := fmt.tprintf("# FF XIII HD Project, imported by WhiteRecomp's launcher (Features & Mods > HD Textures)\nzip=%s\nzip_path=%s\nregion=%s\nzones=%d\nmodels=%d\n", filepath.base(zip_path), zip_path, r, zones_done, models_done)
 	if os.write_entire_file(pjoin({h.out, HD_MARKER}, context.temp_allocator), transmute([]u8)marker) != nil {logf(t, "Cannot write %s.", h.out); t.failed = true; return}
-	if old := hd_dir(); old != "" {_ = os.remove_all(old)}
+	if old := hd_dir(); old != "" {
+		// (the GUI mod's hd_textures/, if installed: carried into the new folder)
+		if dir_exists(pjoin({old, "hd_textures"}, context.temp_allocator)) {
+			if os.rename(pjoin({old, "hd_textures"}, context.temp_allocator), pjoin({h.out, "hd_textures"}, context.temp_allocator)) == nil {
+				_ = os.rename(pjoin({old, HD_GUI_MARKER}, context.temp_allocator), pjoin({h.out, HD_GUI_MARKER}, context.temp_allocator))
+			} else {
+				log_line(t, "Could not keep the HD Fonts and GUI textures: import that mod's archive again.")
+			}
+		}
+		_ = os.remove_all(old)
+	}
 	_ = os.remove_all(final)
 	if os.rename(h.out, final) != nil {
 		logf(t, "Cannot move the new archives to %s.", final)
@@ -723,4 +750,118 @@ draw_hd_discard_confirm :: proc(g: ^Gui) {
 		task_start("Discard Old Assets", hd_discard_task)
 	}
 	if button(g, no, "Keep them") {confirm_hd_discard = false}
+}
+
+// ---------------------------------------------------------------------------------------------- HD Fonts and GUI
+// The import picked (a .zip or a .rar): which mod it is, by its contents -- an hd_textures/hash_database.txt is the
+// HD Fonts and GUI mod's (a RAR5 archive, or a ZIP of the same folder), else the HD Project's ZIP
+hd_import_any :: proc(t: ^Task, path: string) {
+	f, ferr := os.open(path)
+	if ferr != nil {logf(t, "Cannot open %s.", path); t.failed = true; return}
+	sig: [8]u8
+	n, _ := os.read_at(f, sig[:], 0)
+	if n == 8 && sig == rar5.SIGNATURE {
+		defer os.close(f)
+		entries, ok := rar5.list(f, context.temp_allocator)
+		if !ok {logf(t, "%s is a RAR archive this launcher cannot read (encrypted, multi-part, or damaged).", filepath.base(path)); t.failed = true; return}
+		files := make([dynamic]Gui_File, context.temp_allocator)
+		for e in entries {if !e.dir {append(&files, Gui_File{name = e.name, size = e.usize, rar = e})}}
+		hd_gui_import(t, path, f, files[:], true)
+		return
+	}
+	if n >= 4 && sig[0] == 'R' && sig[1] == 'a' && sig[2] == 'r' && sig[3] == '!' {
+		os.close(f)
+		logf(t, "%s is an old RAR (RAR 4) archive: unpack it with 7-Zip or WinRAR and make a ZIP of it, or get the mod again.", filepath.base(path))
+		t.failed = true
+		return
+	}
+	if entries, ok := zip_entries(f, context.temp_allocator); ok {
+		for e in entries {
+			if strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), "hd_textures/hash_database.txt") {
+				defer os.close(f)
+				files := make([dynamic]Gui_File, context.temp_allocator)
+				for z in entries {if !strings.has_suffix(z.name, "/") {append(&files, Gui_File{name = z.name, size = z.usize, zip = z})}}
+				hd_gui_import(t, path, f, files[:], false)
+				return
+			}
+		}
+	}
+	os.close(f)
+	hd_import_task(t, path) // (the HD Project's ZIP, or not a mod at all: it says which)
+}
+
+@(private = "file")
+Gui_File :: struct {
+	name: string,
+	size: u64,
+	rar:  rar5.Entry,
+	zip:  Zip_Entry,
+}
+
+// the GUI mod's hd_textures/ unpacked into the HD folder (made beside white_data if there is none yet); the mod's
+// version.dll and README are not needed (the runtime does what the DLL does)
+@(private = "file")
+hd_gui_import :: proc(t: ^Task, path: string, f: ^os.File, files: []Gui_File, is_rar: bool) {
+	if settings.game_dir == "" || !dir_exists(pjoin({settings.game_dir, "white_data"}, context.temp_allocator)) {
+		log_line(t, "Choose the FINAL FANTASY XIII folder first (Home).")
+		t.failed = true
+		return
+	}
+	set_status(t, 0, "Checking %s", filepath.base(path))
+	// (the hd_textures/ folder: at the top, or inside one folder of the archive)
+	prefix := ""
+	for e in files {
+		l := strings.to_lower(e.name, context.temp_allocator)
+		if strings.has_suffix(l, "hd_textures/hash_database.txt") {prefix = e.name[:len(e.name) - len("hash_database.txt")]; break}
+	}
+	if prefix == "" {
+		logf(t, "%s is not the HD Fonts and GUI mod (it has no hd_textures/hash_database.txt). Get it with Get, from %s.", filepath.base(path), HD_GUI_URL)
+		t.failed = true
+		return
+	}
+	todo := make([dynamic]Gui_File, context.temp_allocator)
+	total: u64 = 0
+	for e in files {if strings.has_prefix(e.name, prefix) {append(&todo, e); total += e.size}}
+	dest := hd_dir()
+	if dest == "" {_, dest = hd_place()}
+	tmp := pjoin({dest, "hd_textures.new"}, context.temp_allocator)
+	_ = os.remove_all(tmp)
+	if os.make_directory_all(tmp) != nil {logf(t, "Cannot make %s.", tmp); t.failed = true; return}
+	ok := false
+	defer if !ok {_ = os.remove_all(tmp)}
+	logf(t, "Importing %s (%d files, %.1f GB) into %s", filepath.base(path), len(todo), f64(total) / 1e9, pjoin({dest, "hd_textures"}, context.temp_allocator))
+	done: u64 = 0
+	for e, i in todo {
+		if cancelled(t) {return}
+		rel := e.name[len(prefix):]
+		if rel == "" || strings.contains(rel, "..") {continue}
+		out := pjoin({tmp, rel}, context.temp_allocator)
+		if i % 10 == 0 {set_status(t, f32(f64(done) / f64(max(total, 1))), "Unpacking: %d of %d files", i, len(todo))}
+		if is_rar {
+			data, xok := rar5.extract(f, e.rar)
+			if !xok {logf(t, "Cannot unpack %s (%s).", e.name, rar5.last_error); t.failed = true; return}
+			_ = os.make_directory_all(filepath.dir(out))
+			werr := os.write_entire_file(out, data)
+			delete(data)
+			if werr != nil {logf(t, "Cannot write %s (is there room?).", out); t.failed = true; return}
+		} else if !zip_extract(f, e.zip, out) {
+			logf(t, "Cannot unpack %s from the ZIP (is there room?).", e.name)
+			t.failed = true
+			return
+		}
+		done += e.size
+	}
+	// (in place of an earlier import's)
+	final := pjoin({dest, "hd_textures"}, context.temp_allocator)
+	_ = os.remove_all(final)
+	if os.rename(tmp, final) != nil {logf(t, "Cannot move the textures to %s.", final); t.failed = true; return}
+	ok = true
+	marker := fmt.tprintf("# HD Fonts and GUI (%s), imported by WhiteRecomp's launcher (Features & Mods > HD Textures)\narchive=%s\narchive_path=%s\nfiles=%d\n", HD_GUI_URL, filepath.base(path), path, len(todo))
+	if os.write_entire_file(pjoin({dest, HD_GUI_MARKER}, context.temp_allocator), transmute([]u8)marker) != nil {logf(t, "Cannot write in %s.", dest); t.failed = true; return}
+	settings.hd_on = true
+	save_settings()
+	gdir := game_out_dir()
+	if file_exists(pjoin({gdir, GAME_NAME + ".cfg"}, context.temp_allocator)) {_ = write_cfg(gdir)}
+	logf(t, "HD Fonts and GUI imported: %d files in %s. HD Textures is On.", len(todo), final)
+	set_status(t, 1, "Imported")
 }

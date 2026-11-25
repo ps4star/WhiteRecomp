@@ -390,10 +390,7 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.movie_contrast != 100 {fmt.sbprintf(b, "XRC_MOVIE_CONTRAST=%d\n", s.movie_contrast)}
 	if s.movie_saturation != 100 {fmt.sbprintf(b, "XRC_MOVIE_SATURATION=%d\n", s.movie_saturation)}
 	// (Features & Mods > Boosters: read by the game at start -- ovr_game.c)
-	if s.boost_speed > 1 {fmt.sbprintf(b, "XRC_BOOST_SPEED=%d\n", s.boost_speed)}
-	if s.boost_stats {fmt.sbprintf(b, "XRC_BOOST_STATS=1\n")}
-	if s.boost_gil {fmt.sbprintf(b, "XRC_BOOST_GIL=1\n")}
-	if s.boost_one_hit {fmt.sbprintf(b, "XRC_BOOST_ONE_HIT=1\n")}
+	if s.boost {fmt.sbprintf(b, "XRC_BOOST=1\n")} // (Boosters: F1-F4, F8 in the game, ovr_game.c)
 	if s.shadow_res == 0 {fmt.sbprintf(b, "XRC_NO_SHADOWS=1\n")}
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
 	if s.stretch {fmt.sbprintf(b, "XRC_STRETCH=1\n")}

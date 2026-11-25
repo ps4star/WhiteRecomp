@@ -338,12 +338,13 @@ Two HD mods can be imported, and one switch turns them on or off together: with 
 
 ### Boosters
 
-For a quicker or easier playthrough. All are off by default.
+For a quicker or easier playthrough. Turn on **Boosters** on the Features & Mods tab, and in the game the keys F1 to F4 and F8 switch each booster on and off. Each one starts off, and any of them can be switched back off at any time. When you press a key, the boosters' states show at the top left of the screen for a few seconds. While Boosters is on, F1 to F4 and F8 do nothing else in the game.
 
-- **Game Speed:** **Normal**, **200%**, **400%** or **800%**. The game runs that many times as fast: battles, the field and scenes the engine plays. Movies and voices play at their usual speed, and the play time on your save counts real time.
-- **Max Stats:** in battle the party has 99,999 HP and 9,999 Strength and Magic. Only the battle's copy changes: the Crystarium and the Status menu show your real stats.
-- **Max Gil:** 999,999,999 gil to spend.
-- **One-Hit Kills:** any hit defeats the enemy it lands on. An enemy that a scene needs alive still survives with the HP it must keep.
+- **F1, Game Speed:** 1x, 2x, 4x, 8x, then back to 1x. The game runs that many times as fast: battles, the field and scenes the engine plays. Movies and voices play at their usual speed, and the play time on your save counts real time.
+- **F2, Max Stats:** in battle the party has 99,999 HP and 9,999 Strength and Magic. Only the battle's copy changes: the Crystarium and the Status menu show your real stats. Switched off during a battle, the party's real stats come back at once, and their HP keep the same share of the max HP.
+- **F3, Max Gil:** 999,999,999 gil to spend. Your own gil is kept meanwhile, along with any gil you earn. Spending is free, and when you switch Max Gil off your own gil comes back. If you save while it is on, the save holds 999,999,999 gil.
+- **F4, One-Hit Kills:** any hit defeats the enemy it lands on. An enemy that a scene needs alive still survives with the HP it must keep.
+- **F8, Max CP:** every character's CP stays at 999,999, so the Crystarium is free, as far as the story has opened it. Each character's own CP is kept meanwhile, and CP you earn still goes to it. When you switch Max CP off, everyone's own CP comes back. What you bought in the Crystarium stays bought. If you save while it is on, the save holds 999,999 CP.
 
 ## What the download contains
 

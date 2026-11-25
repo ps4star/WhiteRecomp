@@ -13,11 +13,11 @@
 //                 retail PC port's limited-range conversion (crushed darks, blown-out brights). XRC_MOVIE_COLORS=original
 //     Brightness, Contrast, Saturation  sliders, percent (100 = as is): XRC_MOVIE_BRIGHTNESS / _CONTRAST / _SATURATION, folded
 //                 into the movie shader's rows when the game starts (hle_d3d9.c movie_shader_colors)
-//   Boosters (overrides/Final Fantasy XIII/ovr_game.c)
-//     Game Speed  Normal, 200, 400, 800%: XRC_BOOST_SPEED=2|4|8, the engine's frame step times N
-//     Max Stats   XRC_BOOST_STATS=1: the party's battle HP, Strength and Magic at their highest
-//     Max Gil     XRC_BOOST_GIL=1: 999,999,999 gil
-//     One-Hit Kills  XRC_BOOST_ONE_HIT=1: an enemy that takes damage is left with none
+//   Boosters    one switch: XRC_BOOST=1 (overrides/Final Fantasy XIII/ovr_game.c). In the game, F1-F4 and F8 then turn
+//               each booster on and off (all off at the start; the keys are not the game's then): F1 game speed 1x, 2x, 4x,
+//               8x; F2 max stats (the party's battle HP, Strength and Magic); F3 max gil (999,999,999, the real gil put
+//               back when off); F4 one-hit kills; F8 max CP (every character at 999,999; the real CP, still
+//               earned, put back when off). Each change shows the boosters' states at the top left for a moment.
 package launcher
 
 import "core:fmt"
@@ -27,6 +27,15 @@ import "core:sync"
 import "shared:iv_system/platform"
 import "shared:iv_system/ren"
 import ui "shared:iv_ui"
+
+// the Boosters' keys in the game (ovr_game.c bst_keys), shown under the switch while it is on
+BOOST_KEYS := [5][2]string {
+	{"F1", "Game speed: 1x, 2x, 4x, 8x, then back to 1x"},
+	{"F2", "Max stats on / off: in battle 99,999 HP and 9,999 Strength and Magic"},
+	{"F3", "Max gil on / off: 999,999,999 gil; your own gil comes back when off"},
+	{"F4", "One-hit kills on / off"},
+	{"F8", "Max CP on / off: every character at 999,999 CP; your own CP (still earned) comes back when off"},
+}
 
 LANGUAGES :: [2]string{"English", "Japanese"}
 // the text languages: names shown, and Steam's names the game takes (hle_system.c steam_language)
@@ -54,7 +63,7 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	_, rest = ui.cut_top(rest, px(g, 8))
 	row_h := px(g, 50)
 	label_w, ctrl_w := px(g, 230), px(g, 270)
-	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 + 4 // (Boosters: 4; Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
+	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 + (settings.boost ? 1 + len(BOOST_KEYS) : 1) // (Boosters: the switch, and with it on the keys; Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
 	// the card as tall as its rows; taller than the tab, it fills the tab and scrolls (the wheel over it, or its scroll
 	// bar), as the Options tab does
 	total := px(g, 4) + 5 * px(g, 34) + 4 * px(g, 18) + nrows * row_h + px(g, 16)
@@ -226,26 +235,16 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 		note_text(g, dnote, note, DIM)
 	}
 	section(g, oi, &row, &first, "Boosters")
-	{ // (for a quicker or easier playthrough: XRC_BOOST_* in the .cfg, read when the game starts -- ovr_game.c)
-		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Game Speed:")
-		speeds := [4]string{"Normal", "200%", "400%", "800%"}
-		mult := [4]int{1, 2, 4, 8}
-		sel := 0
-		for m, k in mult {if settings.boost_speed == m {sel = k}}
-		if n, ch := dropdown(g, "boost_speed", ctrl, speeds[:], sel, active = active); ch {settings.boost_speed = mult[n]; changed = true}
-		note_text(g, settings.boost_speed > 1 ? fmt.tprintf("The game runs %dx as fast (battles, the field, scenes in the engine; movies and voices as usual)", settings.boost_speed) : "The game's own speed", note, DIM)
-
-		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Max Stats:")
-		if on, ch := toggle(g, ctrl, settings.boost_stats, active); ch {settings.boost_stats = on; changed = true}
-		note_text(g, "In battle the party has 99,999 HP and 9,999 Strength and Magic", note, DIM)
-
-		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Max Gil:")
-		if on, ch := toggle(g, ctrl, settings.boost_gil, active); ch {settings.boost_gil = on; changed = true}
-		note_text(g, "999,999,999 gil to spend", note, DIM)
-
-		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "One-Hit Kills:")
-		if on, ch := toggle(g, ctrl, settings.boost_one_hit, active); ch {settings.boost_one_hit = on; changed = true}
-		note_text(g, "Any hit defeats the enemy it lands on", note, DIM)
+	{ // (for a quicker or easier playthrough: XRC_BOOST=1 in the .cfg; in the game F1-F4 turn each booster on and off -- ovr_game.c)
+		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Boosters:")
+		if on, ch := toggle(g, ctrl, settings.boost, active); ch {settings.boost = on; changed = true}
+		note_text(g, settings.boost ? "In the game these keys turn each one on and off (all start off; the state shows at the top left):" : "Off: F1-F4 and F8 do what the game makes them do", note, DIM)
+		if settings.boost {
+			for k in BOOST_KEYS {
+				kc, kn := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, k[0])
+				label(g, g.font, k[1], {kc.x, kc.y, kc.w + kn.w + px(g, 16), kc.h}, TEXT)
+			}
+		}
 	}
 	if changed {
 		save_settings()

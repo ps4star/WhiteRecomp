@@ -121,6 +121,9 @@ common_flags :: proc(spec: Build_Spec = {}) -> []string {
 		when ODIN_ARCH == .amd64 {append(&f, "-march=native")} else when ODIN_OS == .Darwin {append(&f, "-mcpu=apple-m1")} else {append(&f, "-mcpu=native")}
 	}
 	append(&f, "-ffast-math", "-fno-associative-math") // (reassociation folds the game's own rounding tricks: a broken title menu)
+	// (and no reciprocals: fast math turns x / C into x * (1 / C), 1 ulp off the x86 divide for some inputs -- 2026-11-25,
+	// measured not slower; tools/xrc_build.sh)
+	append(&f, "-fno-reciprocal-math")
 	// (signed zeros and NaNs kept: fast math folds the guest's 0 - x into a negation, -0 for +0, and assumes no NaN in
 	// compares -- 2026-11-24, measured not slower; tools/xrc_build.sh)
 	// (and no FMA contraction: a fused mulps + addps rounds once, x86 twice -- 1-ulp differences)

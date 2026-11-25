@@ -13,6 +13,11 @@
 //                 retail PC port's limited-range conversion (crushed darks, blown-out brights). XRC_MOVIE_COLORS=original
 //     Brightness, Contrast, Saturation  sliders, percent (100 = as is): XRC_MOVIE_BRIGHTNESS / _CONTRAST / _SATURATION, folded
 //                 into the movie shader's rows when the game starts (hle_d3d9.c movie_shader_colors)
+//   Boosters (overrides/Final Fantasy XIII/ovr_game.c)
+//     Game Speed  Normal, 200, 400, 800%: XRC_BOOST_SPEED=2|4|8, the engine's frame step times N
+//     Max Stats   XRC_BOOST_STATS=1: the party's battle HP, Strength and Magic at their highest
+//     Max Gil     XRC_BOOST_GIL=1: 999,999,999 gil
+//     One-Hit Kills  XRC_BOOST_ONE_HIT=1: an enemy that takes damage is left with none
 package launcher
 
 import "core:fmt"
@@ -49,10 +54,10 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	_, rest = ui.cut_top(rest, px(g, 8))
 	row_h := px(g, 50)
 	label_w, ctrl_w := px(g, 230), px(g, 270)
-	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 // (Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
+	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 + 4 // (Boosters: 4; Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
 	// the card as tall as its rows; taller than the tab, it fills the tab and scrolls (the wheel over it, or its scroll
 	// bar), as the Options tab does
-	total := px(g, 4) + 4 * px(g, 34) + 3 * px(g, 18) + nrows * row_h + px(g, 16)
+	total := px(g, 4) + 5 * px(g, 34) + 4 * px(g, 18) + nrows * row_h + px(g, 16)
 	oc := rest
 	if total <= rest.h {oc, _ = ui.cut_top(rest, total)}
 	card(g, oc)
@@ -219,6 +224,28 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 			dnote = fmt.tprintf("Frees about %.1f GB (the mod's ZIP and the game's replaced archives)", f64(total) / 1e9)
 		}
 		note_text(g, dnote, note, DIM)
+	}
+	section(g, oi, &row, &first, "Boosters")
+	{ // (for a quicker or easier playthrough: XRC_BOOST_* in the .cfg, read when the game starts -- ovr_game.c)
+		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Game Speed:")
+		speeds := [4]string{"Normal", "200%", "400%", "800%"}
+		mult := [4]int{1, 2, 4, 8}
+		sel := 0
+		for m, k in mult {if settings.boost_speed == m {sel = k}}
+		if n, ch := dropdown(g, "boost_speed", ctrl, speeds[:], sel, active = active); ch {settings.boost_speed = mult[n]; changed = true}
+		note_text(g, settings.boost_speed > 1 ? fmt.tprintf("The game runs %dx as fast (battles, the field, scenes in the engine; movies and voices as usual)", settings.boost_speed) : "The game's own speed", note, DIM)
+
+		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Max Stats:")
+		if on, ch := toggle(g, ctrl, settings.boost_stats, active); ch {settings.boost_stats = on; changed = true}
+		note_text(g, "In battle the party has 99,999 HP and 9,999 Strength and Magic", note, DIM)
+
+		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Max Gil:")
+		if on, ch := toggle(g, ctrl, settings.boost_gil, active); ch {settings.boost_gil = on; changed = true}
+		note_text(g, "999,999,999 gil to spend", note, DIM)
+
+		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "One-Hit Kills:")
+		if on, ch := toggle(g, ctrl, settings.boost_one_hit, active); ch {settings.boost_one_hit = on; changed = true}
+		note_text(g, "Any hit defeats the enemy it lands on", note, DIM)
 	}
 	if changed {
 		save_settings()

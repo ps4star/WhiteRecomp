@@ -281,7 +281,7 @@ Only with Debug & Profile Tools on, Windows only. **On:** F12 in the game starts
 Every Build also uses these, with no option to turn them off:
 
 - **`-march=native`:** the game is compiled for your own CPU's instruction set, since the computer that builds it is the one that plays it. A game built on one computer may not run on an older CPU.
-- **Fast math (`-ffast-math -fno-associative-math`):** faster floating-point code. The parts of the translated code that must behave exactly like an x86 CPU (NaN checks, float compares, float-to-integer conversions) are written so fast math can't change them. Reassociation (regrouping sums) stays off, because it breaks the game's own rounding tricks: the title menu disappears. Other results may differ from the original in the last bits.
+- **Fast math (`-ffast-math`), minus the parts that change results:** faster floating-point code. The parts of the translated code that must behave exactly like an x86 CPU (NaN checks, float compares, float-to-integer conversions) are written so fast math can't change them. Kept off: reassociation (`-fno-associative-math`: regrouping sums breaks the game's own rounding tricks, and the title menu disappears), dividing by multiplying with the reciprocal (`-fno-reciprocal-math`), dropping the sign of zero or assuming there are no NaNs (`-fsigned-zeros -fno-finite-math-only`), fused multiply-adds (`-ffp-contract=off`) and, on x86, the CPU's reciprocal estimates (`-mrecip=none`). Each of these made some results differ from an x86 CPU's in the last bits, so they stay off; together they measured no slower.
 - **On Linux:** the distributions' hardening defaults (position-independent executables, control-flow protection, stack protector) are turned off. They cost speed and protect nothing here.
 
 ## Cross-Compile
@@ -335,6 +335,15 @@ Two HD mods can be imported, and one switch turns them on or off together: with 
 - **Get** opens the mod's page on Nexus Mods.
 - **Import Archive…** picks the archive and unpacks its `hd_textures` folder (about 3.5 GB) into `white_data_hd`. It takes under a minute. The mod's own `version.dll` isn't used or needed: the port swaps the textures itself, the same way the DLL does (by their contents, as the game loads them). HD Textures turns on by itself after an import.
 - Importing the HD Project again keeps this pack.
+
+### Boosters
+
+For a quicker or easier playthrough. All are off by default.
+
+- **Game Speed:** **Normal**, **200%**, **400%** or **800%**. The game runs that many times as fast: battles, the field and scenes the engine plays. Movies and voices play at their usual speed, and the play time on your save counts real time.
+- **Max Stats:** in battle the party has 99,999 HP and 9,999 Strength and Magic. Only the battle's copy changes: the Crystarium and the Status menu show your real stats.
+- **Max Gil:** 999,999,999 gil to spend.
+- **One-Hit Kills:** any hit defeats the enemy it lands on. An enemy that a scene needs alive still survives with the HP it must keep.
 
 ## What the download contains
 

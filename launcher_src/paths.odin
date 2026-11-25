@@ -115,6 +115,10 @@ Settings :: struct {
 	movie_brightness: int, // Features & Mods > Cutscenes: the movies' picture, percent (100 = as is): XRC_MOVIE_BRIGHTNESS 50..150,
 	movie_contrast:   int, // XRC_MOVIE_CONTRAST 50..150,
 	movie_saturation: int, // XRC_MOVIE_SATURATION 0..200 (hle_d3d9.c movie_shader_colors; read at start, no Build)
+	boost_speed:      int,  // Features & Mods > Boosters > Game Speed: 1 (off), 2, 4, 8 -- the game clock x N (XRC_BOOST_SPEED; ovr_game.c)
+	boost_stats:      bool, // Boosters > Max Stats: the party at max HP, Strength and Magic in battle (XRC_BOOST_STATS=1)
+	boost_gil:        bool, // Boosters > Max Gil: 999,999,999 gil (XRC_BOOST_GIL=1)
+	boost_one_hit:    bool, // Boosters > One-Hit Kills: any enemy hit is defeated (XRC_BOOST_ONE_HIT=1)
 	cross_target:    string, // the Cross-Compile tab's Target (cross.odin: a Cross_Target key; "": the first)
 	cross_cpu:       string, // its CPU (-mcpu=; "": the target's first, generic)
 	appimage:        bool, // Home tab's "As AppImage" (Linux launchers): the game as WhiteRecomp-<arch>.AppImage (appimage.odin)
@@ -132,6 +136,7 @@ settings := Settings {
 	movie_brightness = 100,
 	movie_contrast   = 100,
 	movie_saturation = 100,
+	boost_speed      = 1,
 	aa_fxaa         = true,
 	aa_quality      = 4,
 	aniso           = true,
@@ -183,6 +188,14 @@ load_settings :: proc() {
 			if n_ok && n >= 50 && n <= 150 {settings.movie_contrast = n}
 		case "movie_saturation":
 			if n_ok && n >= 0 && n <= 200 {settings.movie_saturation = n}
+		case "boost_speed":
+			if n_ok && (n == 1 || n == 2 || n == 4 || n == 8) {settings.boost_speed = n}
+		case "boost_stats":
+			settings.boost_stats = v == "1"
+		case "boost_gil":
+			settings.boost_gil = v == "1"
+		case "boost_one_hit":
+			settings.boost_one_hit = v == "1"
 		case "pad_once":
 			settings.pad_once = v == "1"
 		case "pipe_threads":
@@ -258,6 +271,7 @@ settings_text :: proc() -> string {
 	fmt.sbprintf(&b, "movie_files %s\n", settings.movie_bink ? "bink" : "mp4")
 	fmt.sbprintf(&b, "movie_colors %s\n", settings.movie_colors_orig ? "original" : "corrected")
 	fmt.sbprintf(&b, "movie_brightness %d\nmovie_contrast %d\nmovie_saturation %d\n", settings.movie_brightness, settings.movie_contrast, settings.movie_saturation)
+	fmt.sbprintf(&b, "boost_speed %d\nboost_stats %d\nboost_gil %d\nboost_one_hit %d\n", settings.boost_speed, settings.boost_stats ? 1 : 0, settings.boost_gil ? 1 : 0, settings.boost_one_hit ? 1 : 0)
 	fmt.sbprintf(&b, "pad_once %d\n", settings.pad_once ? 1 : 0)
 	fmt.sbprintf(&b, "pipe_threads %d\n", settings.pipe_threads)
 	keys := GRAPHICS_KEYS

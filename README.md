@@ -168,14 +168,16 @@ Which files the game plays its cutscenes from. FINAL FANTASY XIII's cutscenes ar
 
 If neither is there (the `.wmp` files discarded or missing, and no MP4s), the option is grayed out, every cutscene is skipped, and the launcher says to re-install the game from Steam (or verify its files) to get them back. Switching needs no new Build. A Build's `WhiteRecomp.cfg` follows what is there: after Discard Movies, the game uses the MP4s.
 
+The setting chooses which kind is tried **first**. If a cutscene doesn't open that way (its MP4 not converted yet or damaged, or its `.wmp` file cut down by Discard Movies), the game plays it the other way, and only skips it if neither works. So with MP4 chosen, a cutscene you haven't converted yet still plays from its `.wmp` file, and with Bink2 chosen, a discarded one still plays from its MP4.
+
 #### Cutscenes
 
 With **MP4**, each cutscene is converted to an MP4 once. **Convert Movies** on the Home tab does them all, using every CPU thread but one. The game itself no longer converts anything while you play.
 
 Many movie files hold several cutscenes one after another (`z016_us.win32.wmp` holds 8). Each cutscene gets its own MP4: the first one `<name>.mp4`, the others `<name>_<offset>.mp4`. Older launchers converted only the first cutscene of each file, so later scenes played the wrong video under their subtitles, or were skipped (and `z004` never finished converting). The launcher never deletes converted MP4s by itself: if your cutscenes were converted by a launcher older than v0.0.10 and play the wrong video, delete the MP4s in `white_data/movie` and press **Convert Movies**. If you used **Discard Movies** with such an old launcher, those cutscenes were cut out of the files: have Steam restore them first (Properties > Installed Files > Verify integrity of game files), then Convert Movies.
 
-- **Play** (with Bink2) or **Play if converted** (with MP4; default): with MP4, a cutscene plays once its MP4 exists, and is skipped until then.
-- **Auto-skip:** every cutscene is skipped, even converted ones, which is handy for replays and speedruns. Converted ones play again if you switch back (followed by a new Build).
+- **Play** (with Bink2) or **Play if converted** (with MP4; default): with MP4, a cutscene plays from its MP4 once that exists, and until then from its `.wmp` file if that is complete (see [Cutscene Files](#cutscene-files)); it is skipped only when it has neither.
+- **Auto-skip:** every cutscene is skipped, even converted ones, which is handy for replays and speedruns. The game goes straight on to what follows (before v0.0.19's update, skipping the opening cutscene left a black screen for a few minutes). Converted ones play again if you switch back (followed by a new Build).
 
 ### Steam
 

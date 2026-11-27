@@ -104,6 +104,8 @@ apply_android_preset :: proc() {
 	settings.aa_quality = 1
 	settings.fx_full = false
 	settings.minimap_circle = false
+	settings.hdr = false
+	settings.fullscreen = false
 	settings.aniso = false
 	settings.memory_2gb = false
 	settings.opt_level = ANDROID_OPT_LEVEL

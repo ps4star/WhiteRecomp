@@ -400,6 +400,8 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.stretch {fmt.sbprintf(b, "XRC_STRETCH=1\n")}
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
 	if s.minimap_circle {fmt.sbprintf(b, "XRC_MINIMAP_CIRCLE=1\n")} // (Minimap Shape: Circle)
+	if s.fullscreen {fmt.sbprintf(b, "XRC_FULLSCREEN=1\n")} // (Options > Display > Start Fullscreen)
+	if s.hdr {fmt.sbprintf(b, "XRC_HDR=1\nXRC_HDR_PEAK=%d\nXRC_HDR_PAPER=%d\n", s.hdr_peak, s.hdr_paper)} // (Options > Display > HDR: vk_hdr.h)
 	if s.aniso {fmt.sbprintf(b, "XRC_VK_ANISO=16\n")} // (Anisotropic Filtering: On -- up to what the GPU has)
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
 	if s.tools && s.profiler && !(spec.cross != nil && spec.cross.android) {fmt.sbprintf(b, "XRC_PROF=1\n")} // (Options > Profiler: F12 in the game -- a game built with the Debug & Profile Tools)

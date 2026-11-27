@@ -108,6 +108,10 @@ Settings :: struct {
 	memory_2gb:      bool, // Memory: 2 GB, as the original exe gets (XRC_GUEST_2GB=1 in the .cfg); else 4 GB
 	fx_full:         bool, // Effects Resolution: Full (XRC_VK_HALF_FX=0 in the .cfg); else Half, the default (vk_d3d9.c)
 	minimap_circle:  bool, // Minimap Shape: Circle (XRC_MINIMAP_CIRCLE=1 in the .cfg); else Default, the game's own tilted oval (hle_d3d9.c)
+	fullscreen:      bool, // Options > Display > Start Fullscreen: On (XRC_FULLSCREEN=1 in the .cfg): the window fullscreen from the start (F11 still toggles; vk_d3d9.c)
+	hdr:             bool, // Options > Display > HDR: On (XRC_HDR=1 in the .cfg): an HDR10 swap chain where the system offers one (vk_hdr.h)
+	hdr_peak:        int,  // its Peak Brightness, nits 400..4000 (XRC_HDR_PEAK)
+	hdr_paper:       int,  // its Paper White, nits 80..400 (XRC_HDR_PAPER): the game's white
 	aniso:           bool, // Anisotropic Filtering: On, the default (XRC_VK_ANISO=16 in the .cfg); else Off: the game's own (vk_d3d9.c)
 	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; every desktop system)
 	voice_jp:        bool, // Features & Mods > Voice: Japanese (the game's -VoiceJPMode); else English
@@ -146,6 +150,8 @@ settings := Settings {
 	aa_fxaa         = true,
 	aa_quality      = 4,
 	aniso           = true,
+	hdr_peak        = 1000,
+	hdr_paper       = 200,
 }
 
 // the settings before any file: the defaults (Clear Cache: settings_file_exact, settings_reset)
@@ -222,6 +228,14 @@ load_settings :: proc() {
 			settings.stretch = v == "1"
 		case "fx_full":
 			settings.fx_full = v == "1"
+		case "fullscreen":
+			settings.fullscreen = v == "1"
+		case "hdr":
+			settings.hdr = v == "1"
+		case "hdr_peak":
+			if n_ok && n >= 400 && n <= 4000 {settings.hdr_peak = n}
+		case "hdr_paper":
+			if n_ok && n >= 80 && n <= 400 {settings.hdr_paper = n}
 		case "minimap_circle":
 			settings.minimap_circle = v == "1"
 		case "aniso":
@@ -302,6 +316,8 @@ settings_text :: proc() -> string {
 	fmt.sbprintf(&b, "stretch %d\n", settings.stretch ? 1 : 0)
 	fmt.sbprintf(&b, "fx_full %d\n", settings.fx_full ? 1 : 0)
 	fmt.sbprintf(&b, "minimap_circle %d\n", settings.minimap_circle ? 1 : 0)
+	fmt.sbprintf(&b, "fullscreen %d\n", settings.fullscreen ? 1 : 0)
+	fmt.sbprintf(&b, "hdr %d\nhdr_peak %d\nhdr_paper %d\n", settings.hdr ? 1 : 0, settings.hdr_peak, settings.hdr_paper)
 	fmt.sbprintf(&b, "aniso %d\n", settings.aniso ? 1 : 0)
 	fmt.sbprintf(&b, "steam_off %d\n", settings.steam_off ? 1 : 0)
 	fmt.sbprintf(&b, "voice %s\n", settings.voice_jp ? "japanese" : "english")

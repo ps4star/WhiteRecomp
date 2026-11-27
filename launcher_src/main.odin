@@ -625,6 +625,41 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		if n, ch := dropdown(g, "scaling", ctrl, {"Fit (Default)", "Stretch"}, settings.stretch ? 1 : 0, active = active); ch {settings.stretch = n == 1; changed = true; game_changed = true}
 		note_text(g, settings.stretch ? "Fills the window; the picture is squeezed if the window is another shape" : "Keeps the picture's shape: black bars in a window of another shape", note, DIM)
 	}
+	// Start Fullscreen: On -- the game's window fullscreen (the desktop's mode, borderless) from the start (XRC_FULLSCREEN=1
+	// in its .cfg: no Build needed); F11 in the game toggles it either way
+	{
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Start Fullscreen:")
+		if on, ch := toggle(g, ctrl, settings.fullscreen, active); ch {settings.fullscreen = on; changed = true; game_changed = true}
+		note_text(g, settings.fullscreen ? "Borderless fullscreen from the start; F11 in the game switches to a window; no Build needed" : "A window to begin with; F11 in the game switches to fullscreen", note, DIM)
+	}
+	// HDR: On -- an HDR10 picture where the system's display is in HDR (XRC_HDR=1 and its Peak / Paper White in the .cfg:
+	// no Build needed; vk_hdr.h): the SDR picture kept at Paper White, the 3D image's highlights spread up to Peak, the HUD
+	// left as it is. Peak and Paper White: sliders, shown while it is On, saved when let go
+	{
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "HDR:")
+		if on, ch := toggle(g, ctrl, settings.hdr, active); ch {settings.hdr = on; changed = true; game_changed = true}
+		note_text(g, settings.hdr ? "HDR10 when the display is in HDR (Windows: Settings > Display > Use HDR); else SDR as always; no Build needed" : "The game's own SDR picture", note, DIM)
+	}
+	if settings.hdr {
+		Hs :: struct {name, id, tip: string, v: ^int, lo, hi, def: int}
+		hs := [2]Hs{
+			{"Peak Brightness:", "hdr_peak", "Your display's brightest (nits): highlights reach it", &settings.hdr_peak, 400, 4000, 1000},
+			{"Paper White:", "hdr_paper", "How bright the game's white and the HUD are (nits)", &settings.hdr_paper, 80, 400, 200},
+		}
+		for a in hs {
+			_, c2, n2 := next_row(g, oi, &row, row_h, label_w, ctrl_w, a.name, px(g, 24))
+			v, _, done := slider(g, a.id, c2, a.v^, a.lo, a.hi, active)
+			a.v^ = v
+			if done {changed = true; game_changed = true}
+			label(g, g.font, fmt.tprintf("%d nits", v), {n2.x, n2.y, px(g, 90), n2.h}, TEXT)
+			bx := n2.x + px(g, 94)
+			if v != a.def {
+				if button(g, {bx, n2.y + (n2.h - px(g, 28)) / 2, px(g, 80), px(g, 28)}, "Reset", active) {a.v^ = a.def; changed = true; game_changed = true}
+				bx += px(g, 92)
+			}
+			note_text(g, a.tip, {bx, n2.y, n2.x + n2.w - bx, n2.h}, DIM)
+		}
+	}
 	// FPS
 	{
 		_, ctrl, _ := next_row(g, oi, &row, row_h, label_w, ctrl_w, "FPS:")

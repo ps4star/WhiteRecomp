@@ -77,7 +77,7 @@ macOS support is new and has not been run on a Mac yet. Reports of what works an
 The **Options** tab is saved between sessions.
 
 - **Build options:** most options change how the game is compiled, so they take effect the next time you press **Build**.
-- **Game options:** **Resolution**, **Window Scaling**, **Graphics**, **Effects Resolution**, **Steam Integration**, **Pipeline Build Threads** and **Memory** are passed to the game when it starts. They take effect the next time you start the game, with no rebuild.
+- **Game options:** **Resolution**, **Window Scaling**, **Start Fullscreen**, **HDR**, **Graphics**, **Effects Resolution**, **Steam Integration**, **Pipeline Build Threads** and **Memory** are passed to the game when it starts. They take effect the next time you start the game, with no rebuild.
 
 The options are grouped as on the tab: Display, Graphics, Audio & Controls, Cutscenes, Steam (Windows, Linux), Performance and Build.
 
@@ -105,6 +105,22 @@ The game's window opens at this size. You can resize or maximize it, and **F11**
 #### Window Scaling
 
 **Fit** (default) keeps the picture's shape (its Aspect Ratio), with black bars in a window of another shape. **Stretch** fills the whole window, squeezing the picture to the window's shape. Takes effect the next time the game starts, with no Build needed.
+
+#### Start Fullscreen
+
+**On** opens the game in borderless fullscreen (the desktop's own display mode, so there is no mode switch). **F11** still switches between fullscreen and a window. **Off** (default) opens a window. Takes effect the next time the game starts, with no Build needed.
+
+#### HDR
+
+**On** sends an HDR10 picture when your display is in HDR mode. On Windows, that means turning on **Settings > Display > Use HDR**. Without HDR mode the game shows its usual SDR picture, and the log says why.
+
+The game still renders its normal SDR image; the port expands it for HDR:
+
+- Everything up to mid-brightness stays exactly as in SDR. The game's white and the HUD sit at **Paper White** (default 200 nits).
+- Only the 3D image's highlights are spread above that, up to **Peak Brightness** (default 1000 nits). That covers skies, lights, sparks and magic.
+- The HUD, menus and cutscenes are never expanded.
+
+Set **Peak Brightness** to your display's peak, and raise or lower **Paper White** to make the whole picture brighter or darker. Takes effect the next time the game starts, with no Build needed.
 
 #### FPS
 

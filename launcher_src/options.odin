@@ -98,6 +98,8 @@ apply_android_preset :: proc() {
 	settings.fps = ANDROID_FPS
 	settings.graphics = GRAPHICS_CUSTOM
 	settings.shadow_res = ANDROID_SHADOW_RES
+	settings.aa_taa = false
+	settings.aa_fsr = false
 	settings.aa_fxaa = true
 	settings.aa_quality = 1
 	settings.fx_full = false
@@ -228,7 +230,9 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 	if spec.cross != nil || compiler_is_clang() {append(&f, "-fno-addrsig")}
 	append(&f, fmt.tprintf("-DXRC_FRAME_LIMIT=%d", bs.fps == 30 ? 30 : 60))
 	if !settings.audio {append(&f, "-DXRC_NO_AUDIO")}
-	if !settings.tools {append(&f, "-DXRC_NO_TOOLS")}
+	// (an Android build never has the Debug & Profile Tools: no tracing, profiling or test hooks on a phone, whatever
+	// this computer's own build has)
+	if !settings.tools || (spec.cross != nil && spec.cross.android) {append(&f, "-DXRC_NO_TOOLS")}
 	if movie_skip() {append(&f, "-DXRC_SKIP_MOVIES")} // (also when the game has no cutscene files: main.odin movie_files)
 	if settings.pad_once {append(&f, "-DXRC_PAD_ONCE")}
 	if settings.experimental {append(&f, "-DXRC_EXPERIMENTAL")}

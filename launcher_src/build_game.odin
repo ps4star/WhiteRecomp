@@ -402,8 +402,9 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.minimap_circle {fmt.sbprintf(b, "XRC_MINIMAP_CIRCLE=1\n")} // (Minimap Shape: Circle)
 	if s.aniso {fmt.sbprintf(b, "XRC_VK_ANISO=16\n")} // (Anisotropic Filtering: On -- up to what the GPU has)
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
-	if s.tools && s.profiler {fmt.sbprintf(b, "XRC_PROF=1\n")} // (Options > Profiler: F12 in the game -- a game built with the Debug & Profile Tools)
-	if s.aa_fsr && ODIN_OS == .Windows && (spec.cross == nil) {fmt.sbprintf(b, "XRC_FSR=1\nXRC_FSR_DLL=%s\n", data_path("tools", "amd_fidelityfx_vk.dll"))} else if s.aa_taa {fmt.sbprintf(b, "XRC_TAA=1\n")} else if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
+	if s.tools && s.profiler && !(spec.cross != nil && spec.cross.android) {fmt.sbprintf(b, "XRC_PROF=1\n")} // (Options > Profiler: F12 in the game -- a game built with the Debug & Profile Tools)
+	// (TAA / FSR never on Android: a phone build stays as v18 had it -- issue #31; FXAA as set)
+	if s.aa_fsr && ODIN_OS == .Windows && (spec.cross == nil) {fmt.sbprintf(b, "XRC_FSR=1\nXRC_FSR_DLL=%s\n", data_path("tools", "amd_fidelityfx_vk.dll"))} else if s.aa_taa && !(spec.cross != nil && spec.cross.android) {fmt.sbprintf(b, "XRC_TAA=1\n")} else if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
 	if spec.cross != nil && spec.cross.android {
 		fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", s.pipe_threads)
 		return

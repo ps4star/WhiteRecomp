@@ -546,6 +546,10 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 		hd_work_clean(h.work, zip_keep)
 		if dir_exists(h.work) {logf(t, "The files unpacked from the ZIP were kept in %s: the next Import goes on from them (delete that folder to free the space).", h.work)}
 	}
+	// (Linux, macOS: Wine's server kept up for the whole import, ended at its end -- wine_server_keep; issue #25)
+	ws_out := pjoin({h.work, ".wineserver_output.txt"}, context.temp_allocator)
+	wine_server_keep(t, h.wine, ws_out)
+	defer wine_server_end(t, h.wine, ws_out)
 	logp := data_path("hd_import.log")
 	if lf, err := os.open(logp, {.Write, .Create, .Trunc}); err == nil {h.log = lf}
 	defer if h.log != nil {os.close(h.log)}

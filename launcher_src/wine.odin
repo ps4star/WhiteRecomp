@@ -109,3 +109,28 @@ convert_possible :: proc() -> (ok: bool, why: string) {
 		return true, ""
 	}
 }
+
+// Wine's server for the launcher's folder kept running (wineserver -p) while a task runs many short Windows programs in
+// a row -- the HD import: about three per block of every zone, thousands in all (issue #25). Otherwise the server ends
+// 3 s after each program and the next one starts it, and Wine's services, all over again. Ended with wine_server_end.
+wine_server :: proc(wine: string) -> string {
+	wdir, _ := filepath.split(wine)
+	server := pjoin({wdir, "wineserver"}, context.temp_allocator)
+	if !file_exists(server) {server = find_program("wineserver")}
+	return server
+}
+wine_server_keep :: proc(t: ^Task, wine, scratch: string) {
+	when ODIN_OS != .Windows {
+		server := wine_server(wine)
+		if server == "" {return}
+		// (it puts itself in the background: its output to a file, not a pipe it would keep open -- run_to_file)
+		_, _ = run_to_file(t, wine_cmd(server, {"-p"}), "", scratch)
+	}
+}
+wine_server_end :: proc(t: ^Task, wine, scratch: string) {
+	when ODIN_OS != .Windows {
+		server := wine_server(wine)
+		if server == "" {return}
+		_, _ = run_to_file(t, wine_cmd(server, {"-k"}), "", scratch)
+	}
+}

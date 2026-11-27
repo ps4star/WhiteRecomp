@@ -63,10 +63,10 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 	_, rest = ui.cut_top(rest, px(g, 8))
 	row_h := px(g, 50)
 	label_w, ctrl_w := px(g, 230), px(g, 270)
-	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 + (settings.boost ? 1 + len(BOOST_KEYS) : 1) // (Boosters: the switch, and with it on the keys; Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4)
+	nrows := 2 + 4 + len(settings.save_dirs) + 1 + 4 + 2 + (settings.boost ? 1 + len(BOOST_KEYS) : 1) // (Boosters: the switch, and with it on the keys; Language: 2; Cutscenes: 4; Save Folders: one a folder, and Add Folder…; HD Textures: 4; Button Icons: 2)
 	// the card as tall as its rows; taller than the tab, it fills the tab and scrolls (the wheel over it, or its scroll
 	// bar), as the Options tab does
-	total := px(g, 4) + 5 * px(g, 34) + 4 * px(g, 18) + nrows * row_h + px(g, 16)
+	total := px(g, 4) + 6 * px(g, 34) + 5 * px(g, 18) + nrows * row_h + px(g, 16)
 	oc := rest
 	if total <= rest.h {oc, _ = ui.cut_top(rest, total)}
 	card(g, oc)
@@ -233,6 +233,18 @@ draw_features :: proc(g: ^Gui, w: ^platform.Window, r: ui.Rect) {
 			dnote = fmt.tprintf("Frees about %.1f GB (the mod's ZIP and the game's replaced archives)", f64(total) / 1e9)
 		}
 		note_text(g, dnote, note, DIM)
+	}
+	section(g, oi, &row, &first, "Button Icons")
+	{ // (the Console Button Prompts mod: its two button textures cut from its ZIP -- buttons.odin; the runtime picks by the controllers plugged in)
+		ready := bb_ready()
+		ctrl, note := next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Better Button Icons:")
+		gw := px(g, 80)
+		if button(g, {ctrl.x, ctrl.y, ctrl.w - gw - px(g, 8), ctrl.h}, ready ? "Import ZIP Again…" : "Import ZIP…", active) {browse_for_hd_zip(w)}
+		if button(g, {ctrl.x + ctrl.w - gw, ctrl.y, gw, ctrl.h}, "Get") {bb_open_page()}
+		note_text(g, ready ? "Imported: PlayStation and Xbox 360 icons" : "Get downloads the mod's ZIP (Nexus Mods: Console Button Prompts); Import ZIP… takes its button icons", note, DIM)
+		ctrl, note = next_row(g, oi, &row, &first, row_h, label_w, ctrl_w, "Button Icons:")
+		if on, ch := toggle(g, ctrl, ready && settings.button_icons, active && ready); ch && ready {settings.button_icons = on; changed = true}
+		note_text(g, !ready ? "Import the mod first" : settings.button_icons ? "No controller: keyboard keys; a PlayStation controller: its buttons; any other: Xbox 360 buttons" : "The game's own prompts (as its settings say)", note, DIM)
 	}
 	section(g, oi, &row, &first, "Boosters")
 	{ // (for a quicker or easier playthrough: XRC_BOOST=1 in the .cfg; in the game F1-F4 turn each booster on and off -- ovr_game.c)

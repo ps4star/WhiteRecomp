@@ -370,7 +370,13 @@ hd_tool :: proc(h: ^Hd, exe: string, args: []string, dir: string = "") -> (code:
 		append(&cmd, ..wine_cmd(h.wine, all[:]))
 	}
 	out := strings.builder_make(context.temp_allocator)
-	c, started := run(h.t, cmd[:], dir = dir != "" ? dir : h.work, mode = .Quiet, capture = &out)
+	c: int
+	started: bool
+	when ODIN_OS == .Windows {
+		c, started = run(h.t, cmd[:], dir = dir != "" ? dir : h.work, mode = .Quiet, capture = &out)
+	} else { 	// (through a file, not a pipe: Wine's background processes would hold a pipe open -- run_to_file)
+		c, started = run_to_file(h.t, cmd[:], dir != "" ? dir : h.work, pjoin({h.work, ".tool_output.txt"}, context.temp_allocator), &out)
+	}
 	code = int(i32(u32(c & 0xffffffff)))
 	hlog(h, "> %s %s  [%s]\n%s(exit %d)", exe, strings.join(args, " ", context.temp_allocator), dir != "" ? dir : h.work, strings.to_string(out), code)
 	if !started {logf(h.t, "Cannot run %s.", exe); h.failed = true}
@@ -925,6 +931,7 @@ hd_import_any :: proc(t: ^Task, path: string) {
 		return
 	}
 	if entries, ok := zip_entries(f, context.temp_allocator); ok {
+		if bb_is_mod(entries[:]) {defer os.close(f); bb_import(t, path, f, entries[:]); return} // (Better Button Icons: buttons.odin)
 		for e in entries {
 			if strings.has_suffix(strings.to_lower(e.name, context.temp_allocator), "hd_textures/hash_database.txt") {
 				defer os.close(f)

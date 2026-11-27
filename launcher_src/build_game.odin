@@ -384,6 +384,7 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	fmt.sbprintf(b, "XRC_LANGUAGE=%s\n", subtitle_for_game(s.subs)) // (the text language: Features & Mods > Subtitles & UI)
 	if len(s.save_dirs) > 0 {fmt.sbprintf(b, "XRC_SAVE_DIRS=%s\n", strings.join(s.save_dirs[:], "|", context.temp_allocator))} // (Features & Mods > Save Folders; "|": in no Windows path)
 	if spec.cross == nil {hd_cfg_line(b)} // (Features & Mods > HD Textures: this computer's folder)
+	if spec.cross == nil {bb_cfg_line(b)} // (Features & Mods > Better Button Icons)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
 	if s.movie_colors_orig {fmt.sbprintf(b, "XRC_MOVIE_COLORS=original\n")} // (Features & Mods > Cutscene Colors: Original -- the retail limited-range look)
 	if s.vol_music != 100 {fmt.sbprintf(b, "XRC_VOL_MUSIC=%d\n", s.vol_music)} // (Options > Audio & Controls: the volumes, percent; hle_xaudio2.c)
@@ -411,6 +412,7 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 }
 
 write_cfg :: proc(gdir: string) -> bool {
+	when ODIN_OS == .Darwin {mac_libs_copy(gdir)}
 	text := cfg_text()
 	return os.write_entire_file(pjoin({gdir, GAME_NAME + ".cfg"}, context.temp_allocator), transmute([]u8)text) == nil
 }
@@ -430,12 +432,10 @@ cfg_text :: proc() -> string {
 	}
 	when ODIN_OS == .Linux && ODIN_ARCH == .arm64 {fmt.sbprintf(&b, "XRC_STEAM_HELPER=%s\n", data_path("tools", "steamhelper_linux_x64"))}
 	when ODIN_OS == .Darwin {
-		// the .app's own MoltenVK (Vulkan on Metal) and SDL2 (window, controllers, sound), if it has them: the game
-		// loads those; else it looks in Homebrew's and /usr/local's lib
-		if fw := app_frameworks_dir(); fw != "" {
-			if mvk := pjoin({fw, "libMoltenVK.dylib"}, context.temp_allocator); file_exists(mvk) {fmt.sbprintf(&b, "XRC_VK_LIB=%s\n", mvk)}
-			if sdl := pjoin({fw, "libSDL2-2.0.0.dylib"}, context.temp_allocator); file_exists(sdl) {fmt.sbprintf(&b, "XRC_SDL_LIB=%s\n", sdl)}
-		}
+		// MoltenVK (Vulkan on Metal) and SDL2 (window, controllers, sound): the game's own copies of the .app's, beside it
+		// (mac_libs_copy), else the .app's; with neither the game looks in Homebrew's and /usr/local's lib
+		if mvk := mac_lib("libMoltenVK.dylib"); mvk != "" {fmt.sbprintf(&b, "XRC_VK_LIB=%s\n", mvk)}
+		if sdl := mac_lib("libSDL2-2.0.0.dylib"); sdl != "" {fmt.sbprintf(&b, "XRC_SDL_LIB=%s\n", sdl)}
 	}
 	cfg_game_lines(&b)
 	return strings.to_string(b)

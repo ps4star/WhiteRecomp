@@ -57,7 +57,7 @@ pick_title :: proc() -> string {
 	case .Saves:
 		return "Choose a folder with save files (.dat)"
 	case .Zip:
-		return "Choose an HD mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar)"
+		return "Choose a mod's archive (the HD Project's .zip, HD Fonts and GUI's .rar, Console Button Prompts' .zip)"
 	case .Game:
 	}
 	return "Choose the FINAL FANTASY XIII folder"

@@ -36,6 +36,35 @@ child_wait :: proc(c: Child, r: Child_Pipe) -> int {
 	return st.exit_code
 }
 
+// a command whose output goes to a file (out_path), not a pipe: the command's own end is waited for, not the end of its
+// output. (A Wine program's output pipe is inherited by the processes Wine starts in the background -- wineserver,
+// services.exe, winedevice... -- which keep it open until wineserver ends, ~3 s after the program: run() waited that
+// long for every program, and Wine then started all over again for the next one. The HD Project's zones run the mod's
+// tools three times per block, hundreds of blocks per zone: half an hour and more per zone, issue #25.) The output,
+// when wanted, is read from the file afterwards; the file is removed.
+run_to_file :: proc(t: ^Task, cmd: []string, dir, out_path: string, capture: ^strings.Builder = nil) -> (code: int, started: bool) {
+	_ = os.remove(out_path) // (a new file: one still held by an earlier program's leftovers is left to them)
+	f, ferr := os.open(out_path, {.Write, .Create, .Trunc})
+	if ferr != nil {return -1, false}
+	p, perr := os.process_start({command = cmd, working_dir = dir, stdout = f, stderr = f})
+	os.close(f)
+	if perr != nil {_ = os.remove(out_path); return -1, false}
+	c := Child{p}
+	task_add_child(t, c)
+	st, werr := os.process_wait(p)
+	task_remove_child(t, c)
+	code = werr != nil ? -1 : st.exit_code
+	if capture != nil {
+		if data, rerr := os.read_entire_file(out_path, context.temp_allocator); rerr == nil {
+			s, _ := strings.replace_all(string(data), "\r", "", context.temp_allocator)
+			strings.write_string(capture, s)
+			if len(s) > 0 && s[len(s) - 1] != '\n' {strings.write_byte(capture, '\n')}
+		}
+	}
+	_ = os.remove(out_path)
+	return code, true
+}
+
 child_kill :: proc(c: Child) {
 	_ = os.process_kill(c.p)
 }

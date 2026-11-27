@@ -120,3 +120,37 @@ mac_app_install :: proc(t: ^Task, exe, dir: string) -> bool {
 		return true
 	}
 }
+
+// macOS: MoltenVK and SDL2 for the built game, as Wine is carried for Convert Movies -- the .app has them in
+// Contents/Frameworks (launcher/release.sh), and each Build (each .cfg written) copies them beside the game, which then
+// loads its own copies: it keeps working when the launcher's app is moved (Downloads -> Applications), replaced by a
+// newer one or deleted, and from the game's own app (mac_app_path). A copy is made again when the .app's differs in
+// size (a newer launcher's MoltenVK). The copies keep their signatures (the code signature is inside the file).
+MAC_LIBS :: [2]string{"libMoltenVK.dylib", "libSDL2-2.0.0.dylib"}
+
+mac_libs_copy :: proc(gdir: string) {
+	fw := app_frameworks_dir()
+	if fw == "" || gdir == "" {return}
+	_ = os.make_directory_all(gdir)
+	for name in MAC_LIBS {
+		src := pjoin({fw, name}, context.temp_allocator)
+		dst := pjoin({gdir, name}, context.temp_allocator)
+		si, serr := os.stat(src, context.temp_allocator)
+		if serr != nil {continue}
+		if di, derr := os.stat(dst, context.temp_allocator); derr == nil && di.size == si.size {continue}
+		data, rerr := os.read_entire_file(src, context.temp_allocator)
+		if rerr != nil {continue}
+		tmp := strings.concatenate({dst, ".new"}, context.temp_allocator)
+		if os.write_entire_file(tmp, data) != nil {_ = os.remove(tmp); continue}
+		if os.rename(tmp, dst) != nil {_ = os.remove(tmp)}
+	}
+}
+
+// the library the game is given: its own copy beside it, else the .app's ("" if neither)
+mac_lib :: proc(name: string) -> string {
+	if p := pjoin({game_out_dir(), name}, context.temp_allocator); file_exists(p) {return p}
+	if fw := app_frameworks_dir(); fw != "" {
+		if p := pjoin({fw, name}, context.temp_allocator); file_exists(p) {return p}
+	}
+	return ""
+}

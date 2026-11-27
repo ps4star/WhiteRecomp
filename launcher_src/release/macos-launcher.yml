@@ -17,7 +17,7 @@ permissions:
   contents: write
 env:
   ODIN_COMMIT: e28f5d1ff420ce2cfd7f1f5a9a91f8b37956445e # (the Odin the other launchers are built with)
-  MOLTENVK_VERSION: v1.4.0
+  MOLTENVK_VERSION: v1.4.2
   SDL2_VERSION: 2.32.8
   # Wine carried in the app (Contents/Resources/wine): Gcenx's Wine Stable, a WoW64 build (32-bit Windows programs on
   # Catalina and later; Rosetta 2 on Apple silicon), its SHA-256 pinned

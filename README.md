@@ -69,7 +69,7 @@ macOS support is new and has not been run on a Mac yet. Reports of what works an
 - **What Build makes:** a native game for your Mac (ARM64 on Apple silicon, x86-64 on Intel Macs) in `~/Library/Application Support/ff13-launcher/game`, not beside the launcher (nothing may be added inside a signed app). **Run** starts it.
 - **A Mac app for the game:** each Build also puts **FINAL FANTASY XIII (WhiteRecomp).app** in `~/Applications`, with the game's icon. Start the game from there, Launchpad or Spotlight without opening the launcher (with no game built, it opens the launcher instead).
 - **Saves:** besides Steam's own folder (`~/Library/Application Support/Steam/userdata/<account>/292120/remote`), the game looks in CrossOver and Whisky bottles for the original game's saves when it starts (see Steam Cloud saves).
-- **Graphics, sound and controllers:** the app carries MoltenVK (Vulkan on Apple's Metal) and SDL2, and the launcher and the game use those.
+- **Graphics, sound and controllers:** the app carries MoltenVK (Vulkan on Apple's Metal) and SDL2, so there is nothing to install. Each Build copies both next to the built game, so the game keeps working if you move, update or delete the launcher's app.
 - **Not on macOS:** the Steam overlay, and the Debug & Profile Tools' profiler. Steam achievements and Steam Cloud work with Steam for Mac running.
 
 ## Options
@@ -338,6 +338,14 @@ Two HD mods can be imported, and one switch turns them on or off together: with 
 - **Import Archive…** picks the archive and unpacks its `hd_textures` folder (about 3.5 GB) into `white_data_hd`. It takes under a minute. The mod's own `version.dll` isn't used or needed: the port swaps the textures itself, the same way the DLL does (by their contents, as the game loads them). HD Textures turns on by itself after an import.
 - Importing the HD Project again keeps this pack.
 
+### Better Button Icons
+
+The [Console Button Prompts](https://www.nexusmods.com/finalfantasy13/mods/60) mod's console-style button icons, picked by what you play with. On the Features & Mods tab, under **Button Icons**:
+
+- **Get** opens the mod's page on Nexus Mods (download its ZIP, v2.0).
+- **Import ZIP…** picks the ZIP and takes the two sets of button icons out of it (a few seconds; the game's own files are not changed, and the mod's installer is not run). **Button Icons** turns on by itself.
+- In the game, with no controller plugged in, the on-screen prompts show your keyboard's keys. With a PlayStation controller (DualShock, DualSense) they show Cross, Circle, Square and Triangle; with any other controller, the Xbox 360 buttons. Plugging a controller in or out switches them within a couple of seconds, and the game's **On-Screen Button Explanations** setting follows by itself.
+
 ### Boosters
 
 For a quicker or easier playthrough. Turn on **Boosters** on the Features & Mods tab, and in the game the keys F1 to F4 and F8 switch each booster on and off. Each one starts off, and any of them can be switched back off at any time. When you press a key, the boosters' states show at the top left of the screen for a few seconds. While Boosters is on, F1 to F4 and F8 do nothing else in the game.
@@ -369,3 +377,4 @@ The launcher's sources are in [`launcher_src/`](launcher_src/). It's written in 
 - **[Steamless](https://github.com/atom0s/Steamless)** by atom0s
 - **killer-m** (on Nexus Mods), the creator of the FINAL FANTASY XIII Ultrawide Fix. The ultrawide support (21:9, 32:9 and wider) re-implements that mod's patches.
 - **Dendonflo** (on Nexus Mods), the creator of the HD Font & GUI mod (with **MorningSpice**), whose textures **HD Fonts & GUI** imports.
+- **Krisan Thyme** (on Nexus Mods), the creator of the Console Button Prompts mod (with **Echelo** and **Scarlet Crusade**), whose icons **Better Button Icons** imports.

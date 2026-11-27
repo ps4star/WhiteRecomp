@@ -114,6 +114,7 @@ Settings :: struct {
 	subs:            int,  // Features & Mods > Subtitles & UI: an index of SUBTITLE_IDS (features.odin; XRC_LANGUAGE), 0 = English
 	save_dirs:       [dynamic]string, // Features & Mods > Save Folders: more folders whose .dat saves the game takes in (XRC_SAVE_DIRS; host_steam.c)
 	hd_on:           bool, // Features & Mods > HD Textures: On (XRC_HD_DIR in the .cfg: hd.odin), once a ZIP has been imported
+	button_icons:    bool, // Features & Mods > Better Button Icons: On (XRC_BUTTON_ICONS in the .cfg: buttons.odin), once the mod is imported
 	movie_colors_orig: bool, // Features & Mods > Cutscene Colors: Original, the retail look (XRC_MOVIE_COLORS=original); else Corrected, the default (hle_d3d9.c movie_shader_colors)
 	movie_brightness: int, // Features & Mods > Cutscenes: the movies' picture, percent (100 = as is): XRC_MOVIE_BRIGHTNESS 50..150,
 	movie_contrast:   int, // XRC_MOVIE_CONTRAST 50..150,
@@ -234,6 +235,8 @@ load_settings :: proc() {
 			for id, k in SUBTITLE_IDS {if v == id {settings.subs = k}}
 		case "hd":
 			settings.hd_on = n_ok && n == 1
+		case "button_icons":
+			settings.button_icons = v == "1"
 		case "save_dir":
 			if v != "" {append(&settings.save_dirs, strings.clone(v))}
 		case "cross_target":
@@ -305,6 +308,7 @@ settings_text :: proc() -> string {
 	fmt.sbprintf(&b, "subtitles %s\n", subtitle_id(settings.subs))
 	for d in settings.save_dirs {fmt.sbprintf(&b, "save_dir %s\n", d)}
 	fmt.sbprintf(&b, "hd %d\n", settings.hd_on ? 1 : 0)
+	fmt.sbprintf(&b, "button_icons %d\n", settings.button_icons ? 1 : 0)
 	fmt.sbprintf(&b, "cross_target %s\n", settings.cross_target)
 	fmt.sbprintf(&b, "cross_cpu %s\n", settings.cross_cpu)
 	fmt.sbprintf(&b, "appimage %d\n", settings.appimage ? 1 : 0)

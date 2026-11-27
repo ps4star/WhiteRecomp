@@ -98,6 +98,8 @@ Settings :: struct {
 	graphics:        int, // Graphics: a preset of the three below (GRAPHICS_PRESETS), or GRAPHICS_CUSTOM -- them as set
 	shadow_res:      int, // Shadow Resolution: the game's -Shadow=N (512 .. 8192; 0: Off -- no shadows, XRC_NO_SHADOWS)
 	aa_fxaa:         bool, // Anti-alias Method: FXAA (a post-process at present: XRC_FXAA=quality in the .cfg, the game's -MSAA=0), else MSAA (the game's -MSAA=quality)
+	aa_taa:          bool, // Anti-alias Method: TAA (XRC_TAA=1 in the .cfg, -MSAA=0; over aa_fxaa) -- vk_taa.h
+	aa_fsr:          bool, // Anti-alias Method: FSR 3.1 (Windows: XRC_FSR=1, XRC_FSR_DLL its tools/ copy; with aa_taa: TAA elsewhere) -- vk_fsr.h
 	aa_quality:      int, // Anti-alias Quality: 1 (off), 2, 4, 8
 	experimental:    bool, // Experimental Optimizations: -DXRC_EXPERIMENTAL
 	lto:             bool, // Link-Time Optimization: -flto
@@ -105,6 +107,7 @@ Settings :: struct {
 	stretch:         bool, // Window Scaling: Stretch -- the picture fills the window, proportions not kept (XRC_STRETCH=1 in the .cfg); else Fit
 	memory_2gb:      bool, // Memory: 2 GB, as the original exe gets (XRC_GUEST_2GB=1 in the .cfg); else 4 GB
 	fx_full:         bool, // Effects Resolution: Full (XRC_VK_HALF_FX=0 in the .cfg); else Half, the default (vk_d3d9.c)
+	minimap_circle:  bool, // Minimap Shape: Circle (XRC_MINIMAP_CIRCLE=1 in the .cfg); else Default, the game's own tilted oval (hle_d3d9.c)
 	aniso:           bool, // Anisotropic Filtering: On, the default (XRC_VK_ANISO=16 in the .cfg); else Off: the game's own (vk_d3d9.c)
 	steam_off:       bool, // Steam Integration: Off (XRC_NO_STEAM=1 in the .cfg); else On, the default (host_steam.c; every desktop system)
 	voice_jp:        bool, // Features & Mods > Voice: Japanese (the game's -VoiceJPMode); else English
@@ -115,6 +118,9 @@ Settings :: struct {
 	movie_brightness: int, // Features & Mods > Cutscenes: the movies' picture, percent (100 = as is): XRC_MOVIE_BRIGHTNESS 50..150,
 	movie_contrast:   int, // XRC_MOVIE_CONTRAST 50..150,
 	movie_saturation: int, // XRC_MOVIE_SATURATION 0..200 (hle_d3d9.c movie_shader_colors; read at start, no Build)
+	vol_music:        int, // Options > Audio & Controls: Music / Sound Effects / Voices volume, percent 0..100 (100: the game's own mix):
+	vol_sfx:          int, // XRC_VOL_MUSIC / XRC_VOL_SFX / XRC_VOL_VOICE in the .cfg (hle_xaudio2.c cat_volume: the game's sound categories;
+	vol_voice:        int, // read at start, no Build)
 	boost:            bool, // Features & Mods > Boosters: F1-F4, F8 in the game turn each booster on and off (XRC_BOOST=1; ovr_game.c)
 	cross_target:    string, // the Cross-Compile tab's Target (cross.odin: a Cross_Target key; "": the first)
 	cross_cpu:       string, // its CPU (-mcpu=; "": the target's first, generic)
@@ -131,6 +137,9 @@ settings := Settings {
 	pgo             = true,
 	shadow_res      = 1024,
 	movie_brightness = 100,
+	vol_music        = 100,
+	vol_sfx          = 100,
+	vol_voice        = 100,
 	movie_contrast   = 100,
 	movie_saturation = 100,
 	aa_fxaa         = true,
@@ -178,6 +187,12 @@ load_settings :: proc() {
 			settings.movie_bink = v == "bink"
 		case "movie_colors":
 			settings.movie_colors_orig = v == "original"
+		case "vol_music":
+			if n_ok && n >= 0 && n <= 100 {settings.vol_music = n}
+		case "vol_sfx":
+			if n_ok && n >= 0 && n <= 100 {settings.vol_sfx = n}
+		case "vol_voice":
+			if n_ok && n >= 0 && n <= 100 {settings.vol_voice = n}
 		case "movie_brightness":
 			if n_ok && n >= 50 && n <= 150 {settings.movie_brightness = n}
 		case "movie_contrast":
@@ -206,6 +221,8 @@ load_settings :: proc() {
 			settings.stretch = v == "1"
 		case "fx_full":
 			settings.fx_full = v == "1"
+		case "minimap_circle":
+			settings.minimap_circle = v == "1"
 		case "aniso":
 			settings.aniso = v != "0"
 		case "steam_off":
@@ -230,7 +247,7 @@ load_settings :: proc() {
 		case "msaa": // (before version 3: MSAA only; Off kept, any other the new default, FXAA 4x)
 			if version < 3 && n_ok && n == 0 {settings.aa_quality = 1}
 		case "aa_method":
-			if version >= 3 {settings.aa_fxaa = v == "fxaa"}
+			if version >= 3 {settings.aa_fxaa = v == "fxaa"; settings.aa_fsr = v == "fsr"; settings.aa_taa = v == "taa" || settings.aa_fsr; if settings.aa_taa {settings.aa_fxaa = true}}
 		case "aa_quality":
 			if version >= 3 && n_ok && (n == 1 || n == 2 || n == 4 || n == 8) {settings.aa_quality = n}
 		case "graphics":
@@ -261,6 +278,7 @@ settings_text :: proc() -> string {
 	fmt.sbprintf(&b, "movie_files %s\n", settings.movie_bink ? "bink" : "mp4")
 	fmt.sbprintf(&b, "movie_colors %s\n", settings.movie_colors_orig ? "original" : "corrected")
 	fmt.sbprintf(&b, "movie_brightness %d\nmovie_contrast %d\nmovie_saturation %d\n", settings.movie_brightness, settings.movie_contrast, settings.movie_saturation)
+	fmt.sbprintf(&b, "vol_music %d\nvol_sfx %d\nvol_voice %d\n", settings.vol_music, settings.vol_sfx, settings.vol_voice)
 	fmt.sbprintf(&b, "boost %d\n", settings.boost ? 1 : 0)
 	fmt.sbprintf(&b, "pad_once %d\n", settings.pad_once ? 1 : 0)
 	fmt.sbprintf(&b, "pipe_threads %d\n", settings.pipe_threads)
@@ -272,7 +290,7 @@ settings_text :: proc() -> string {
 		fmt.sbprintf(&b, "resolution %dx%d\n", r.w, r.h)
 	}
 	fmt.sbprintf(&b, "shadow_res %d\n", settings.shadow_res)
-	fmt.sbprintf(&b, "aa_method %s\n", settings.aa_fxaa ? "fxaa" : "msaa")
+	fmt.sbprintf(&b, "aa_method %s\n", settings.aa_fsr ? "fsr" : settings.aa_taa ? "taa" : settings.aa_fxaa ? "fxaa" : "msaa")
 	fmt.sbprintf(&b, "aa_quality %d\n", settings.aa_quality)
 	fmt.sbprintf(&b, "experimental %d\n", settings.experimental ? 1 : 0)
 	fmt.sbprintf(&b, "lto %d\n", settings.lto ? 1 : 0)
@@ -280,6 +298,7 @@ settings_text :: proc() -> string {
 	fmt.sbprintf(&b, "memory_2gb %d\n", settings.memory_2gb ? 1 : 0)
 	fmt.sbprintf(&b, "stretch %d\n", settings.stretch ? 1 : 0)
 	fmt.sbprintf(&b, "fx_full %d\n", settings.fx_full ? 1 : 0)
+	fmt.sbprintf(&b, "minimap_circle %d\n", settings.minimap_circle ? 1 : 0)
 	fmt.sbprintf(&b, "aniso %d\n", settings.aniso ? 1 : 0)
 	fmt.sbprintf(&b, "steam_off %d\n", settings.steam_off ? 1 : 0)
 	fmt.sbprintf(&b, "voice %s\n", settings.voice_jp ? "japanese" : "english")
@@ -334,4 +353,13 @@ settings_reset :: proc() {
 	settings = settings_default
 	settings.save_dirs = make([dynamic]string)
 	graphics_apply()
+}
+
+// macOS: the Wine the launcher's .app carries (Contents/Resources/wine/bin/wine: a WoW64 build of Gcenx's Wine Stable,
+// put in by launcher/release/macos-launcher.yml -- players cannot be asked to install Homebrew), "" when it has none
+app_wine :: proc() -> string {
+	d, err := os.get_executable_directory(context.temp_allocator)
+	if err != nil || filepath.base(d) != "MacOS" {return ""}
+	w := pjoin({filepath.dir(d), "Resources", "wine", "bin", "wine"}, context.temp_allocator)
+	return file_exists(w) ? w : ""
 }

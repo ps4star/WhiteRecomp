@@ -17,6 +17,7 @@ package launcher
 
 import "core:compress/deflate"
 import "core:fmt"
+import "core:hash"
 import "core:os"
 import "core:path/filepath"
 import "core:slice"
@@ -29,6 +30,7 @@ import ui "shared:iv_ui"
 HD_URL :: "https://www.nexusmods.com/finalfantasy13/mods/17"
 HD_DIR_NAME :: "white_data_hd"
 HD_MARKER :: "whiterecomp_hd.txt"
+HD_NEEDS_BYTES :: u64(25e9) // (free space an import needs while it runs: the ZIP's textures, the game's archives unpacked and the new ones)
 // the "HD Fonts and GUI" mod (Dendonflo's, Nexus Mods 67): its hd_textures/ folder (hash_database.txt and the .dds files)
 // unpacked into the same HD folder; the runtime swaps textures by their contents as the mod's version.dll does
 // (hle_d3d9.c hdt_*). One switch: HD Textures On uses every HD pack installed.
@@ -99,6 +101,7 @@ Zip_Entry :: struct {
 	csize:  u64,
 	usize:  u64,
 	lho:    u64, // its local header's offset
+	crc:    u32, // the CRC32 of its contents
 }
 
 @(private = "file")
@@ -138,6 +141,7 @@ zip_entries :: proc(f: ^os.File, allocator := context.allocator) -> (entries: [d
 			csize  = u64(le32(cd, o + 20)),
 			usize  = u64(le32(cd, o + 24)),
 			lho    = u64(le32(cd, o + 42)),
+			crc    = le32(cd, o + 16),
 		}
 		nl, xl, cl := int(le16(cd, o + 28)), int(le16(cd, o + 30)), int(le16(cd, o + 32))
 		if o + 46 + nl + xl + cl > len(cd) {return entries, false}
@@ -161,22 +165,126 @@ zip_entries :: proc(f: ^os.File, allocator := context.allocator) -> (entries: [d
 	return entries, true
 }
 
-// one entry written to dest (stored or deflated)
+// ---- unpacking, made to survive what a player's machine does to it (2026-11-26: a Linux import that crawled to a
+// stop a few hundred files in). Every file is written in chunks of ZIP_CHUNK (the memory used does not grow with the
+// file, nor with the files done), to <name>.part, checked against its CRC32 and only then renamed to its name -- so a
+// file with its own name is a whole one, and an import stopped anywhere (cancelled, crashed, the machine off) picks up
+// where it was: zip_have skips a file already there with the right size and CRC32. Reads are retried when the
+// system returns short or interrupted (a FUSE / network / NTFS mount does). On Linux each file is flushed to the disk
+// (fdatasync) as it is written: without it a slow disk (a USB or SD card, ntfs-3g) gathers gigabytes of unwritten
+// pages in RAM until the kernel stalls every writer -- the launcher and the rest of the desktop with it.
+ZIP_CHUNK :: 4 << 20
+
+// buf filled from offset off of f (short reads continued, errors retried a few times)
+read_full_at :: proc(f: ^os.File, buf: []u8, off: i64) -> bool {
+	got, tries := 0, 0
+	for got < len(buf) {
+		n, err := os.read_at(f, buf[got:], off + i64(got))
+		if n > 0 {got += n; tries = 0; continue}
+		tries += 1
+		if tries > 5 || (err == nil && n == 0) {return false} // (the end of the file before the end of buf: truncated)
+		_ = err
+	}
+	return true
+}
+
+// the CRC32 of a file (0, false: unreadable)
+file_crc32 :: proc(path: string) -> (crc: u32, size: i64, ok: bool) {
+	f, err := os.open(path)
+	if err != nil {return}
+	defer os.close(f)
+	buf := make([]u8, ZIP_CHUNK)
+	defer delete(buf)
+	for {
+		n, rerr := os.read_at(f, buf, size)
+		if n > 0 {crc = hash.crc32(buf[:n], crc); size += i64(n); continue}
+		if rerr != nil && rerr != .EOF {return 0, 0, false}
+		break
+	}
+	return crc, size, true
+}
+
+// dest already holds this entry's whole contents (a file left by an earlier, stopped import)
+zip_have :: proc(e: Zip_Entry, dest: string) -> bool {
+	fi, err := os.stat(dest, context.temp_allocator)
+	if err != nil || fi.type == .Directory || fi.size != i64(e.usize) {return false}
+	crc, size, ok := file_crc32(dest)
+	return ok && size == i64(e.usize) && crc == e.crc
+}
+
+// data written as dest: through dest.part, checked (crc) before the rename. For an archive entry already in memory
+// (the RAR reader's, a deflated ZIP entry)
+write_checked :: proc(dest: string, data: []u8, crc: u32, check_crc: bool) -> bool {
+	_ = os.make_directory_all(filepath.dir(dest))
+	part := strings.concatenate({dest, ".part"}, context.temp_allocator)
+	out, err := os.open(part, {.Write, .Create, .Trunc})
+	if err != nil {return false}
+	ok := true
+	for o := 0; o < len(data) && ok; o += ZIP_CHUNK {
+		if _, werr := os.write(out, data[o:min(o + ZIP_CHUNK, len(data))]); werr != nil {ok = false}
+	}
+	if ok {flush_to_disk(out)}
+	os.close(out)
+	if ok && check_crc && hash.crc32(data) != crc {ok = false}
+	if ok {_ = os.remove(dest); ok = os.rename(part, dest) == nil}
+	if !ok {_ = os.remove(part)}
+	return ok
+}
+
+// one entry written to dest (stored or deflated): see above
 zip_extract :: proc(f: ^os.File, e: Zip_Entry, dest: string) -> bool {
 	if e.method != 0 && e.method != 8 {return false}
-	if e.csize > 1 << 31 || e.usize > 1 << 31 {return false} // (no entry of the mod's is near that)
 	lh: [30]u8
-	if n, err := os.read_at(f, lh[:], i64(e.lho)); err != nil || n != 30 || le32(lh[:], 0) != 0x04034b50 {return false}
+	if !read_full_at(f, lh[:], i64(e.lho)) || le32(lh[:], 0) != 0x04034b50 {return false}
 	start := i64(e.lho) + 30 + i64(le16(lh[:], 26)) + i64(le16(lh[:], 28))
-	data := make([]u8, int(e.csize))
-	defer delete(data)
-	if n, err := os.read_at(f, data, start); err != nil || u64(n) != e.csize {return false}
+	if e.method == 8 { // (deflated: only the mod's small files -- its lists and tools -- so in memory)
+		if e.csize > 1 << 30 || e.usize > 1 << 30 {return false}
+		data := make([]u8, int(e.csize))
+		defer delete(data)
+		if !read_full_at(f, data, start) {return false}
+		out := make([dynamic]u8)
+		defer delete(out)
+		if deflate.inflate_raw_from_bytes(&out, data, int(e.usize)) != nil || u64(len(out)) != e.usize {return false}
+		return write_checked(dest, out[:], e.crc, true)
+	}
+	if e.csize != e.usize {return false}
 	_ = os.make_directory_all(filepath.dir(dest))
-	if e.method == 0 {return os.write_entire_file(dest, data) == nil}
-	out := make([dynamic]u8)
-	defer delete(out)
-	if deflate.inflate_raw_from_bytes(&out, data, int(e.usize)) != nil {return false}
-	return u64(len(out)) == e.usize && os.write_entire_file(dest, out[:]) == nil
+	part := strings.concatenate({dest, ".part"}, context.temp_allocator)
+	out, err := os.open(part, {.Write, .Create, .Trunc})
+	if err != nil {return false}
+	buf := make([]u8, ZIP_CHUNK)
+	defer delete(buf)
+	crc: u32 = 0
+	ok := true
+	unsynced: u64 = 0
+	for done: u64 = 0; done < e.csize && ok; {
+		n := int(min(u64(ZIP_CHUNK), e.csize - done))
+		if !read_full_at(f, buf[:n], start + i64(done)) {ok = false; break}
+		crc = hash.crc32(buf[:n], crc)
+		if _, werr := os.write(out, buf[:n]); werr != nil {ok = false; break}
+		done += u64(n)
+		unsynced += u64(n)
+		if unsynced >= 64 << 20 {flush_to_disk(out); unsynced = 0}
+	}
+	if ok {flush_to_disk(out)}
+	os.close(out)
+	ok = ok && crc == e.crc
+	if ok {_ = os.remove(dest); ok = os.rename(part, dest) == nil}
+	if !ok {_ = os.remove(part)}
+	return ok
+}
+
+// files under dir (recursively) that are not in keep (lower-case paths relative to root) removed: what an earlier,
+// stopped import left beside the archive's own files (.part files, files the import makes itself)
+prune_tree :: proc(root, rel: string, keep: map[string]bool) {
+	dir := rel == "" ? root : pjoin({root, rel}, context.temp_allocator)
+	list, err := os.read_all_directory_by_path(dir, context.temp_allocator)
+	if err != nil {return}
+	for e in list {
+		r := rel == "" ? e.name : strings.concatenate({rel, "/", e.name}, context.temp_allocator)
+		if e.type == .Directory {prune_tree(root, r, keep); continue}
+		if !keep[strings.to_lower(r, context.temp_allocator)] {_ = os.remove(e.fullpath)}
+	}
 }
 
 // ---------------------------------------------------------------------------------------------- the import
@@ -401,10 +509,37 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 	parent, final := hd_place()
 	h.work = pjoin({parent, parent == game ? "white_data_hd_work" : "hd_work"}, context.temp_allocator)
 	h.out = pjoin({h.work, "out"}, context.temp_allocator)
-	_ = os.remove_all(h.work)
+	// (the working folder: the ZIP's files an earlier, stopped import unpacked are kept -- checked file by file below --
+	// everything else in it goes)
+	zip_keep := make(map[string]bool, context.temp_allocator)
+	for e in entries {
+		l := strings.to_lower(e.name, context.temp_allocator)
+		if !strings.has_suffix(l, "/") && hd_zip_wanted(l) {zip_keep[l] = true}
+	}
+	hd_work_clean(h.work, zip_keep)
 	if os.make_directory_all(h.out) != nil {logf(t, "Cannot make %s.", h.out); t.failed = true; return}
-	keep_work := false
-	defer if !keep_work {_ = os.remove_all(h.work)}
+	{ // (room for it: about 25 GB while it runs, less what an earlier import already unpacked -- a disk that fills midway
+		// leaves a half-made import and, on some systems, everything else stuck too)
+		have: u64 = 0
+		for e in entries {
+			l := strings.to_lower(e.name, context.temp_allocator)
+			if strings.has_suffix(l, "/") || !hd_zip_wanted(l) {continue}
+			if fi, err := os.stat(pjoin({h.work, e.name}, context.temp_allocator), context.temp_allocator); err == nil && fi.size == i64(e.usize) {have += e.usize}
+		}
+		need: u64 = HD_NEEDS_BYTES - min(have, HD_NEEDS_BYTES / 2)
+		if free, ok := disk_free(h.work); ok && free < need {
+			logf(t, "Not enough room: the import needs about %.0f GB free on the disk of %s while it runs, and there are %.1f GB. Free some space and Import again.", f64(need) / 1e9, h.work, f64(free) / 1e9)
+			t.failed = true
+			if have == 0 {_ = os.remove_all(h.work)}
+			return
+		}
+	}
+	finished := false
+	// (stopped -- failed, cancelled: the ZIP's files stay for the next Import, which goes on from them; done: all goes)
+	defer if finished {_ = os.remove_all(h.work)} else {
+		hd_work_clean(h.work, zip_keep)
+		if dir_exists(h.work) {logf(t, "The files unpacked from the ZIP were kept in %s: the next Import goes on from them (delete that folder to free the space).", h.work)}
+	}
 	logp := data_path("hd_import.log")
 	if lf, err := os.open(logp, {.Write, .Create, .Trunc}); err == nil {h.log = lf}
 	defer if h.log != nil {os.close(h.log)}
@@ -412,18 +547,31 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 	log_line(t, "This takes a while and needs about 25 GB free while it runs (about 8 GB stay). The game's own files are not changed.")
 	hlog(&h, "FF XIII HD Project import: %s -> %s (region %s)", zip_path, final, r)
 
-	// ---- 1. the ZIP's textures, data and tools
+	// ---- 1. the ZIP's textures, data and tools (those already there whole -- an earlier import's -- are not unpacked again)
 	{
-		n := 0
+		total, done: u64 = 0, 0
+		nfiles, n, skipped := 0, 0, 0
 		for e in entries {
 			l := strings.to_lower(e.name, context.temp_allocator)
-			if strings.has_suffix(l, "/") {continue}
-			if !(strings.has_prefix(l, "textures/") || strings.has_prefix(l, "data/") || strings.has_prefix(l, "supportfiles/")) {continue}
+			if !strings.has_suffix(l, "/") && hd_zip_wanted(l) {total += e.usize; nfiles += 1}
+		}
+		for e in entries {
+			l := strings.to_lower(e.name, context.temp_allocator)
+			if strings.has_suffix(l, "/") || !hd_zip_wanted(l) {continue}
+			if strings.contains(e.name, "..") {logf(t, "The ZIP has a file outside its folder (%s): not the mod's ZIP.", e.name); t.failed = true; return}
 			if cancelled(t) {return}
 			n += 1
-			if n % 25 == 0 {set_status(t, 0.15 * f32(n) / f32(ntex + 60), "Unpacking the ZIP: %d of about %d files", n, ntex + 60)}
-			if !zip_extract(f, e, pjoin({h.work, e.name}, context.temp_allocator)) {logf(t, "Cannot unpack %s from the ZIP (is there room?).", e.name); t.failed = true; return}
+			if n % 10 == 0 {set_status(t, 0.15 * f32(f64(done) / f64(max(total, 1))), "Unpacking the ZIP: %d of %d files (%.1f of %.1f GB)", n, nfiles, f64(done) / 1e9, f64(total) / 1e9)}
+			dest := pjoin({h.work, e.name}, context.temp_allocator)
+			if zip_have(e, dest) {skipped += 1} else if !zip_extract(f, e, dest) {
+				logf(t, "Cannot unpack %s from the ZIP (is there room? is the ZIP whole?).", e.name)
+				t.failed = true
+				return
+			}
+			done += e.usize
 		}
+		if skipped > 0 {logf(t, "%d of the ZIP's %d files were already unpacked (an earlier import's): kept.", skipped, nfiles)}
+		hlog(&h, "ZIP: %d files, %d unpacked before", nfiles, skipped)
 		// (the PCs' list: the mod's "install all" uses LoadHDPCs.tx1)
 		pcs := pjoin({h.work, "Data", "LoadHDPCs.txt"}, context.temp_allocator)
 		_ = os.copy_file(pcs, pjoin({h.work, "Data", "LoadHDPCs.tx1"}, context.temp_allocator))
@@ -638,6 +786,7 @@ hd_import_task :: proc(t: ^Task, zip_path: string) {
 		t.failed = true
 		return
 	}
+	finished = true
 	settings.hd_on = true
 	save_settings()
 	gdir := game_out_dir()
@@ -824,33 +973,50 @@ hd_gui_import :: proc(t: ^Task, path: string, f: ^os.File, files: []Gui_File, is
 	for e in files {if strings.has_prefix(e.name, prefix) {append(&todo, e); total += e.size}}
 	dest := hd_dir()
 	if dest == "" {_, dest = hd_place()}
+	_ = os.make_directory_all(dest)
+	if free, fok := disk_free(dest); fok && free < total + total / 10 + (256 << 20) {
+		logf(t, "Not enough room: the textures need about %.1f GB free on the disk of %s, and there are %.1f GB.", f64(total) / 1e9 * 1.1, dest, f64(free) / 1e9)
+		t.failed = true
+		return
+	}
 	tmp := pjoin({dest, "hd_textures.new"}, context.temp_allocator)
-	_ = os.remove_all(tmp)
+	// (an earlier, stopped import's files in tmp are kept -- each checked before it is used -- the rest goes)
+	keep := make(map[string]bool, context.temp_allocator)
+	for e in todo {keep[strings.to_lower(e.name[len(prefix):], context.temp_allocator)] = true}
+	prune_tree(tmp, "", keep)
 	if os.make_directory_all(tmp) != nil {logf(t, "Cannot make %s.", tmp); t.failed = true; return}
 	ok := false
-	defer if !ok {_ = os.remove_all(tmp)}
+	defer if !ok && dir_exists(tmp) {logf(t, "The files unpacked so far were kept in %s: the next Import goes on from them.", tmp)}
 	logf(t, "Importing %s (%d files, %.1f GB) into %s", filepath.base(path), len(todo), f64(total) / 1e9, pjoin({dest, "hd_textures"}, context.temp_allocator))
 	done: u64 = 0
+	skipped := 0
 	for e, i in todo {
 		if cancelled(t) {return}
 		rel := e.name[len(prefix):]
 		if rel == "" || strings.contains(rel, "..") {continue}
 		out := pjoin({tmp, rel}, context.temp_allocator)
 		if i % 10 == 0 {set_status(t, f32(f64(done) / f64(max(total, 1))), "Unpacking: %d of %d files", i, len(todo))}
+		done += e.size
 		if is_rar {
+			if e.rar.has_crc {
+				if fi, serr := os.stat(out, context.temp_allocator); serr == nil && fi.size == i64(e.size) {
+					if crc, _, cok := file_crc32(out); cok && crc == e.rar.crc {skipped += 1; continue}
+				}
+			}
 			data, xok := rar5.extract(f, e.rar)
 			if !xok {logf(t, "Cannot unpack %s (%s).", e.name, rar5.last_error); t.failed = true; return}
-			_ = os.make_directory_all(filepath.dir(out))
-			werr := os.write_entire_file(out, data)
+			wok := write_checked(out, data, 0, false) // (rar5.extract checked its CRC32 already)
 			delete(data)
-			if werr != nil {logf(t, "Cannot write %s (is there room?).", out); t.failed = true; return}
+			if !wok {logf(t, "Cannot write %s (is there room?).", out); t.failed = true; return}
+		} else if zip_have(e.zip, out) {
+			skipped += 1
 		} else if !zip_extract(f, e.zip, out) {
-			logf(t, "Cannot unpack %s from the ZIP (is there room?).", e.name)
+			logf(t, "Cannot unpack %s from the ZIP (is there room? is the ZIP whole?).", e.name)
 			t.failed = true
 			return
 		}
-		done += e.size
 	}
+	if skipped > 0 {logf(t, "%d of the %d files were already unpacked (an earlier import's): kept.", skipped, len(todo))}
 	// (in place of an earlier import's)
 	final := pjoin({dest, "hd_textures"}, context.temp_allocator)
 	_ = os.remove_all(final)
@@ -864,4 +1030,20 @@ hd_gui_import :: proc(t: ^Task, path: string, f: ^os.File, files: []Gui_File, is
 	if file_exists(pjoin({gdir, GAME_NAME + ".cfg"}, context.temp_allocator)) {_ = write_cfg(gdir)}
 	logf(t, "HD Fonts and GUI imported: %d files in %s. HD Textures is On.", len(todo), final)
 	set_status(t, 1, "Imported")
+}
+
+// the ZIP's files the import unpacks (l: the entry's name in lower case)
+hd_zip_wanted :: proc(l: string) -> bool {
+	return strings.has_prefix(l, "textures/") || strings.has_prefix(l, "data/") || strings.has_prefix(l, "supportfiles/")
+}
+
+// the working folder emptied but for the ZIP's files (keep: their lower-case names) -- whole or not: zip_have checks
+// each one before it is used
+hd_work_clean :: proc(work: string, keep: map[string]bool) {
+	list, err := os.read_all_directory_by_path(work, context.temp_allocator)
+	if err != nil {return}
+	for e in list {
+		l := strings.to_lower(e.name, context.temp_allocator)
+		if e.type == .Directory && (l == "textures" || l == "data" || l == "supportfiles") {prune_tree(work, e.name, keep)} else {_ = os.remove_all(e.fullpath)}
+	}
 }

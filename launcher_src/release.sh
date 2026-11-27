@@ -79,7 +79,27 @@ Darwin)
 	cp "$SDL" "$APP/Contents/Frameworks/libSDL2-2.0.0.dylib"
 	cp $REL/Info.plist "$APP/Contents/Info.plist"
 	cp $REL/README.md "$APP/Contents/Resources/"
+	# Wine (WINE: the wine folder of Gcenx's "Wine Stable.app" -- its Contents/Resources/wine -- and WINE_LICENSE, its
+	# LGPL text): Convert Movies and the HD Textures import run Windows programs through it, and players cannot be asked
+	# to install Homebrew (deps.odin app_wine). Its Mach-O files are signed one by one (ad hoc without MACOS_SIGN_ID):
+	# code inside an app has to be signed.
+	if [ -n "${WINE:-}" ]; then
+		[ -x "$WINE/bin/wine" ] || { echo "WINE=$WINE has no bin/wine"; exit 1; }
+		[ -f "${WINE_LICENSE:-}" ] || { echo "WINE_LICENSE (Wine's COPYING.LIB) not set"; exit 1; }
+		ditto "$WINE" "$APP/Contents/Resources/wine"
+		find "$APP/Contents/Resources/wine" -type f \( -perm -u+x -o -name '*.dylib' -o -name '*.so' \) | while IFS= read -r f; do
+			case "$(file -b "$f")" in *Mach-O*) codesign --force --sign "${MACOS_SIGN_ID:--}" "$f" ;; esac
+		done
+	else
+		echo "WINE not set: the app carries no Wine (Convert Movies and the HD import then need one installed)"
+	fi
 	{ cat $REL/THIRD_PARTY_LICENSES.txt
+	  if [ -n "${WINE:-}" ]; then
+	    printf '\n\n--------------------------------------------------------------------------------------------------------------------\n'
+	    printf '12. Wine (https://www.winehq.org; this build: https://github.com/Gcenx/macOS_Wine_builds; source: https://gitlab.winehq.org/wine/wine)\n'
+	    printf -- '--------------------------------------------------------------------------------------------------------------------\n\n'
+	    cat "$WINE_LICENSE"
+	  fi
 	  printf '\n\n--------------------------------------------------------------------------------------------------------------------\n'
 	  printf '5. MoltenVK (https://github.com/KhronosGroup/MoltenVK)\n'
 	  printf -- '--------------------------------------------------------------------------------------------------------------------\n\n'

@@ -14,7 +14,7 @@
 //   Gamepad Scanning          Once: -DXRC_PAD_ONCE -- the game controllers looked for once, at the start (else every 2
 //                             seconds, the default: the game asks that often; src/runtime/hle_dinput.c)
 //   Cutscenes                 Auto-skip: -DXRC_SKIP_MOVIES (every movie skipped)
-//   Aspect Ratio              16:9, 16:10 or Ultrawide: which resolutions the Resolution dropdown shows (not saved
+//   Aspect Ratio              16:9, 16:10, Ultrawide or 4:3: which resolutions the Resolution dropdown shows (not saved
 //                             itself: the resolution's; RESOLUTIONS)
 //   Pipeline Build Threads    XRC_VK_PIPE_THREADS=N in WhiteRecomp.cfg (no Build needed): the threads that make the
 //                             renderer's pipelines in the background (vk_d3d9.c pj_threads); Best (0, the default):
@@ -101,6 +101,7 @@ apply_android_preset :: proc() {
 	settings.aa_fxaa = true
 	settings.aa_quality = 1
 	settings.fx_full = false
+	settings.minimap_circle = false
 	settings.aniso = false
 	settings.memory_2gb = false
 	settings.opt_level = ANDROID_OPT_LEVEL
@@ -244,19 +245,22 @@ runtime_option_flags :: proc(spec: Build_Spec = {}) -> []string {
 // 1280x800 (the game falls back to 1280x720 for a size 1280 wide): 1200x750 instead, fewer pixels than 720p (900,000). The Aspect Ratio dropdown (Display) shows one
 // group: res_aspect.
 Resolution :: struct {w, h: int}
-RESOLUTIONS :: [22]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
+RESOLUTIONS :: [28]Resolution{{854, 480}, {960, 540}, {1280, 720}, {1600, 900}, {1920, 1080}, {2560, 1440}, {3200, 1800}, {3840, 2160},
 	{1280, 540}, {2560, 1080}, {3440, 1440}, {3840, 1600}, {5120, 2160}, {3840, 1080}, {5120, 1440},
-	{1200, 750}, {1440, 900}, {1680, 1050}, {1920, 1200}, {2560, 1600}, {2880, 1800}, {3840, 2400}}
+	{1200, 750}, {1440, 900}, {1680, 1050}, {1920, 1200}, {2560, 1600}, {2880, 1800}, {3840, 2400},
+	{960, 720}, {1024, 768}, {1440, 1080}, {1600, 1200}, {1920, 1440}, {2880, 2160}}
 RES_ULTRAWIDE :: 8 // (the first ultrawide one)
 RES_16_10 :: 15 // (the first 16:10 one)
+RES_4_3 :: 22 // (the first 4:3 one: as 16:10, the runtime's "narrower than 16:9" -- 3D Vert+, the HUD 16:9 centred, movies letterboxed)
 RES_DEFAULT :: 2 // (1280x720)
 
 // Aspect Ratio: the groups of RESOLUTIONS (not saved: the resolution decides it)
 ASPECT_16_9 :: 0
 ASPECT_16_10 :: 1
 ASPECT_ULTRAWIDE :: 2
-ASPECT_NAMES :: [3]string{"16:9", "16:10", "Ultrawide"}
-res_aspect :: proc(i: int) -> int {return i >= RES_16_10 ? ASPECT_16_10 : i >= RES_ULTRAWIDE ? ASPECT_ULTRAWIDE : ASPECT_16_9}
+ASPECT_4_3 :: 3
+ASPECT_NAMES :: [4]string{"16:9", "16:10", "Ultrawide", "4:3"}
+res_aspect :: proc(i: int) -> int {return i >= RES_4_3 ? ASPECT_4_3 : i >= RES_16_10 ? ASPECT_16_10 : i >= RES_ULTRAWIDE ? ASPECT_ULTRAWIDE : ASPECT_16_9}
 
 // an aspect ratio picked: the resolution of that group nearest in height to the current one (16:9 from another: the
 // default, 1280x720, unless the current one is taller)
@@ -300,20 +304,22 @@ graphics_apply :: proc() {
 	p := GRAPHICS_PRESETS
 	settings.shadow_res = p[settings.graphics].shadow_res
 	settings.aa_fxaa = true
+	settings.aa_taa = false
+	settings.aa_fsr = false
 	settings.aa_quality = p[settings.graphics].aa_quality
 }
 
 // the preset the three options make, else Custom
 graphics_matching :: proc() -> int {
 	for p, i in GRAPHICS_PRESETS {
-		if settings.shadow_res == p.shadow_res && settings.aa_quality == p.aa_quality && (settings.aa_fxaa || p.aa_quality <= 1) {return i}
+		if settings.shadow_res == p.shadow_res && settings.aa_quality == p.aa_quality && !settings.aa_taa && (settings.aa_fxaa || p.aa_quality <= 1) {return i}
 	}
 	return GRAPHICS_CUSTOM
 }
 
 // the game's arguments for the options (XRC_GAME_ARGS)
 game_args :: proc(s: Settings = settings) -> string {
-	msaa := s.aa_fxaa || s.aa_quality <= 1 ? 0 : s.aa_quality
+	msaa := s.aa_taa || s.aa_fxaa || s.aa_quality <= 1 ? 0 : s.aa_quality
 	args := fmt.tprintf("-Shadow=%d -MSAA=%d", s.shadow_res == 0 ? 512 : s.shadow_res, msaa)
 	res := RESOLUTIONS
 	r := res[clamp(s.resolution, 0, len(res) - 1)]

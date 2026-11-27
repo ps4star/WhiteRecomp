@@ -88,6 +88,7 @@ for T in $TARGETS; do
 			"$(M third_party/vulkan/include)=vulkan/include" \
 			"$(M third_party/appimage)=appimage" \
 			"$(M build/pgo/ff13.profdata)=pgo/ff13.profdata" \
+			"$(M third_party/ffx_dll/amd_fidelityfx_vk.dll)=tools/amd_fidelityfx_vk.dll" "$(M third_party/ffx_dll/LICENSE.txt)=tools/amd_fidelityfx-LICENSE.txt" \
 			"$(M build/bink2mp4.exe)=tools/bink2mp4.exe" "$(M build/steamhelper.exe)=tools/steamhelper.exe" "$(M build/steamhelper_linux_x64)=tools/steamhelper_linux_x64" \
 			"$(M build/arm64_tools/sysroot_min)=cross/linux_arm64/sysroot" \
 			"$(M third_party/ffmpeg/lib/linux_arm64)=cross/linux_arm64/ffmpeg/lib" \

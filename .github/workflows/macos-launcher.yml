@@ -2,7 +2,7 @@
 # Started by launcher/publish.sh release TAG (or by hand: Actions > macOS launcher > Run workflow, with the tag) after
 # it has uploaded bundle_macos.bin (launcher/build.sh macos) to release TAG. It builds the launcher for both kinds of
 # Mac (launcher/release.sh: Apple silicon and Intel, joined with lipo), with MoltenVK and SDL2 (both universal, from
-# their own releases) in the app, uploads WhiteRecompLauncher_macos.zip to the release and deletes bundle_macos.bin
+# their own releases) and Wine (Gcenx's macOS build, for Convert Movies and the HD import) in the app, uploads WhiteRecompLauncher_macos.zip to the release and deletes bundle_macos.bin
 # from it (only then: after a failure "Re-run jobs" finds it still there). The app is not signed (no Developer ID): the first time, right-click > Open, or
 # xattr -dr com.apple.quarantine WhiteRecomp.app.
 # (Copied here from ff13decomp2's launcher/release/macos-launcher.yml by launcher/publish.sh.)
@@ -19,6 +19,11 @@ env:
   ODIN_COMMIT: e28f5d1ff420ce2cfd7f1f5a9a91f8b37956445e # (the Odin the other launchers are built with)
   MOLTENVK_VERSION: v1.4.0
   SDL2_VERSION: 2.32.8
+  # Wine carried in the app (Contents/Resources/wine): Gcenx's Wine Stable, a WoW64 build (32-bit Windows programs on
+  # Catalina and later; Rosetta 2 on Apple silicon), its SHA-256 pinned
+  WINE_URL: https://github.com/Gcenx/macOS_Wine_builds/releases/download/11.0_1/wine-stable-11.0_1-osx64.tar.xz
+  WINE_SHA256: b50dc50ec7f41d58b115a6b685d4d1315ba3c797bd3aa0f49213f2703cb82388
+  WINE_LICENSE_URL: https://gitlab.winehq.org/wine/wine/-/raw/wine-11.0/COPYING.LIB
   GH_TOKEN: ${{ github.token }}
   TAG: ${{ inputs.tag }}
 jobs:
@@ -62,6 +67,22 @@ jobs:
           install_name_tool -id @rpath/libSDL2-2.0.0.dylib libSDL2-2.0.0.dylib
           codesign --force --sign - libSDL2-2.0.0.dylib
           lipo -archs libMoltenVK.dylib; lipo -archs libSDL2-2.0.0.dylib
+      - name: Wine
+        run: |
+          set -x
+          mkdir -p deps && cd deps
+          curl -fsSL -o wine.tar.xz "$WINE_URL"
+          echo "$WINE_SHA256  wine.tar.xz" | shasum -a 256 -c -
+          tar xf wine.tar.xz
+          W="Wine Stable.app/Contents/Resources/wine"
+          [ -x "$W/bin/wine" ] || { echo "no bin/wine in the Wine archive"; exit 1; }
+          # (Gecko and Mono: not used -- the launcher runs Wine with mscoree and mshtml off -- 440 MB)
+          rm -rf "$W/share/wine/gecko" "$W/share/wine/mono"
+          mv "$W" wine
+          rm -rf "Wine Stable.app" wine.tar.xz
+          xattr -cr wine || true
+          curl -fsSL -o WINE_LICENSE.txt "$WINE_LICENSE_URL"
+          du -sh wine
       - name: The bundle
         run: gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p bundle_macos.bin -D deps
       - name: Build
@@ -73,6 +94,7 @@ jobs:
           ODIN="$GITHUB_WORKSPACE/odin/odin" BUNDLE="$GITHUB_WORKSPACE/deps/bundle_macos.bin" \
           MOLTENVK="$GITHUB_WORKSPACE/deps/libMoltenVK.dylib" MOLTENVK_LICENSE="$GITHUB_WORKSPACE/deps/MoltenVK_LICENSE" \
           SDL2="$GITHUB_WORKSPACE/deps/libSDL2-2.0.0.dylib" SDL2_LICENSE="$GITHUB_WORKSPACE/deps/SDL2_LICENSE.txt" \
+          WINE="$GITHUB_WORKSPACE/deps/wine" WINE_LICENSE="$GITHUB_WORKSPACE/deps/WINE_LICENSE.txt" \
             sh launcher/release.sh
           # (ad-hoc signature: Apple silicon runs nothing unsigned)
           codesign --force --deep --sign - dist/WhiteRecomp.app

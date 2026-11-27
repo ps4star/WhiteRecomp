@@ -557,6 +557,7 @@ wine_candidates :: proc(t: ^Task) -> [dynamic]string {
 		for q in c {if q == p {return}}
 		append(c, p)
 	}
+	when ODIN_OS == .Darwin {if p := app_wine(); p != "" {add(&c, p)}} // (first: the one the launcher carries)
 	if p := find_program("wine"); p != "" {add(&c, p)}
 	when ODIN_OS == .Darwin {
 		// the Terminal's PATH (shell_path), then every app with a Wine inside (Gcenx's Wine Stable / Devel / Staging,
@@ -584,6 +585,24 @@ wine_candidates :: proc(t: ^Task) -> [dynamic]string {
 @(private = "file")
 check_wine :: proc(t: ^Task) -> Dep {
 	d := Dep{name = "Wine", purpose = "runs the movie converter (a Windows program) for Convert Movies"}
+	when ODIN_OS == .Darwin {
+		if w := app_wine(); w != "" {
+			// (the .app's own Wine: unzipped from a download, its files carry the quarantine flag, which would have
+			// Gatekeeper stop each of them -- taken off, as the app's README says to do for the app itself)
+			wine_root := filepath.dir(filepath.dir(w))
+			_, _ = run(t, {"/usr/bin/xattr", "-dr", "com.apple.quarantine", wine_root}, mode = .Quiet)
+			when ODIN_ARCH == .arm64 {
+				// (an Intel program: Apple silicon runs it through Rosetta 2, which macOS installs only when asked)
+				if code, started := run(t, {"/usr/bin/arch", "-x86_64", "/usr/bin/true"}, mode = .Quiet); !started || code != 0 {
+					d.note = "the launcher's Wine needs Rosetta 2 (Apple's, for Intel programs), which is not installed"
+					d.install = clone_cmd({"/usr/sbin/softwareupdate", "--install-rosetta", "--agree-to-license"})
+					d.install_how = "Install Rosetta 2"
+					d.needs_admin = true
+					return d
+				}
+			}
+		}
+	}
 	for p in wine_candidates(t) {
 		out := strings.builder_make(context.temp_allocator)
 		code, started := run(t, {p, "--version"}, mode = .Quiet, capture = &out)

@@ -386,6 +386,9 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if spec.cross == nil {hd_cfg_line(b)} // (Features & Mods > HD Textures: this computer's folder)
 	if movie_files() == .Bink {fmt.sbprintf(b, "XRC_MOVIES=bink\n")} // (Cutscene Files: Bink2 -- the game's .wmp files through its translated bink2w32.dll)
 	if s.movie_colors_orig {fmt.sbprintf(b, "XRC_MOVIE_COLORS=original\n")} // (Features & Mods > Cutscene Colors: Original -- the retail limited-range look)
+	if s.vol_music != 100 {fmt.sbprintf(b, "XRC_VOL_MUSIC=%d\n", s.vol_music)} // (Options > Audio & Controls: the volumes, percent; hle_xaudio2.c)
+	if s.vol_sfx != 100 {fmt.sbprintf(b, "XRC_VOL_SFX=%d\n", s.vol_sfx)}
+	if s.vol_voice != 100 {fmt.sbprintf(b, "XRC_VOL_VOICE=%d\n", s.vol_voice)}
 	if s.movie_brightness != 100 {fmt.sbprintf(b, "XRC_MOVIE_BRIGHTNESS=%d\n", s.movie_brightness)} // (Features & Mods > Cutscenes: the picture, percent)
 	if s.movie_contrast != 100 {fmt.sbprintf(b, "XRC_MOVIE_CONTRAST=%d\n", s.movie_contrast)}
 	if s.movie_saturation != 100 {fmt.sbprintf(b, "XRC_MOVIE_SATURATION=%d\n", s.movie_saturation)}
@@ -395,10 +398,11 @@ cfg_game_lines :: proc(b: ^strings.Builder, spec: Build_Spec = {}) {
 	if s.memory_2gb {fmt.sbprintf(b, "XRC_GUEST_2GB=1\n")}
 	if s.stretch {fmt.sbprintf(b, "XRC_STRETCH=1\n")}
 	if s.fx_full {fmt.sbprintf(b, "XRC_VK_HALF_FX=0\n")}
+	if s.minimap_circle {fmt.sbprintf(b, "XRC_MINIMAP_CIRCLE=1\n")} // (Minimap Shape: Circle)
 	if s.aniso {fmt.sbprintf(b, "XRC_VK_ANISO=16\n")} // (Anisotropic Filtering: On -- up to what the GPU has)
 	if s.steam_off {fmt.sbprintf(b, "XRC_NO_STEAM=1\n")}
 	if s.tools && s.profiler {fmt.sbprintf(b, "XRC_PROF=1\n")} // (Options > Profiler: F12 in the game -- a game built with the Debug & Profile Tools)
-	if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
+	if s.aa_fsr && ODIN_OS == .Windows && (spec.cross == nil) {fmt.sbprintf(b, "XRC_FSR=1\nXRC_FSR_DLL=%s\n", data_path("tools", "amd_fidelityfx_vk.dll"))} else if s.aa_taa {fmt.sbprintf(b, "XRC_TAA=1\n")} else if s.aa_fxaa && s.aa_quality > 1 {fmt.sbprintf(b, "XRC_FXAA=%d\n", s.aa_quality)}
 	if spec.cross != nil && spec.cross.android {
 		fmt.sbprintf(b, "XRC_VK_PIPE_THREADS=%d\n", s.pipe_threads)
 		return

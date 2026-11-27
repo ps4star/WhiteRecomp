@@ -599,7 +599,7 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		asp := res_aspect(clamp(settings.resolution, 0, len(RESOLUTIONS) - 1))
 		an := ASPECT_NAMES
 		if n, ch := dropdown(g, "aspect", ctrl, an[:], asp, active = active); ch && n != asp {settings.resolution = res_for_aspect(n, settings.resolution); changed = true; game_changed = true}
-		note_text(g, asp == ASPECT_16_10 ? "16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)" : asp == ASPECT_ULTRAWIDE ? "21:9 and 32:9: the 3D drawn across the whole width" : "The game's own shape", note, DIM)
+		note_text(g, asp == ASPECT_4_3 ? "4:3: the whole screen, the view taller than at 16:9 (the HUD keeps its 16:9 shape; movies letterboxed)" : asp == ASPECT_16_10 ? "16:10: the whole screen, the view taller than at 16:9 (movies keep thin bars)" : asp == ASPECT_ULTRAWIDE ? "21:9 and 32:9: the 3D drawn across the whole width" : "The game's own shape", note, DIM)
 	}
 	// Resolution: the game's -Width= / -Height= (in its .cfg: no Build needed) -- those of the aspect ratio above
 	{
@@ -669,11 +669,11 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 	}
 	if custom {
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Anti-alias Method:", IND)
-		names := []string{"MSAA", "FXAA (Default)"}
-		if n, ch := dropdown(g, "aa_method", ctrl, names, settings.aa_fxaa ? 1 : 0, active = active); ch {settings.aa_fxaa = n == 1; changed = true; game_changed = true}
-		note_text(g, settings.aa_fxaa ? "A cheap filter on the 3D image (not the HUD)" : "Multisampling: costly on integrated GPUs", note, DIM)
+		names := ODIN_OS == .Windows ? []string{"MSAA", "FXAA (Default)", "TAA", "FSR 3.1"} : []string{"MSAA", "FXAA (Default)", "TAA"}
+		if n, ch := dropdown(g, "aa_method", ctrl, names, settings.aa_fsr && ODIN_OS == .Windows ? 3 : settings.aa_taa ? 2 : settings.aa_fxaa ? 1 : 0, active = active); ch {settings.aa_fxaa = n >= 1; settings.aa_taa = n >= 2; settings.aa_fsr = n == 3; changed = true; game_changed = true}
+		note_text(g, settings.aa_fsr && ODIN_OS == .Windows ? "AMD FSR 3.1 at native resolution (temporal; AMD's DLL)" : settings.aa_taa ? "Temporal: smooth edges and less shimmer, a little softer" : settings.aa_fxaa ? "A cheap filter on the 3D image (not the HUD)" : "Multisampling: costly on integrated GPUs", note, DIM)
 	}
-	if custom {
+	if custom && !settings.aa_taa {
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Anti-alias Quality:", IND)
 		qs := AA_QUALITIES
 		names := []string{"1x (Off)", "2x", "4x (Default)", "8x"}
@@ -695,6 +695,13 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		if on, ch := toggle(g, ctrl, settings.aniso, active); ch {settings.aniso = on; changed = true; game_changed = true}
 		note_text(g, settings.aniso ? "16x: ground and walls stay sharp at a distance; no Build needed" : "The game's own texture filtering (blurrier at a distance); no Build needed", note, DIM)
 	}
+	// Minimap Shape: Default -- the game's own (a disc tilted 45 degrees: an oval about 1.4 times as wide as tall); Circle
+	// -- narrowed to a near circle (XRC_MINIMAP_CIRCLE=1 in its .cfg: no Build needed; hle_d3d9.c xrc_widescreen)
+	{
+		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Minimap Shape:")
+		if n, ch := dropdown(g, "minimap_shape", ctrl, {"Default", "Circle"}, settings.minimap_circle ? 1 : 0, active = active); ch {settings.minimap_circle = n == 1; changed = true; game_changed = true}
+		note_text(g, settings.minimap_circle ? "The field minimap narrowed to a near circle; no Build needed" : "The game's own tilted oval minimap, as released", note, DIM)
+	}
 	// ---- Audio & Controls
 	section(g, oi, &row, "Audio & Controls")
 	// Audio
@@ -702,6 +709,32 @@ draw_options :: proc(g: ^Gui, r: ui.Rect) {
 		_, ctrl, note := next_row(g, oi, &row, row_h, label_w, ctrl_w, "Audio:")
 		if on, ch := toggle(g, ctrl, settings.audio, active); ch {settings.audio = on; changed = true}
 		note_text(g, settings.audio ? "Music, sound and voices" : "No audio work at all (play your own music)", note, DIM)
+	}
+	// Music / Sound Effects / Voices: percent (100 = the game's own mix; XRC_VOL_* in the .cfg, read when the game starts: no
+	// Build). The game's sound categories (hle_xaudio2.c cat_volume): Music its music; Voices the speech, in battle, in the
+	// field and in the cutscenes' speech track; Sound Effects the rest (effects, menus, footsteps, surroundings). Saved when a
+	// slider is let go
+	{
+		Vol :: struct {name, id, tip: string, v: ^int}
+		vols := [3]Vol{
+			{"Music:", "vol_music", "The soundtrack (and a cutscene's music and effects)", &settings.vol_music},
+			{"Sound Effects:", "vol_sfx", "Effects, menus, footsteps and surroundings", &settings.vol_sfx},
+			{"Voices:", "vol_voice", "Speech: battle calls, field talk and cutscene dialogue", &settings.vol_voice},
+		}
+		for a in vols {
+			_, c2, n2 := next_row(g, oi, &row, row_h, label_w, ctrl_w, a.name)
+			on := active && settings.audio
+			v, _, done := slider(g, a.id, c2, a.v^, 0, 100, on)
+			a.v^ = v
+			if done {changed = true; game_changed = true}
+			label(g, g.font, fmt.tprintf("%d%%", v), {n2.x, n2.y, px(g, 56), n2.h}, on ? TEXT : FAINT)
+			bx := n2.x + px(g, 60)
+			if v != 100 {
+				if button(g, {bx, n2.y + (n2.h - px(g, 28)) / 2, px(g, 80), px(g, 28)}, "Reset", on) {a.v^ = 100; changed = true; game_changed = true}
+				bx += px(g, 92)
+			}
+			note_text(g, a.tip, {bx, n2.y, n2.x + n2.w - bx, n2.h}, DIM)
+		}
 	}
 	// Gamepad Scanning
 	{

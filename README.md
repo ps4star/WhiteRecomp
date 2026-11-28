@@ -100,7 +100,7 @@ The resolution the game renders at, passed to the game as `-Width=W -Height=H`, 
 
 Higher is sharper and costs more GPU time. Takes effect the next time the game starts, with no Build needed.
 
-The game's window opens at this size. You can resize or maximize it, and **F11** switches fullscreen on and off. The picture is scaled to fit the window with its shape kept, so a window of another shape gets black bars (a maximized window too: the title bar and taskbar take some of its height).
+The game always renders at this resolution, on any display, including TVs and displays with Windows scaling (125%–300%). Its window opens at this size, or smaller if the resolution is larger than your screen. You can resize or maximize it, and **F11** switches fullscreen on and off. The picture is scaled to fit the window with its shape kept, so a window of another shape gets black bars (a maximized window too: the title bar and taskbar take some of its height).
 
 #### Window Scaling
 
